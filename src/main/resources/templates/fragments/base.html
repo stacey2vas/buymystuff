@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-principal flex flex-col justify-center items-center min-h-screen">
+
+<header class="w-full fixed top-0 left-0 z-50">
+
+</header>
+
+<main
+        class="min-h-[calc(100vh-104px)] mt-[50px] w-full flex  justify-center py-12 px-6 ">
+    <div layout:fragment="content"></div>
+
+</main>
+
+<footer >
+</footer>
+
+</body>
+</html>
