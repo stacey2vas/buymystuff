@@ -13,7 +13,7 @@ public class Articles {
     private int prixInitial;
     private int prixVente;
     private Utilisateurs utilisateur;
-    private Categories categorie;
+    private List<Categories> categories;
     private Adresse adresseProprietaire;
     private List<Encheres> encheres;
     private boolean etatVente;
@@ -21,7 +21,7 @@ public class Articles {
     public Articles() {
     }
 
-    public Articles(int id, String nomArticle, String description, LocalDateTime dateDebut, LocalDateTime dateFin, int prixInitial, int prixVente, Utilisateurs utilisateur, Categories categorie, Adresse adresseProprietaire, List<Encheres> encheres, boolean etatVente) {
+    public Articles(int id, String nomArticle, String description, LocalDateTime dateDebut, LocalDateTime dateFin, int prixInitial, int prixVente, Utilisateurs utilisateur, List<Categories> categories, Adresse adresseProprietaire, List<Encheres> encheres, boolean etatVente) {
         this.id = id;
         this.nomArticle = nomArticle;
         this.description = description;
@@ -30,7 +30,7 @@ public class Articles {
         this.prixInitial = prixInitial;
         this.prixVente = prixVente;
         this.utilisateur = utilisateur;
-        this.categorie = categorie;
+        this.categories = categories;
         this.adresseProprietaire = adresseProprietaire;
         this.encheres = encheres;
         this.etatVente = etatVente;
@@ -47,7 +47,7 @@ public class Articles {
                 ", prixInitial=" + prixInitial +
                 ", prixVente=" + prixVente +
                 ", utilisateur=" + utilisateur +
-                ", categorie=" + categorie +
+                ", categorie=" + categories +
                 '}';
     }
 
@@ -115,12 +115,12 @@ public class Articles {
         this.utilisateur = utilisateur;
     }
 
-    public Categories getCategorie() {
-        return categorie;
+    public List<Categories> getCategories() {
+        return categories;
     }
 
-    public void setCategorie(Categories categorie) {
-        this.categorie = categorie;
+    public void setCategories(List<Categories> categories) {
+        this.categories = categories;
     }
 
     public Adresse getAdresseProprietaire() {
