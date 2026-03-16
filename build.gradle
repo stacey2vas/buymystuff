@@ -24,6 +24,12 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// JDBC
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+
+	// Driver de MySQL
+	runtimeOnly 'com.mysql:mysql-connector-j:8.4.0'
 }
 
 tasks.named('test') {
