@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/base}">
+
+<body>
+
+<div layout:fragment="content" class="w-full ">
+    <div th:fragment="cardArticle" class=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div th:replace="fragments/card :: cardArticle">
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
