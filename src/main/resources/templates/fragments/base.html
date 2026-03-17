@@ -8,39 +8,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Projet</title>
 
-    <!-- Tailwind -->
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
-<body class="bg-main text-white min-h-screen flex flex-col">
+<body class="bg-main text-white flex flex-col min-h-screen">
 
 <!-- HEADER -->
-<header class="fixed top-0 left-0 w-full z-50 bg-header shadow-lg border-b border-[#376996]/50">
-    <nav class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+<header class="h-[75px] fixed top-0 left-0 w-full z-50 bg-header  shadow-[0_2px_4px_0_rgba(55,105,150,0.25)]">
+    <nav class="w-10/12 mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex gap-1 items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="50" height="50">
+                <!-- Cube -->
+                <polygon points="16,20 32,12 48,20 32,28" fill="#4934d3"/>
+                <polygon points="16,20 16,40 32,48 32,28" fill="#03d6f9"/>
+                <polygon points="32,28 32,48 48,40 48,20" fill="#fa8fc1"/>
 
-        <h1 class="text-xl font-bold text-[#6290c8]">MyApp</h1>
+                <!-- Flèche -->
+                <polygon points="32,6 36,14 28,14" fill="#03d6f9"/>
+            </svg>
 
+        <h1 class="text-xl font-bold price-color">BuyMyStuff</h1>
+        </div>
         <div class="flex gap-6 items-center">
-            <a href="#" class="hover:text-[#6290c8] transition">Accueil</a>
-            <a href="#" class="hover:text-[#6290c8] transition">Annonces</a>
-            <button class="bg-[#6290c8] hover:bg-[#376996] px-4 py-2 rounded-lg transition">
+            <a href="#" class="hover:text-[#4934d3] transition">Accueil</a>
+            <a href="#" class="hover:text-[#4934d3] transition">Mes annonces</a>
+            <button class="bg-btn  px-4 py-2 rounded-lg transition">
                 Login
             </button>
         </div>
-
     </nav>
 </header>
 
 <!-- MAIN -->
-<main class="min-h-[calc(100vh-72px)] mt-[80px] w-full pt-10">
-    <div class="max-w-6xl mx-auto px-4">
+<main class="min-h-[100vh] mt-[95px] w-full flex justify-center">
         <div layout:fragment="content"></div>
-    </div>
 </main>
 
 <!-- FOOTER -->
-<footer class="bg-header border-t border-[#376996] text-center py-4">
+<footer class="bg-header border-t border-[#376996] text-center py-4 mt-20">
     <p class="text-[#829cbc] text-sm">© 2026 - Mon Projet</p>
 </footer>
 

@@ -6,9 +6,16 @@
 
 <body>
 
-<div layout:fragment="content" class="w-full ">
-    <div th:fragment="cardArticle" class=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        <div th:replace="fragments/card :: cardArticle">
+<div layout:fragment="content" class="w-10/12 flex flex-col gap-6">
+
+    <!-- Barre de recherche -->
+    <div th:replace="fragments/search :: div"></div>
+
+    <!-- Grid de cartes -->
+<!--    <p class="h-[50vh] bg-gray-500">Test</p>-->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div th:each="article : ${articles}"
+             th:replace="fragments/card :: cardArticle(article=${article})">
         </div>
     </div>
 
