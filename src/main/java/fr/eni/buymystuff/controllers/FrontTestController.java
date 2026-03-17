@@ -3,6 +3,7 @@ package fr.eni.buymystuff.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +16,11 @@ public class FrontTestController {
     public String login(Model model){
 
         return "/test/login";
+    }
+    @GetMapping("/test/enchere/{id}")
+    public String login(Model model, @PathVariable Long id){
+
+        return "/test/enchere";
     }
     @GetMapping("/test/test")
     public String accueil(Model model) {
