@@ -1,12 +1,13 @@
 /* BACKGROUNDS */
 .bg-header { background-color: #000036; }
 .bg-main { background-color: #101046; }
-.bg-card { background-color: #376996; }
-.bg-card-dark { background-color: #1f487e; }
+.bg-card-dark { background-color: #000036; }
 
 .border-card-principal{
     border-color:  #35348c;
 }
+
+
 .border-card-image{
     border: 1px solid #9276d7;
 }
@@ -23,4 +24,7 @@
 
 .bg-btn{
     background-color: #4934d3;
+}
+.bg-btn:hover {
+    background-color: #3b27a8;
 }
