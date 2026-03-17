@@ -29,7 +29,7 @@
                 <polygon points="32,6 36,14 28,14" fill="#03d6f9"/>
             </svg>
 
-        <h1 class="text-xl font-bold price-color">BuyMyStuff</h1>
+            <h1 class="text-xl font-bold price-color">BuyMyStuff</h1>
         </div>
         <div class="flex gap-6 items-center">
             <a href="#" class="hover:text-[#4934d3] transition">Accueil</a>
@@ -43,9 +43,42 @@
 
 <!-- MAIN -->
 <main class="flex-1 mt-[95px] w-full flex justify-center">
-        <div layout:fragment="content"></div>
+    <div layout:fragment="content"></div>
 </main>
+<!-- CONTENT -->
+<div th:if="${response != null}"
+     th:id="'alert-' + ${response.code}"
+     class="flex sm:items-center p-4 mb-4 text-sm rounded-base"
+     th:classappend="${response.code == 'ERROR'} ? 'text-red-800 bg-red-100' :
+                     (${response.code == 'SUCCESS'} ? 'text-green-800 bg-green-100' :
+                     'text-fg-brand-strong bg-brand-softer')"
+     role="alert">
 
+    <svg class="w-4 h-4 shrink-0 mt-0.5 md:mt-0"
+         xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-width="2"
+              d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+    </svg>
+
+    <span class="sr-only" th:text="${response.code}">Info</span>
+
+    <div class="ms-2 text-sm">
+        <span th:text="${response.message}">Message par défaut</span>
+    </div>
+
+    <button type="button"
+            class="ms-auto -mx-1.5 -my-1.5 rounded focus:ring-2 inline-flex items-center justify-center h-8 w-8"
+            th:attr="data-dismiss-target='#alert-' + ${response.code}"
+            aria-label="Close">
+        <span class="sr-only">Close</span>
+        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-width="2"
+                  d="M6 18 17.94 6M18 18 6.06 6"/>
+        </svg>
+    </button>
+
+</div>
 <!-- FOOTER -->
 <footer class="  text-center py-4 mt-10">
     <p class="font-bold price-color text-sm">© 2026 - BuyMyStuff</p>

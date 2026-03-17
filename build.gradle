@@ -33,6 +33,11 @@ dependencies {
 
 	// Driver de MySQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// Intégration de Spring Security avec Thymeleaf
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 }
 
 tasks.named('test') {
