@@ -1,6 +1,7 @@
 <div th:fragment="cardArticle" th:each="article : ${articles}"
-     class=" rounded-lg p-2 flex flex-col gap-4 shadow-xl border border-card-principal hover:bg-[#000036]
-            hover:shadow-2xl hover:translate-y-1 transition duration-300 relative group w-full">
+     class="articleCard rounded-lg p-2 flex flex-col gap-4 shadow-xl border border-card-principal hover:bg-[#000036]
+            hover:shadow-2xl hover:translate-y-1 transition duration-300 relative group w-full"
+     th:data-timer="${#temporals.format(article.timer, 'yyyy-MM-dd''T''HH:mm:ss')}">
 
     <div class="rounded-xl w-full h-[210px] flex items-center justify-center text-muted border-card-image">
         <img th:src="${article.imageUrl}" alt="Image"
@@ -18,7 +19,10 @@
         </div>
         <div class="w-1/2 flex flex-col text-right p-1">
             <p class="text-sm text-muted">Termine dans :</p>
-            <p class="text-base font-semibold hour-color">00h 53m</p>
+            <p class="timer text-base font-semibold hour-color flex justify-end"
+               th:data-timer="${#temporals.format(article.timer, 'yyyy-MM-dd''T''HH:mm:ss')}">
+                <span class="skeleton w-20 h-[24px] rounded bg-gray-300 animate-pulse"></span>
+            </p>
         </div>
     </div>
 
