@@ -27,6 +27,7 @@ public class EnchereController {
     public String ajoutProcess(@ModelAttribute("categorie") Categories categorie, Model model) {
 
         model.addAttribute("message", "ajoutée avec succés");
-        return "ajout-categories";
+
+            return "ajout-categories";
     }
 }
