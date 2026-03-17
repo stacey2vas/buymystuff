@@ -16,7 +16,7 @@ public class AuthTestController {
 
         model.addAttribute("utilisateur", utilisateur);
 
-        return "test/login-auth-page";
+        return "test/test-auth-page";
     }
 
     @PostMapping ("/process-auth")
