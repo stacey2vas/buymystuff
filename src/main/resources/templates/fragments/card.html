@@ -1,26 +1,28 @@
 <div th:fragment="cardArticle" th:each="article : ${articles}"
-     class=" rounded-lg p-2 flex flex-col gap-4 shadow-xl border border-card-principal
-            hover:shadow-2xl hover:-translate-y-1 transition duration-300 relative group w-full">
+     class=" rounded-lg p-2 flex flex-col gap-4 shadow-xl border border-card-principal hover:bg-[#000036]
+            hover:shadow-2xl hover:translate-y-1 transition duration-300 relative group w-full">
 
-    <div class="bg-card-dark rounded-xl w-full h-[180px] flex items-center justify-center text-muted border-card-image">
+    <div class="rounded-xl w-full h-[210px] flex items-center justify-center text-muted border-card-image">
         <img th:src="${article.imageUrl}" alt="Image"
              class="object-cover w-full h-full rounded-xl  "/>
     </div>
 
-    <div class="text-xl font-semibold text-main min-h-[56px]" th:text="${article.description}"></div>
+    <div class="text-xl font-semibold text-main min-h-[56px]" >
+        <a href="#" th:text="${article.description}" class=""></a>
+    </div>
 
     <div class="flex justify-between items-center border-t border-dashed border-dash-color pt-3">
-        <div class="w-1/2 flex flex-col border-r border-dashed border-dash-color">
+        <div class="w-1/2 flex flex-col border-r border-dashed border-dash-color p-1">
             <p class="text-sm text-muted">Prix actuel</p>
             <p class="text-lg font-bold text-accent price-color" th:text="${article.prix} + ' €'"></p>
         </div>
-        <div class="w-1/2 flex flex-col text-right">
-            <p class="text-sm text-muted">Termine dans</p>
+        <div class="w-1/2 flex flex-col text-right p-1">
+            <p class="text-sm text-muted">Termine dans :</p>
             <p class="text-base font-semibold hour-color">00h 53m</p>
         </div>
     </div>
 
     <div class="w-full flex justify-center relative -bottom-5 left-0 transition-transform duration-300">
-        <button class="bg-btn px-6 py-2 rounded-lg shadow-lg font-semibold">Enchérir</button>
+        <button class="bg-btn px-6 py-2 rounded-lg shadow-lg font-semibold transition transition-all duration-300">Enchérir</button>
     </div>
 </div>
