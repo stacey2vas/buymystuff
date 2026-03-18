@@ -16,11 +16,12 @@ public class Utilisateurs {
     private List<Articles> articles;
     private Adresse adresse;
     private List<Encheres> encheres;
+    private boolean actif;
 
     public Utilisateurs() {
     }
 
-    public Utilisateurs(int id, String pseudo, String nom, String prenom,  String email, String telephone, String motDePasse, int credit, boolean administrateur, List<Articles> articles, Adresse adresse, List<Encheres> encheres) {
+    public Utilisateurs(int id, String pseudo, String nom, String prenom,  String email, String telephone, String motDePasse, int credit, boolean administrateur, List<Articles> articles, Adresse adresse, List<Encheres> encheres, boolean actif) {
         this.id = id;
         this.pseudo = pseudo;
         this.nom = nom;
@@ -33,6 +34,7 @@ public class Utilisateurs {
         this.articles = articles;
         this.adresse = adresse;
         this.encheres = encheres;
+        this.actif = actif;
     }
 
     @Override
@@ -146,5 +148,13 @@ public class Utilisateurs {
 
     public void setPrenom(String prenom) {
         this.prenom = prenom;
+    }
+
+    public boolean isActif() {
+        return actif;
+    }
+
+    public void setActif(boolean actif) {
+        this.actif = actif;
     }
 }

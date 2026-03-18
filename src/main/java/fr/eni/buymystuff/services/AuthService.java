@@ -4,8 +4,9 @@ package fr.eni.buymystuff.services;
 import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.dao.IDAOAuth;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class AuthService {
 
     private final IDAOAuth daoAuth;
@@ -14,9 +15,9 @@ public class AuthService {
         this.daoAuth = daoAuth;
     }
 
-    public ServiceResponse<Utilisateurs> login(String email, String password){
+    public ServiceResponse<Utilisateurs> ajouterUtilisateur(String email, String password){
         // essayer de retrouver user
-        Utilisateurs loggedUser = daoAuth.selectByEmailAndPassword(email, password);
+        Utilisateurs loggedUser = daoAuth.insert(new Utilisateurs());
 
         // Si je trouve pas => erreur
         if (loggedUser == null)

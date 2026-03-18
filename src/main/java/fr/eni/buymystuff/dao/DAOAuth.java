@@ -19,24 +19,27 @@ public class DAOAuth  implements IDAOAuth {
     public DAOAuth(JdbcTemplate jdbcTemplate, UtilisateursRowMapper utilisateursRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.utilisateursRowMapper = utilisateursRowMapper;
-        loadSQlScript();
 
-    }
-
-    private void loadSQlScript() {
-        // Essayer de charger le fichier SQL
-        try {
-            INSERT_USER_SQL = new ClassPathResource("sql/insert-user.sql")
-                    .getContentAsString(StandardCharsets.UTF_8);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
     @Override
-    public void insert(Utilisateurs utilisateur) {
+    public Utilisateurs insert(Utilisateurs utilisateur) {
+        String sql = """
+            INSERT INTO utilisateurs (nom, prenom, email, pseudo,
+            password, telephone,credit, administrateur, no_adresse, actif)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
+        //ici il faut traduire
+        //bcrypt
+        String bcrypt = utilisateur.getMotDePasse();
+
+        jdbcTemplate.update(sql, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(),
+                utilisateur.getPseudo(), bcrypt, utilisateur.getTelephone(), utilisateur.getCredit(),
+                 utilisateur.isAdministrateur(), utilisateur.getAdresse().getId(), utilisateur.isActif()
+                );
+
+        return utilisateur;
     }
 }

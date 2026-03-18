@@ -5,5 +5,5 @@ import fr.eni.buymystuff.bo.Utilisateurs;
 
 public interface IDAOAuth {
 
-    public void insert(Utilisateurs utilisateur);
+    public Utilisateurs insert(Utilisateurs utilisateur);
 }
