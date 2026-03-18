@@ -6,114 +6,142 @@
 
 <body>
 <div layout:fragment="content"
-     class="w-10/12 h-auto max-w-md
+     class="w-[35%]
             bg-card-dark
             border border-card-principal
             p-8 mt-9 rounded-xl
             shadow-[0_05px_30px_rgba(0,0,0,0.9)]">
 
-    <!-- Titre -->
     <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">
         Ajouter un article
     </h2>
 
-    <!-- Formulaire -->
     <form class="space-y-4"
           method="POST"
-          th:action="@{/articles/save}"
-          th:object="${article}">
+          th:action="@{/save-article}"
+          th:object="${articleForm}">
 
-        <!-- CSRF -->
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-        <!-- Nom -->
+        <!-- Classes communes -->
+        <!-- (tu peux les extraire dans un fragment si tu veux aller plus loin) -->
+
+        <div class="flex gap-2">
+            <div class="w-1/2">
+                <label for="nom" class="block text-white mb-1">Nom de l'article</label>
+                <input id="nom" type="text" th:field="*{nomArticle}" required
+                       class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white placeholder-white
+                       border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                       focus:border-[#4934d3] transition duration-200">
+            </div>
+
+            <div class="w-1/2">
+                <label for="categories" class="block text-white mb-1">Catégories</label>
+                <select th:field="*{categories}" id="categories" multiple
+                        class="choices w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white placeholder-white
+               border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+               focus:border-[#4934d3] transition duration-200">
+                    <option th:each="categorie : ${categories}"
+                            th:value="${categorie.id}"
+                            th:text="${categorie.libelle}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Image -->
         <div>
-            <label class="block text-white mb-1">Nom de l'article</label>
-            <input type="text" th:field="*{nomArticle}" required
+            <label class="block text-white font-medium mb-1">Image de l'article</label>
+            <input type="file" accept="image/*"
                    class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white
-                   border border-white/20 focus:ring-2 focus:ring-[#4934d3]">
+                   border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                   focus:border-[#4934d3] transition duration-200">
         </div>
 
         <!-- Description -->
         <div>
             <label class="block text-white mb-1">Description</label>
             <textarea th:field="*{description}" required
-                      class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white
-                      border border-white/20 focus:ring-2 focus:ring-[#4934d3]"></textarea>
+                      class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white placeholder-white
+                      border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                      focus:border-[#4934d3] transition duration-200"></textarea>
         </div>
 
-        <!-- Dates -->
-        <div>
-            <label class="block text-white mb-1">Date début</label>
-            <input type="datetime-local" th:field="*{dateDebut}" required
-                   class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20">
+        <div class="flex gap-2">
+            <div class="w-1/2">
+                <label class="block text-white mb-1">Date début</label>
+                <input type="datetime-local" th:field="*{dateDebut}" required
+                       class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white
+                       border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                       focus:border-[#4934d3] transition duration-200">
+            </div>
+
+            <div class="w-1/2">
+                <label class="block text-white mb-1">Date fin</label>
+                <input type="datetime-local" th:field="*{dateFin}" required
+                       class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white
+                       border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                       focus:border-[#4934d3] transition duration-200">
+            </div>
         </div>
 
-        <div>
-            <label class="block text-white mb-1">Date fin</label>
-            <input type="datetime-local" th:field="*{dateFin}" required
-                   class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20">
+        <div class="flex gap-2">
+            <div class="w-1/2">
+                <label class="block text-white mb-1">Prix initial</label>
+                <input type="number" th:field="*{prixInitial}" required
+                       class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white
+                       border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                       focus:border-[#4934d3] transition duration-200">
+            </div>
+
+            <div class="w-1/2">
+                <label class="block text-white mb-1">Prix de vente</label>
+                <input type="number" th:field="*{prixVente}"
+                       class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white
+                       border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                       focus:border-[#4934d3] transition duration-200">
+            </div>
         </div>
 
-        <!-- Prix -->
-        <div>
-            <label class="block text-white mb-1">Prix initial</label>
-            <input type="number" th:field="*{prixInitial}" required
-                   class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20">
+        <div class="space-y-3">
+
+            <!-- Checkbox -->
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="useMyAddress" checked
+                       class="w-4 h-4 accent-[#4934d3] cursor-pointer">
+                <label for="useMyAddress" class="text-white">
+                    Utiliser votre adresse comme adresse de livraison
+                </label>
+            </div>
+
+            <!-- Recherche adresse -->
+            <div>
+                <label class="block text-white mb-1">Rechercher une adresse</label>
+                <input type="text" id="searchAddress"
+                       placeholder="Ex: 10 rue de Paris..."
+                       class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white placeholder-white
+               border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+               focus:border-[#4934d3] transition duration-200">
+            </div>
+
+            <!-- Adresse sélectionnée (résultat API) -->
+            <div>
+                <label class="block text-white mb-1">Adresse sélectionnée</label>
+                <p id="selectedAddress" class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/50 text-gray-300
+               border border-white/10" th:text="${adresse.rue + ','+ adresse.codePostal + adresse.ville}"></p>
+            </div>
         </div>
 
-        <div>
-            <label class="block text-white mb-1">Prix de vente</label>
-            <input type="number" th:field="*{prixVente}"
-                   class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20">
-        </div>
-
-        <!-- Utilisateur -->
-        <div>
-            <label class="block text-white mb-1">Utilisateur</label>
-            <select th:field="*{utilisateur}"
-                    class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20">
-                <option th:each="u : ${utilisateurs}"
-                        th:value="${u.id}"
-                        th:text="${u.nom}">
-                </option>
-            </select>
-        </div>
-
-        <!-- Catégories -->
-        <div>
-            <label class="block text-white mb-1">Catégories</label>
-            <select multiple th:field="*{categories}"
-                    class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20">
-                <option th:each="c : ${categories}"
-                        th:value="${c.id}"
-                        th:text="${c.nom}">
-                </option>
-            </select>
-        </div>
-
-        <!-- Adresse -->
-        <div>
-            <label class="block text-white mb-1">Adresse</label>
-            <select th:field="*{adresseProprietaire}"
-                    class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20">
-                <option th:each="a : ${adresses}"
-                        th:value="${a.id}"
-                        th:text="${a.rue + ' ' + a.ville}">
-                </option>
-            </select>
-        </div>
-
-        <!-- Submit -->
         <div>
             <button type="submit"
-                    class="w-full bg-btn hover:bg-btn text-white font-semibold py-2 px-4 rounded-md shadow-md">
-                Ajouter
+                    class="w-full bg-btn hover:bg-btn text-white font-semibold py-2 px-4 rounded-md
+                    transition-colors shadow-md transform">
+                Ajouter l'article
             </button>
         </div>
 
     </form>
-
+    <script th:src="@{/js/ajout-article.js}" defer></script>
 </div>
 </body>
 </html>
