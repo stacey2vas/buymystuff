@@ -24,7 +24,7 @@ public class FrontTestController {
     }
     @GetMapping("/accueil")
     public String accueil(Model model) {
-
+        System.out.println("je passe dans accueil");
         // Création d'une liste d'articles fake
         List<Article> articles = new ArrayList<>();
 
@@ -61,7 +61,7 @@ public class FrontTestController {
         model.addAttribute("articles", articles);
 
         // Retour du template Thymeleaf
-        return "accueil";
+        return "/test/accueil";
     }
 
     // Classe interne pour simplifier l'exemple

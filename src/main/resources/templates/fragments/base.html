@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
@@ -29,19 +29,26 @@
                 <polygon points="32,6 36,14 28,14" fill="#03d6f9"/>
             </svg>
 
-        <a href="/test/test" class="text-xl font-bold price-color">BuyMyStuff</a>
+            <a href="/accueil" class="text-xl font-bold price-color">BuyMyStuff</a>
         </div>
         <div class="flex gap-6 items-center">
-            <a href="/test/test" class="hover:text-[#4934d3] transition">Accueil</a>
+            <a href="/accueil" class="hover:text-[#4934d3] transition">Accueil</a>
             <a href="#" class="hover:text-[#4934d3] transition">Mes annonces</a>
-            <a href="/test/login" class="bg-btn  px-4 py-2 rounded-lg transition"> Login</a>
+
+            <a sec:authorize="isAnonymous()" href="/test/login" class="bg-btn  px-4 py-2 rounded-lg transition">
+                Login</a>
+
+            <a sec:authorize="isAuthenticated()" th:href="@{/logout}"
+               class="px-4 py-2 hover:bg-zinc-800/80 hover:text-red-600 rounded-lg transition">Se
+                déconnecter</a>
+
         </div>
     </nav>
 </header>
 
 <!-- MAIN -->
 <main class="flex-1 mt-[95px] w-full flex justify-center">
-        <div layout:fragment="content"></div>
+    <div layout:fragment="content"></div>
 </main>
 
 <!-- FOOTER -->
