@@ -1,0 +1,96 @@
+package fr.eni.buymystuff.dao;
+
+import fr.eni.buymystuff.bo.Categories;
+import fr.eni.buymystuff.jdbc.IDAOCategories;
+import fr.eni.buymystuff.mapper.RowMapperCategorie;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+@Profile("jdbc")
+@Component
+public class DAOCategoriesJDCB implements IDAOCategories {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    private String FIND_CATEGORIE_BY_ID_SQL = "";
+    private String SAVE_CATEGORIES_SQL = "";
+    private String UPDATE_CATEGORIES_SQL = "";
+    private String SELECT_ALL_CATEGORIES_SQL = "";
+
+    public DAOCategoriesJDCB(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        loadSQlScript();
+    }
+
+    private void loadSQlScript() {
+
+        try {
+            SAVE_CATEGORIES_SQL = new ClassPathResource("sql/save_categories.sql")
+                    .getContentAsString(StandardCharsets.UTF_8);
+            FIND_CATEGORIE_BY_ID_SQL = new ClassPathResource("sql/find_categorie_by_id.sql")
+                    .getContentAsString(StandardCharsets.UTF_8);
+            UPDATE_CATEGORIES_SQL = new ClassPathResource("sql/update_categories.sql")
+                    .getContentAsString(StandardCharsets.UTF_8);
+            SELECT_ALL_CATEGORIES_SQL = new ClassPathResource("sql/select_all_categories.sql")
+                    .getContentAsString(StandardCharsets.UTF_8);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<Categories> selectAllCategories() {
+        return jdbcTemplate.query(
+                SELECT_ALL_CATEGORIES_SQL,
+                new RowMapperCategorie()
+        );
+    }
+
+    @Override
+    public Categories save(Categories categories) {
+
+        Categories existing = selectById(categories.getId());
+        if (existing != null) {
+            return update(categories);
+        }
+        return create(categories);
+    }
+
+    @Override
+    public Categories selectById(int id) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    FIND_CATEGORIE_BY_ID_SQL,
+                    new RowMapperCategorie(),
+                    id
+            );
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    private Categories update(Categories categories) {
+        jdbcTemplate.update(UPDATE_CATEGORIES_SQL,
+                categories.getLibelle(),
+                categories.getId()
+        );
+
+        return categories;
+    }
+
+    private Categories create(Categories categories) {
+        jdbcTemplate.update(SAVE_CATEGORIES_SQL,
+                categories.getLibelle()
+        );
+        return categories;
+    }
+}
