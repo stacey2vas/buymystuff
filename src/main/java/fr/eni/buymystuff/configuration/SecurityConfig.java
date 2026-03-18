@@ -30,43 +30,46 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
-                auth ->
-                        auth
-
-                                /*************************ICI rajouter les routes ***************************/
-
-                                /* donnée l'accès à la page de la liste uniquement au utilisateur connectés */
-                                /* avec une saule table
-                            .requestMatchers(HttpMethod.GET, "/magic").hasAnyRole("EMPLOYE", "ADMIN")*/
-                                .requestMatchers(HttpMethod.GET, "/magic").hasRole("EMPLOYE")
-                                .requestMatchers(HttpMethod.GET, "/magic/ajout").hasRole("ADMIN")
-                                .requestMatchers("/*").permitAll()
-                                .requestMatchers("/css/**").permitAll()
-                                .anyRequest().denyAll()
-
-        );
-        http.formLogin( form -> {
-                    //donne l'accès à la page de login à tous
-                    form.loginPage("/login").permitAll();
-                    //redirige après le login sur la page d'accueil
-                    form.defaultSuccessUrl("/");
-                }
-        );
-
-        http.logout( logout -> {
-            //supprimer la session du côté du serveur d'application
-            logout.invalidateHttpSession(true)
-                    .clearAuthentication(true)
-                    //suppression du cookie sur le serveur web
-                    .deleteCookies("JSESSIONID")
-                    //déterminer la page à utiliser pour le logout
-                    .logoutUrl("/logout")
-                    //redirige après le logout sur la page d'accueil
-                    .logoutSuccessUrl("/")
-                    .permitAll();
-        });
-
+//        http.authorizeHttpRequests(
+//                auth ->
+//                        auth
+//
+//                                /*************************ICI rajouter les routes ***************************/
+//
+//                                /* donnée l'accès à la page de la liste uniquement au utilisateur connectés */
+//                                /* avec une saule table
+//                            .requestMatchers(HttpMethod.GET, "/magic").hasAnyRole("EMPLOYE", "ADMIN")*/
+//                                .requestMatchers("/", "/register", "/public/**", "/login").permitAll()
+//                                .requestMatchers("/css/**", "/js/**", "/images/**", "/*.*").permitAll()   // Accès au CSS, JS, images depuis static
+//                                .requestMatchers(HttpMethod.GET, "/magic").hasRole("EMPLOYE")
+//                                .requestMatchers(HttpMethod.GET, "/magic/ajout").hasRole("ADMIN")
+//                                .anyRequest().denyAll()
+//
+//        );
+//        http.formLogin( form -> {
+//                    //donne l'accès à la page de login à tous
+//            form.loginPage("/login"); // URL GET pour afficher le formulaire
+//            form.defaultSuccessUrl("/");                    //redirige après le login sur la page d'accueil
+//
+//                }
+//        );
+//
+//        http.logout( logout -> {
+//            //supprimer la session du côté du serveur d'application
+//            logout.invalidateHttpSession(true)
+//                    .clearAuthentication(true)
+//                    //suppression du cookie sur le serveur web
+//                    .deleteCookies("JSESSIONID")
+//                    //déterminer la page à utiliser pour le logout
+//                    .logoutUrl("/logout")
+//                    //redirige après le logout sur la page d'accueil
+//                    .logoutSuccessUrl("/")
+//                    .permitAll();
+//        });
+        // Commentez tout ce qu'il y a en haut pour désactiver spring sécurity
+        http
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }

@@ -12,7 +12,7 @@ import java.util.List;
 @Controller
 public class FrontTestController {
 
-    @GetMapping("/test/login")
+    @GetMapping("/login")
     public String login(Model model){
 
         return "/test/login";
