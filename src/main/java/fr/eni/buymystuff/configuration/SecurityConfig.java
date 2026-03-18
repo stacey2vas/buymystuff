@@ -49,7 +49,7 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")             // URL qui déclenche le logout
-                        .logoutSuccessUrl("/login") // où aller après déconnexion
+                        .logoutSuccessUrl("/accueil") // où aller après déconnexion
                         .invalidateHttpSession(true)      // invalide la session
                         .deleteCookies("JSESSIONID")      // supprime le cookie de session
                         .permitAll() // Permet à tous d'accéder à l'URL de logout
