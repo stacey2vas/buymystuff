@@ -1,6 +1,8 @@
 package fr.eni.buymystuff.controllers;
 
+import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Articles;
+import fr.eni.buymystuff.bo.Categories;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -8,13 +10,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class ArticleTestController {
 
     @GetMapping("/add-article")
     public String showAddArticle(Model model) {
-        model.addAttribute("articleForm", new Articles());
+        List<Categories> categories = new ArrayList<>();
 
+        Categories electronique = new Categories(1,"Electronique");
+        Categories bricolage = new Categories(2,"Bricolage");
+        Adresse adresse = new Adresse(1, "12 rue des Lilas", "44000", "Nantes");
+
+        categories.add(electronique);
+        categories.add(bricolage);
+
+        model.addAttribute("articleForm", new Articles());
+        model.addAttribute("categories", categories);
+        model.addAttribute("adresse", adresse);
         return "/test/ajout-article";
     }
     // Traiter le formulaire d'ajout de film, en validant les données et en créant ou modifiant le film dans la base de données

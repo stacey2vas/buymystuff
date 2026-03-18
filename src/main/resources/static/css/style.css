@@ -66,3 +66,44 @@ input:-webkit-autofill:focus {
     caret-color: #fff;
     box-shadow: 0 0 0 2px #4934d3 inset; /* simule le focus violet */
 }
+
+/********************* CHOICE SELECT ********************/
+/* Le conteneur du select (Choices.js inner) */
+.choices__inner {
+    background-color: rgba(16,16,70,0.8); /* bg-[#101046]/80 */
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 1rem; /* arrondi xl */
+    padding: 0.625rem 1rem; /* px-4 py-2.5 */
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+/* Focus */
+.choices__inner.is-focused {
+    border-color: #4934d3;
+    box-shadow: 0 0 0 2px rgba(73,52,211,0.5);
+}
+
+/* Les items sélectionnés (tags) */
+.choices__list--multiple .choices__item {
+    background-color: rgba(64, 0, 255, 0.2); /* violet clair pour les tags */
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 0.5rem;
+}
+
+/* Liste déroulante */
+.choices__list--dropdown {
+    background-color: rgba(16,16,70,0.8); /* même que le select */
+    color: #ffffff;
+}
+
+/* Hover sur les options */
+.choices__item.choices__item--choice.choices__item--selectable:hover {
+    background-color: rgba(73,52,211,0.4);
+    color: white;
+}
+.choices__item.choices__item--choice.choices__item--selectable {
+    background-color: rgb(16 16 70 / 0.8);
+    color: white;
+}
