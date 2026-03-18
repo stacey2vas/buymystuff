@@ -68,7 +68,7 @@ input:-webkit-autofill:focus {
 }
 
 /********************* CHOICE SELECT ********************/
-/* Le conteneur du select (Choices.js inner) */
+/* Conteneur du select */
 .choices__inner {
     background-color: rgba(16,16,70,0.8); /* bg-[#101046]/80 */
     color: #ffffff;
@@ -84,26 +84,46 @@ input:-webkit-autofill:focus {
     box-shadow: 0 0 0 2px rgba(73,52,211,0.5);
 }
 
-/* Les items sélectionnés (tags) */
-.choices__list--multiple .choices__item {
-    background-color: rgba(64, 0, 255, 0.2); /* violet clair pour les tags */
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white;
-    border-radius: 0.5rem;
+/* Input de recherche transparent */
+.choices__input {
+    background-color: transparent !important;
+    color: #ffffff;
+    caret-color: #ffffff;
+    border: none;
 }
 
-/* Liste déroulante */
+/* Les tags sélectionnés (items multiples) */
+.choices__list--multiple .choices__item {
+    background-color: rgba(64,0,255,0.2);
+    color: #ffffff;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 0 0.5rem;
+    margin-right: 0.25rem;
+}
+
+/* Dropdown */
 .choices__list--dropdown {
-    background-color: rgba(16,16,70,0.8); /* même que le select */
+    background-color: rgba(16,16,70,0.8);
+    color: #ffffff;
+    border-radius: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+/* Options dans la dropdown */
+.choices__list--dropdown .choices__item.choices__item--choice {
+    background-color: rgba(16,16,70,0.8);
     color: #ffffff;
 }
 
 /* Hover sur les options */
-.choices__item.choices__item--choice.choices__item--selectable:hover {
-    background-color: rgba(73,52,211,0.4);
-    color: white;
+.choices__list--dropdown .choices__item.choices__item--choice:hover {
+    background-color: rgba(73,52,211,0.4); /* violet clair */
+    color: #ffffff;
 }
-.choices__item.choices__item--choice.choices__item--selectable {
-    background-color: rgb(16 16 70 / 0.8);
-    color: white;
+
+/* Option déjà sélectionnée dans dropdown */
+.choices__item.choices__item--selectable.choices__item--selected {
+    background-color: rgba(64,0,255,0.2);
+    color: #ffffff;
 }
