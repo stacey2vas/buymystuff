@@ -22,7 +22,7 @@ public class FrontTestController {
 
         return "/test/enchere";
     }
-    @GetMapping("/test/test")
+    @GetMapping("/accueil")
     public String accueil(Model model) {
 
         // Création d'une liste d'articles fake
@@ -61,18 +61,21 @@ public class FrontTestController {
         model.addAttribute("articles", articles);
 
         // Retour du template Thymeleaf
-        return "/test/test";
+        return "accueil";
     }
 
     // Classe interne pour simplifier l'exemple
     public static class Article {
+        private Long counter = 0L;
+        private Long id;
         private String imageUrl;
         private String nom;
         private String description;
         private double prix;
         private LocalDateTime  timer;
 
-        public Article(String imageUrl, String nom, String description, double prix, LocalDateTime  timer) {
+        public Article( String imageUrl, String nom, String description, double prix, LocalDateTime  timer) {
+            this.id = counter++;
             this.imageUrl = imageUrl;
             this.nom = nom;
             this.description = description;
@@ -101,6 +104,12 @@ public class FrontTestController {
         }
         public void setTimer(LocalDateTime  timer) {
             this.timer = timer;
+        }
+        public Long getId() {
+            return id;
+        }
+        public void setId(Long id) {
+            this.id = id;
         }
     }
 }

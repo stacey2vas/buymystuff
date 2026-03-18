@@ -9,7 +9,7 @@
     </div>
 
     <div class="text-xl font-semibold text-main min-h-[56px]" >
-        <a href="#" th:text="${article.description}" class=""></a>
+        <a th:href="@{/enchere/{id}(id=${article.id})}" th:text="${article.description}" class=""></a>
     </div>
 
     <div class="flex justify-between items-center border-t border-dashed border-dash-color pt-3">
