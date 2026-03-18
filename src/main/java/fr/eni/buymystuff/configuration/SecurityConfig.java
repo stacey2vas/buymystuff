@@ -36,7 +36,8 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.GET, "/magic").hasRole("EMPLOYE")
 //                        .requestMatchers(HttpMethod.GET, "/magic/ajout").hasRole("ADMIN")
 //                        .requestMatchers("/accueil").authenticated()
-                        .anyRequest().authenticated()
+//                                .anyRequest().authenticated() // ICI ON DECOMMENTERA A LA FIN POUR LES TESTS ON PERMIT ALL pour donner accès à tous les fichiers
+                                .anyRequest().permitAll()
                 )
                 .formLogin( form -> {
                             //donne l'accès à la page de login à tous

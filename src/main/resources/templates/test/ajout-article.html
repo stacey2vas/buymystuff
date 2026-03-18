@@ -17,11 +17,10 @@
         Ajouter un article
     </h2>
 
-    <!-- Formulaire -->
     <form class="space-y-4"
           method="POST"
-          th:action="@{/articles/save}"
-          th:object="${article}">
+          th:action="@{/save-article}"
+          th:object="${articleForm}">
 
         <!-- CSRF -->
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -113,7 +112,6 @@
         </div>
 
     </form>
-
 </div>
 </body>
 </html>
