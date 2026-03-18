@@ -2,12 +2,12 @@
   <form id="filterArticle" method="post"
         class="w-full grid  md:grid-cols-7  gap-4 items-end
                bg-[#000036]/90 backdrop-blur-md p-6 rounded-2xl border border-white/20
-               shadow-2xl text-xs">
+                text-xs">
 
     <!-- Rechercher -->
     <div class="md:col-span-2">
-      <label for="titreInput" class="block text-gray-400 mb-1 font-medium">Rechercher</label>
-      <input type="text" id="titreInput" placeholder="Nom de l'article..."
+      <label for="nomArticle" class="block text-gray-400 mb-1 font-medium">Rechercher</label>
+      <input type="text" id="nomArticle" placeholder="Nom de l'article..."
              class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white placeholder-white
                     border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3]
                     transition duration-200"/>
@@ -15,8 +15,8 @@
 
     <!-- Catégories -->
     <div>
-      <label for="genreInput" class="block text-gray-400 mb-1 font-medium">Catégories</label>
-      <select id="genreInput"
+      <label for="categorie" class="block text-gray-400 mb-1 font-medium">Catégories</label>
+      <select id="categorie"
               class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20
                      focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3]
                      transition duration-200">
@@ -32,7 +32,7 @@
     <!-- Prix min -->
     <div>
       <label for="prixMin" class="block text-gray-400 mb-1 font-medium">Prix min</label>
-      <input type="number" id="prixMin" name="prixMin" placeholder="0 €"
+      <input type="number" id="prixMin" name="prixMin" placeholder="0 €" min="0"
              class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20
                     focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3]
                     transition duration-200"/>
@@ -41,7 +41,7 @@
     <!-- Prix max -->
     <div>
       <label for="prixMax" class="block text-gray-400 mb-1 font-medium">Prix max</label>
-      <input type="number" id="prixMax" name="prixMax" placeholder="1000 €"
+      <input type="number" id="prixMax" name="prixMax" placeholder="1000 €" min="0"
              class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20
                     focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3]
                     transition duration-200"/>
@@ -50,7 +50,7 @@
     <!-- Date début -->
     <div>
       <label for="dateStart" class="block text-gray-400 mb-1 font-medium">Date début</label>
-      <input type="date" id="dateStart" name="dateStart"
+      <input type="date" id="dateStart" name="dateStart" min=""
              class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20
                     focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3]
                     transition duration-200"/>

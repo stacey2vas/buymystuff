@@ -28,3 +28,41 @@
 .bg-btn:hover {
     background-color: #3b27a8;
 }
+/****************************** Page d'accueil skeleton pour les timers ************************************/
+.skeleton {
+    display: inline-block;
+    height: 1.25rem; /* même hauteur que le texte */
+    width: 6rem;     /* légèrement plus large pour simuler hh:mm:ss */
+    background: linear-gradient(90deg, #444 25%, #666 50%, #444 75%);
+    background-size: 200% 100%;
+    border-radius: 0.375rem;
+    animation: pulse 1.5s infinite, shine 1.5s infinite linear;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+@keyframes shine {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+/****************************** Préremplissage par défaut des inputs pour chrome ************************************/
+/* Autofill Chrome / Edge */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px #101046 inset; /* bg-main approximatif */
+    -webkit-text-fill-color: #fff; /* texte blanc */
+    transition: background-color 5000s ease-in-out 0s; /* empêche le flash jaune */
+}
+
+/* Focus même après autofill */
+input:-webkit-autofill:focus {
+    border-color: #4934d3; /* correspond à focus:ring-dash-color */
+    outline: none;
+    caret-color: #fff;
+    box-shadow: 0 0 0 2px #4934d3 inset; /* simule le focus violet */
+}
