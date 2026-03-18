@@ -1,5 +1,6 @@
 package fr.eni.buymystuff.controllers;
 
+import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Utilisateurs;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,15 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AuthTestController {
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
-        // Instancier un utilisateur par defaut dans le formulaire
+
         Utilisateurs utilisateur = new Utilisateurs();
+        utilisateur.setAdresse(new Adresse());
 
         model.addAttribute("utilisateur", utilisateur);
 
-        return "test/";
+        return "test/register";
     }
 
-    @PostMapping ("/process-auth")
+    @PostMapping ("/process-register")
     public String processAuth(@ModelAttribute("utilisateur") Utilisateurs utilisateur, Model model) {
         //Dev en cours
         //TODO : Gérer le process de connexion.

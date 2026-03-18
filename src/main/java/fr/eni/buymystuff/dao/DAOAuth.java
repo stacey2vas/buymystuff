@@ -14,7 +14,7 @@ public class DAOAuth  implements IDAOAuth {
     private final JdbcTemplate jdbcTemplate;
     private final UtilisateursRowMapper utilisateursRowMapper;
 
-    private String FIND_APPUSER_BY_ID_SQL = "";
+    private String INSERT_USER_SQL = "";
 
     public DAOAuth(JdbcTemplate jdbcTemplate, UtilisateursRowMapper utilisateursRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -26,7 +26,7 @@ public class DAOAuth  implements IDAOAuth {
     private void loadSQlScript() {
         // Essayer de charger le fichier SQL
         try {
-            FIND_APPUSER_BY_ID_SQL = new ClassPathResource("sql/find_user_by_id.sql")
+            INSERT_USER_SQL = new ClassPathResource("sql/insert-user.sql")
                     .getContentAsString(StandardCharsets.UTF_8);
 
         } catch (IOException e) {
@@ -36,14 +36,7 @@ public class DAOAuth  implements IDAOAuth {
 
 
     @Override
-    public Utilisateurs selectByEmailAndPassword(String email, String password) {
-        Utilisateurs appUser = null;
-        List<Utilisateurs> appUserList = jdbcTemplate.query(FIND_APPUSER_BY_ID_SQL, utilisateursRowMapper, email, password);
+    public void insert(Utilisateurs utilisateur) {
 
-        if (appUserList.size() > 0 ){
-            appUser = appUserList.get(0);
-        }
-
-        return appUser;
     }
 }

@@ -7,6 +7,7 @@ public class Utilisateurs {
     private int id;
     private String pseudo;
     private String nom;
+    private String prenom;
     private String email;
     private String telephone;
     private String motDePasse;
@@ -19,10 +20,11 @@ public class Utilisateurs {
     public Utilisateurs() {
     }
 
-    public Utilisateurs(int id, String pseudo, String nom, String email, String telephone, String motDePasse, int credit, boolean administrateur, List<Articles> articles, Adresse adresse, List<Encheres> encheres) {
+    public Utilisateurs(int id, String pseudo, String nom, String prenom,  String email, String telephone, String motDePasse, int credit, boolean administrateur, List<Articles> articles, Adresse adresse, List<Encheres> encheres) {
         this.id = id;
         this.pseudo = pseudo;
         this.nom = nom;
+        this.prenom = prenom;
         this.email = email;
         this.telephone = telephone;
         this.motDePasse = motDePasse;
@@ -39,6 +41,7 @@ public class Utilisateurs {
                 "id=" + id +
                 ", pseudo='" + pseudo + '\'' +
                 ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
                 ", email='" + email + '\'' +
                 ", telephone='" + telephone + '\'' +
                 ", motDePasse='" + motDePasse + '\'' +
@@ -135,5 +138,13 @@ public class Utilisateurs {
 
     public void setEncheres(List<Encheres> encheres) {
         this.encheres = encheres;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 }
