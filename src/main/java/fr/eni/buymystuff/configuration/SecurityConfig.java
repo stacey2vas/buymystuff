@@ -3,6 +3,7 @@ package fr.eni.buymystuff.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -11,16 +12,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import javax.sql.DataSource;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
     UserDetailsService userDetailsService(DataSource dataSource) {
         JdbcUserDetailsManager jdbc = new JdbcUserDetailsManager(dataSource);
 
-        jdbc.setUsersByUsernameQuery("select pseudo, password, actif from utilisateur where pseudo=?");
+        jdbc.setUsersByUsernameQuery("SELECT email, password, true FROM utilisateurs WHERE email=?");
 
-        jdbc.setAuthoritiesByUsernameQuery("select pseudo, role from roles where pseudo=?");
-
+        jdbc.setAuthoritiesByUsernameQuery(  "SELECT email, CONCAT('ROLE_', role) FROM utilisateurs WHERE email=?"  );
         //pour gérer une seule table on change le nom de la table
         //jdbc.setAuthoritiesByUsernameQuery("select pseudo, role from utilisateur where pseudo=?");
 
@@ -46,13 +47,13 @@ public class SecurityConfig {
                                 .anyRequest().denyAll()
 
         );
-        http.formLogin( form -> {
-                    //donne l'accès à la page de login à tous
-            form.loginPage("/login"); // URL GET pour afficher le formulaire
-            form.defaultSuccessUrl("/");                    //redirige après le login sur la page d'accueil
-
-                }
-        );
+        http.formLogin(form -> form
+                        .loginPage("/login") // URL GET pour afficher le formulaire
+                        .loginProcessingUrl("/login") // URL POST pour la soumission du formulaire
+                        .usernameParameter("email")   // 👈 on dit à Spring d'utiliser "email"
+                        .passwordParameter("password") // password en 2ème param de connexion
+                        .defaultSuccessUrl("/accueil", true)) // Si c'est validé on retourne a la page principale
+                 ;
 
         http.logout( logout -> {
             //supprimer la session du côté du serveur d'application
@@ -63,7 +64,7 @@ public class SecurityConfig {
                     //déterminer la page à utiliser pour le logout
                     .logoutUrl("/logout")
                     //redirige après le logout sur la page d'accueil
-                    .logoutSuccessUrl("/")
+                    .logoutSuccessUrl("/accueil")
                     .permitAll();
         });
 
