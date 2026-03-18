@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class AuthTestController {
-    @GetMapping("/show-auth-form")
-    public String showAuthForm(Model model) {
+    @GetMapping("/register")
+    public String showRegisterForm(Model model) {
         // Instancier un utilisateur par defaut dans le formulaire
         Utilisateurs utilisateur = new Utilisateurs();
 
         model.addAttribute("utilisateur", utilisateur);
 
-        return "test/test-auth-page";
+        return "test/";
     }
 
     @PostMapping ("/process-auth")
