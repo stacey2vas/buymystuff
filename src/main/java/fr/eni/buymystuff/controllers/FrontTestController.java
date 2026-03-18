@@ -3,6 +3,7 @@ package fr.eni.buymystuff.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,14 +12,19 @@ import java.util.List;
 @Controller
 public class FrontTestController {
 
-    @GetMapping("/test/login")
+    @GetMapping("/login")
     public String login(Model model){
 
         return "/test/login";
     }
-    @GetMapping("/test/test")
-    public String accueil(Model model) {
+    @GetMapping("/test/enchere/{id}")
+    public String login(Model model, @PathVariable Long id){
 
+        return "/test/enchere";
+    }
+    @GetMapping("/accueil")
+    public String accueil(Model model) {
+        System.out.println("je passe dans accueil");
         // Création d'une liste d'articles fake
         List<Article> articles = new ArrayList<>();
 
@@ -55,18 +61,21 @@ public class FrontTestController {
         model.addAttribute("articles", articles);
 
         // Retour du template Thymeleaf
-        return "/test/test";
+        return "/test/accueil";
     }
 
     // Classe interne pour simplifier l'exemple
     public static class Article {
+        private Long counter = 0L;
+        private Long id;
         private String imageUrl;
         private String nom;
         private String description;
         private double prix;
         private LocalDateTime  timer;
 
-        public Article(String imageUrl, String nom, String description, double prix, LocalDateTime  timer) {
+        public Article( String imageUrl, String nom, String description, double prix, LocalDateTime  timer) {
+            this.id = counter++;
             this.imageUrl = imageUrl;
             this.nom = nom;
             this.description = description;
@@ -95,6 +104,12 @@ public class FrontTestController {
         }
         public void setTimer(LocalDateTime  timer) {
             this.timer = timer;
+        }
+        public Long getId() {
+            return id;
+        }
+        public void setId(Long id) {
+            this.id = id;
         }
     }
 }
