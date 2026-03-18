@@ -1,0 +1,29 @@
+package fr.eni.buymystuff.converter;
+
+import fr.eni.buymystuff.bo.Categories;
+import fr.eni.buymystuff.services.ArticleService;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
+@Component
+public class IdToCategorieConverter implements Converter<String, Categories> {
+
+    private final ArticleService articleService;
+
+    public IdToCategorieConverter(ArticleService articleService) {
+        this.articleService = articleService;
+    }
+
+    @Override
+    public Categories convert(String id) {
+        if (id == null || id.isEmpty()) {
+            return null;
+        }
+        try {
+            Long categorieId = Long.parseLong(id);
+            return articleService.findCategorieById(categorieId).data;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+}
