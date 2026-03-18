@@ -9,6 +9,7 @@ public interface IDAOCategories {
     public List<Categories> selectAllCategories();
     //public Categories selectCategoryById(int id);
     public Categories save(Categories categories);
+    public Categories selectByLibelle(String libelle);
 
     Categories selectById(int id);
     //public Categories update(Categories categories);

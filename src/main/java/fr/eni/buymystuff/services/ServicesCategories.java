@@ -16,22 +16,29 @@ public class ServicesCategories {
     }
 
     public ServiceResponse<List<Categories>> getCategoriesCatalog() {
-
         List<Categories> categories = daoCategories.selectAllCategories();
-
         return ServiceResponse.buildResponse("202","Categories récupérés avec succès", categories);
     }
-    public ServiceResponse<Categories> saveCategories(Categories categories) {
 
+    public ServiceResponse< Categories> getCategoriesByLibelle(String libelle) {
+        Categories categorie = daoCategories.selectByLibelle(libelle);
+        return ServiceResponse.buildResponse("202","Categories récupérés avec succès", categorie);
+    }
+
+    public ServiceResponse<Categories> saveCategories(Categories categories) {
         Categories foundCategorie  = daoCategories.selectById(categories.getId());
 
-        Categories savedCategorie = daoCategories.save(categories);
+        if (foundCategorie == null){
+            daoCategories.save(categories);
+            return new ServiceResponse<Categories>("2002", "Categorie créer avec succès", categories);
 
-        if (foundCategorie != null){
+        } else {
+            foundCategorie.setLibelle(categories.getLibelle());
+            daoCategories.save(foundCategorie);
             return new ServiceResponse<Categories>("2003", "Categorie modifié avec succès", categories);
+
         }
 
-        return new ServiceResponse<Categories>("2002", "Categorie créer avec succès", categories);
     }
 
 }

@@ -1,6 +1,8 @@
 package fr.eni.buymystuff.controllers;
 
 import fr.eni.buymystuff.bo.Categories;
+import fr.eni.buymystuff.services.ServiceResponse;
+import fr.eni.buymystuff.services.ServicesCategories;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class EnchereController {
 
-    public EnchereController() {
+    private final ServicesCategories servicesCategories;
+
+    public EnchereController(ServicesCategories servicesCategories) {
+        this.servicesCategories = servicesCategories;
     }
 
     @GetMapping("/ajout-categories")
@@ -26,8 +31,24 @@ public class EnchereController {
     @PostMapping("/ajout-categories")
     public String ajoutProcess(@ModelAttribute("categorie") Categories categorie, Model model) {
 
-        model.addAttribute("message", "ajoutée avec succés");
+        ServiceResponse<Categories> categorieExist =
+                servicesCategories.getCategoriesByLibelle(categorie.getLibelle());
 
+        if (categorieExist != null && categorieExist.getData() != null) {
+            model.addAttribute("message", "La catégorie existe déjà !");
             return "ajout-categories";
+        }
+
+        ServiceResponse<Categories> serviceResponse =
+                servicesCategories.saveCategories(categorie);
+
+        if (serviceResponse == null || !"2000".equals(serviceResponse.getCode())) {
+            model.addAttribute("message", "Erreur lors de l'ajout !");
+            return "ajout-categories";
+        }
+
+        model.addAttribute("message", "Catégorie ajoutée avec succès !");
+        return "ajout-categories";
     }
 }
+

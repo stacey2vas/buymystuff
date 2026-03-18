@@ -3,19 +3,16 @@ package fr.eni.buymystuff.dao;
 import fr.eni.buymystuff.bo.Categories;
 import fr.eni.buymystuff.jdbc.IDAOCategories;
 import fr.eni.buymystuff.mapper.RowMapperCategorie;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@Profile("jdbc")
 @Component
-public class DAOCategoriesJDCB implements IDAOCategories {
+public class DAOCategoriesJDBC implements IDAOCategories {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -23,8 +20,8 @@ public class DAOCategoriesJDCB implements IDAOCategories {
     private String SAVE_CATEGORIES_SQL = "";
     private String UPDATE_CATEGORIES_SQL = "";
     private String SELECT_ALL_CATEGORIES_SQL = "";
-
-    public DAOCategoriesJDCB(JdbcTemplate jdbcTemplate) {
+    private String SELECT_CATEGORIE_BY_LIBELLE_SQL = "";
+    public DAOCategoriesJDBC(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         loadSQlScript();
     }
@@ -39,6 +36,8 @@ public class DAOCategoriesJDCB implements IDAOCategories {
             UPDATE_CATEGORIES_SQL = new ClassPathResource("sql/update_categories.sql")
                     .getContentAsString(StandardCharsets.UTF_8);
             SELECT_ALL_CATEGORIES_SQL = new ClassPathResource("sql/select_all_categories.sql")
+                    .getContentAsString(StandardCharsets.UTF_8);
+            SELECT_CATEGORIE_BY_LIBELLE_SQL = new ClassPathResource("sql/select_all_categories.sql")
                     .getContentAsString(StandardCharsets.UTF_8);
         }
         catch (IOException e) {
@@ -62,6 +61,19 @@ public class DAOCategoriesJDCB implements IDAOCategories {
             return update(categories);
         }
         return create(categories);
+    }
+
+    @Override
+    public Categories selectByLibelle(String libelle) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    SELECT_CATEGORIE_BY_LIBELLE_SQL,
+                    new RowMapperCategorie(),
+                    libelle
+            );
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
