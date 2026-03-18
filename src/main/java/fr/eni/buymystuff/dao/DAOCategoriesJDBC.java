@@ -21,6 +21,7 @@ public class DAOCategoriesJDBC implements IDAOCategories {
     private String UPDATE_CATEGORIES_SQL = "";
     private String SELECT_ALL_CATEGORIES_SQL = "";
     private String SELECT_CATEGORIE_BY_LIBELLE_SQL = "";
+
     public DAOCategoriesJDBC(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         loadSQlScript();
