@@ -38,9 +38,12 @@
             <a sec:authorize="isAnonymous()" href="/test/login" class="bg-btn  px-4 py-2 rounded-lg transition">
                 Login</a>
 
-            <a sec:authorize="isAuthenticated()" th:href="@{/logout}"
-               class="bg-btn  px-4 py-2 rounded-lg transition">Se
-                déconnecter</a>
+            <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+                <button type="submit"
+                        class="bg-btn px-4 py-2 rounded-lg transition">
+                    Se déconnecter
+                </button>
+            </form>
 
         </div>
     </nav>
