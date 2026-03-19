@@ -2,7 +2,7 @@ package fr.eni.buymystuff.bo;
 
 public class Adresse {
 
-    private int id;
+    private Long id;
     private String rue;
     private String codePostal;
     private String ville;
@@ -10,7 +10,7 @@ public class Adresse {
     public Adresse() {
     }
 
-    public Adresse(int id,String rue, String codePostal, String ville) {
+    public Adresse(Long id,String rue, String codePostal, String ville) {
         this.id = id;
         this.rue = rue;
         this.codePostal = codePostal;
@@ -50,11 +50,11 @@ public class Adresse {
         this.ville = ville;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }

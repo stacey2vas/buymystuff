@@ -30,7 +30,7 @@ public class UtilisateursRowMapper implements RowMapper<Utilisateurs> {
         int noAdresse = rs.getInt("no_adresse");
         if (!rs.wasNull()) {
             Adresse adresse = new Adresse();
-            adresse.setId(noAdresse);
+            adresse.setId((long) noAdresse);
             adresse.setRue(rs.getString("rue"));             // récupère la rue
             adresse.setVille(rs.getString("ville"));         // récupère la ville
             adresse.setCodePostal(rs.getString("code_postal")); // récupère le code postal

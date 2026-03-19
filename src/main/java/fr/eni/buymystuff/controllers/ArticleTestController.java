@@ -70,7 +70,7 @@
 
             Categories electronique = new Categories(1L,"Electronique");
             Categories bricolage = new Categories(2L,"Bricolage");
-            Adresse adresse = new Adresse(1, "12 rue des Lilas", "44000", "Nantes");
+            Adresse adresse = new Adresse(1L, "12 rue des Lilas", "44000", "Nantes");
 
             categories.add(electronique);
             categories.add(bricolage);

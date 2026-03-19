@@ -1,5 +1,6 @@
 package fr.eni.buymystuff.dao;
 
+import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Categories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -24,13 +25,13 @@ public class DAOArticle implements IDAOArticle {
 
     @Override
     public void saveArticle(ArticleFormDTO article){
+        // On retourne l'id du nouvel article ou celui existant
         Long articleId = saveOrUpdateArticle(article);
-
-        // Maintenant categoryIds est en Long
+        // On parcout les categories id avant d'insert en BDD
         List<Long> categoryIds = article.getCategories().stream()
                 .map(Categories::getId)
                 .toList();
-
+        // On adapte les catégories existantes liées au produit ( delete / insert)
         syncArticleCategories(articleId, categoryIds);
     }
 
@@ -38,31 +39,71 @@ public class DAOArticle implements IDAOArticle {
     public Articles findArticleById(Long id) {
         String sql = "SELECT * FROM ARTICLES_VENDUS WHERE no_article = ?";
 
-        return jdbcTemplate.queryForObject(
+        Articles article = jdbcTemplate.queryForObject(
                 sql,
                 (rs, rowNum) -> {
-                    Articles article = new Articles();
-                    article.setId(rs.getLong("no_article"));
-                    article.setNomArticle(rs.getString("nom_article"));
-                    article.setDescription(rs.getString("description"));
+                    Articles a = new Articles();
+                    a.setId(rs.getLong("no_article"));
+                    a.setNomArticle(rs.getString("nom_article"));
+                    a.setDescription(rs.getString("description"));
 
                     if (rs.getTimestamp("date_debut_encheres") != null) {
-                        article.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
+                        a.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
                     }
                     if (rs.getTimestamp("date_fin_encheres") != null) {
-                        article.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+                        a.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
                     }
 
-                    article.setPrixInitial(rs.getInt("prix_initial"));
-                    article.setPrixVente(rs.getInt("prix_vente"));
-                    article.setEtatVente(rs.getInt("etat_vente") == 1);
+                    a.setPrixInitial(rs.getInt("prix_initial"));
+                    a.setPrixVente(rs.getInt("prix_vente"));
+                    a.setEtatVente(rs.getInt("etat_vente") == 1);
 
-                    return article;
+                    // récupérer l'adresse
+                    Long adresseId = rs.getLong("no_adresse");
+                    if(adresseId != null && adresseId > 0){
+                        a.setAdresseProprietaire(findAdresseById(adresseId));
+                    }
+
+                    return a;
                 },
                 id
         );
-    }
 
+        // récupérer les catégories
+        article.setCategories(findCategoriesByArticleId(id));
+
+        return article;
+    }
+    private Adresse findAdresseById(Long adresseId) {
+        String sql = "SELECT * FROM ADRESSES WHERE no_adresse = ?";
+        return jdbcTemplate.queryForObject(sql,
+                (rs, rowNum) -> {
+                    Adresse adresse = new Adresse();
+                    adresse.setId(rs.getLong("no_adresse"));
+                    adresse.setRue(rs.getString("rue"));
+                    adresse.setCodePostal(rs.getString("code_postal"));
+                    adresse.setVille(rs.getString("ville"));
+                    return adresse;
+                },
+                adresseId
+        );
+    }
+    private List<Categories> findCategoriesByArticleId(Long articleId) {
+        String sql = "SELECT c.no_categorie, c.nom_categorie " +
+                "FROM CATEGORIES c " +
+                "JOIN ARTICLES_CATEGORIES ac ON c.no_categorie = ac.no_categorie " +
+                "WHERE ac.no_article = ?";
+
+        return jdbcTemplate.query(sql,
+                (rs, rowNum) -> {
+                    Categories cat = new Categories();
+                    cat.setId(rs.getLong("no_categorie"));
+                    cat.setLibelle(rs.getString("nom_categorie"));
+                    return cat;
+                },
+                articleId
+        );
+    }
     @Override
     public List<Articles> findAllArticlesByUserId(int id) {
         String sql = "SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur = ?";
@@ -137,7 +178,6 @@ public class DAOArticle implements IDAOArticle {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, categoryId);
         return count != null && count > 0;
     }
-
     // Synchronisation des catégories
     private void syncArticleCategories(Long articleId, List<Long> newCategoryIds){
         // Récupérer les catégories actuelles
@@ -153,7 +193,6 @@ public class DAOArticle implements IDAOArticle {
         List<Long> toRemove = existingCategoryIds.stream()
                 .filter(id -> !newCategoryIds.contains(id))
                 .toList();
-
         // INSERT nouvelles catégories
         String insertSql = "INSERT INTO ARTICLES_CATEGORIES(no_article, no_categorie) VALUES (?, ?)";
         for(Long catId : toAdd){
