@@ -73,9 +73,10 @@ input:-webkit-autofill:focus {
     background-color: rgba(16,16,70,0.8); /* bg-[#101046]/80 */
     color: #ffffff;
     border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 1rem; /* arrondi xl */
+    border-radius: 0.8rem; /* arrondi xl */
     padding: 0.625rem 1rem; /* px-4 py-2.5 */
     transition: border 0.2s, box-shadow 0.2s;
+    height: 48px;
 }
 
 /* Focus */

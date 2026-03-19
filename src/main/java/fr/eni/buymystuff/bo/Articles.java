@@ -17,11 +17,12 @@ public class Articles {
     private Adresse adresseProprietaire;
     private List<Encheres> encheres;
     private boolean etatVente;
+    private String image;
 
     public Articles() {
     }
 
-    public Articles(Long id, String nomArticle, String description, LocalDateTime dateDebut, LocalDateTime dateFin, int prixInitial, int prixVente, Utilisateurs utilisateur, List<Categories> categories, Adresse adresseProprietaire, List<Encheres> encheres, boolean etatVente) {
+    public Articles(Long id, String nomArticle, String description, LocalDateTime dateDebut, LocalDateTime dateFin, int prixInitial, int prixVente, Utilisateurs utilisateur, List<Categories> categories, Adresse adresseProprietaire, List<Encheres> encheres, boolean etatVente,String image) {
         this.id = id;
         this.nomArticle = nomArticle;
         this.description = description;
@@ -34,6 +35,7 @@ public class Articles {
         this.adresseProprietaire = adresseProprietaire;
         this.encheres = encheres;
         this.etatVente = etatVente;
+        this.image = image;
     }
 
     @Override
@@ -145,5 +147,13 @@ public class Articles {
 
     public void setEtatVente(boolean etatVente) {
         this.etatVente = etatVente;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

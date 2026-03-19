@@ -46,7 +46,7 @@ public class DAOArticle implements IDAOArticle {
                     a.setId(rs.getLong("no_article"));
                     a.setNomArticle(rs.getString("nom_article"));
                     a.setDescription(rs.getString("description"));
-
+                    a.setImage(rs.getString("image"));
                     if (rs.getTimestamp("date_debut_encheres") != null) {
                         a.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
                     }
@@ -75,7 +75,7 @@ public class DAOArticle implements IDAOArticle {
         return article;
     }
     private Adresse findAdresseById(Long adresseId) {
-        String sql = "SELECT * FROM ADRESSES WHERE no_adresse = ?";
+        String sql = "SELECT * FROM adresses WHERE no_adresse = ?";
         return jdbcTemplate.queryForObject(sql,
                 (rs, rowNum) -> {
                     Adresse adresse = new Adresse();
@@ -89,8 +89,8 @@ public class DAOArticle implements IDAOArticle {
         );
     }
     private List<Categories> findCategoriesByArticleId(Long articleId) {
-        String sql = "SELECT c.no_categorie, c.nom_categorie " +
-                "FROM CATEGORIES c " +
+        String sql = "SELECT c.no_categorie, c.libelle " +
+                "FROM categories c " +
                 "JOIN ARTICLES_CATEGORIES ac ON c.no_categorie = ac.no_categorie " +
                 "WHERE ac.no_article = ?";
 
@@ -98,7 +98,7 @@ public class DAOArticle implements IDAOArticle {
                 (rs, rowNum) -> {
                     Categories cat = new Categories();
                     cat.setId(rs.getLong("no_categorie"));
-                    cat.setLibelle(rs.getString("nom_categorie"));
+                    cat.setLibelle(rs.getString("libelle"));
                     return cat;
                 },
                 articleId

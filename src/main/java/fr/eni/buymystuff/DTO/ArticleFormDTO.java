@@ -39,7 +39,7 @@ public class ArticleFormDTO {
     private List<Categories> categories;
     private Adresse adresseProprietaire;
     private MultipartFile imageFile; // champ pour upload
-
+    private String image;
 
     public ArticleFormDTO() {
     }
@@ -114,5 +114,13 @@ public class ArticleFormDTO {
 
     public void setImageFile(MultipartFile imageFile) {
         this.imageFile = imageFile;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
