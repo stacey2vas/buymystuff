@@ -75,7 +75,7 @@ public class DAOCategoriesJDBC implements IDAOCategories {
     }
 
     @Override
-    public Categories selectById(int id) {
+    public Categories selectById(Long id) {
         try {
             return jdbcTemplate.queryForObject(
                     FIND_CATEGORIE_BY_ID_SQL,

@@ -1,6 +1,7 @@
 package fr.eni.buymystuff.dao;
 
 import fr.eni.buymystuff.bo.Categories;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -24,7 +25,7 @@ public class DAOArticle implements IDAOArticle {
     @Override
     public void saveArticle(ArticleFormDTO article){
         Long articleId = saveOrUpdateArticle(article);
-        List<Long> categoryIds = article.getCategories().stream().map(Categories::getId).toList();
+        List<Integer> categoryIds = article.getCategories().stream().map(Categories::getId).toList();
         syncArticleCategories(articleId, categoryIds);
     }
 
@@ -132,18 +133,18 @@ public class DAOArticle implements IDAOArticle {
 
 
 
-    private boolean categoryExists(Long categoryId){
+    private boolean categoryExists(int categoryId){
         String sql = "SELECT COUNT(*) FROM CATEGORIES WHERE no_categorie = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, categoryId);
         return count != null && count > 0;
     }
-    private void syncArticleCategories(Long articleId, List<Long> newCategoryIds){
+    private void syncArticleCategories(Long articleId, List<Integer> newCategoryIds){
         // Récupérer les catégories actuelles liées
         String selectSql = "SELECT no_categorie FROM ARTICLES_CATEGORIES WHERE no_article = ?";
         List<Long> existingCategoryIds = jdbcTemplate.queryForList(selectSql, Long.class, articleId);
 
         // Catégories à ajouter
-        List<Long> toAdd = newCategoryIds.stream()
+        List<Integer> toAdd = newCategoryIds.stream()
                 .filter(id -> !existingCategoryIds.contains(id))
                 .toList();
 
@@ -154,7 +155,7 @@ public class DAOArticle implements IDAOArticle {
 
         // INSERT nouvelles catégories
         String insertSql = "INSERT INTO ARTICLES_CATEGORIES(no_article, no_categorie) VALUES (?, ?)";
-        for(Long catId : toAdd){
+        for(int catId : toAdd){
             if(categoryExists(catId)) {
                 jdbcTemplate.update(insertSql, articleId, catId);
             }
