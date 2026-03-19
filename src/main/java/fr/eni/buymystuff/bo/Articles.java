@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Articles {
 
-    private int id;
+    private Long id;
     private String nomArticle;
     private String description;
     private LocalDateTime dateDebut;
@@ -21,7 +21,7 @@ public class Articles {
     public Articles() {
     }
 
-    public Articles(int id, String nomArticle, String description, LocalDateTime dateDebut, LocalDateTime dateFin, int prixInitial, int prixVente, Utilisateurs utilisateur, List<Categories> categories, Adresse adresseProprietaire, List<Encheres> encheres, boolean etatVente) {
+    public Articles(Long id, String nomArticle, String description, LocalDateTime dateDebut, LocalDateTime dateFin, int prixInitial, int prixVente, Utilisateurs utilisateur, List<Categories> categories, Adresse adresseProprietaire, List<Encheres> encheres, boolean etatVente) {
         this.id = id;
         this.nomArticle = nomArticle;
         this.description = description;
@@ -51,11 +51,11 @@ public class Articles {
                 '}';
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

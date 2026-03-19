@@ -38,7 +38,7 @@
             <a href="/accueil" class="hover:text-[#4934d3] transition">Accueil</a>
             <a href="#" class="hover:text-[#4934d3] transition">Mes annonces</a>
 
-            <a sec:authorize="isAnonymous()" href="/test/login" class="bg-btn  px-4 py-2 rounded-lg transition">
+            <a sec:authorize="isAnonymous()" href="/login" class="bg-btn  px-4 py-2 rounded-lg transition">
                 Login</a>
 
             <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">

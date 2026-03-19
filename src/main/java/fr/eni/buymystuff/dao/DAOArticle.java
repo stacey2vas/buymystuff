@@ -1,0 +1,169 @@
+package fr.eni.buymystuff.dao;
+
+import fr.eni.buymystuff.bo.Categories;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import fr.eni.buymystuff.DTO.ArticleFormDTO;
+import fr.eni.buymystuff.bo.Articles;
+
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.List;
+
+@Repository
+public class DAOArticle implements IDAOArticle {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public DAOArticle(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+    @Override
+    public void saveArticle(ArticleFormDTO article){
+        Long articleId = saveOrUpdateArticle(article);
+        List<Long> categoryIds = article.getCategories().stream().map(Categories::getId).toList();
+        syncArticleCategories(articleId, categoryIds);
+    }
+
+
+
+    @Override
+    public Articles findArticleById(Long id) {
+
+        String sql = "SELECT * FROM ARTICLES_VENDUS WHERE no_article = ?";
+
+        return jdbcTemplate.queryForObject(
+                sql,
+                (rs, rowNum) -> {
+                    Articles article = new Articles();
+
+                    article.setId(rs.getLong("no_article"));
+                    article.setNomArticle(rs.getString("nom_article"));
+                    article.setDescription(rs.getString("description"));
+
+                    if (rs.getTimestamp("date_debut_encheres") != null) {
+                        article.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
+                    }
+                    if (rs.getTimestamp("date_fin_encheres") != null) {
+                        article.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+                    }
+
+                    article.setPrixInitial(rs.getInt("prix_initial"));
+                    article.setPrixVente(rs.getInt("prix_vente"));
+                    article.setEtatVente(rs.getInt("etat_vente") == 1);
+
+                    return article;
+                },
+                id // paramètre SQL
+        );
+    }
+
+    @Override
+    public List<Articles> findAllArticlesByUserId(int id) {
+
+        String sql = "SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur = ?";
+
+        return jdbcTemplate.query(
+                sql,
+                (rs, rowNum) -> {
+                    Articles article = new Articles();
+
+                    article.setId(rs.getLong("no_article"));
+                    article.setNomArticle(rs.getString("nom_article"));
+                    article.setDescription(rs.getString("description"));
+
+                    if (rs.getTimestamp("date_debut_encheres") != null) {
+                        article.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
+                    }
+                    if (rs.getTimestamp("date_fin_encheres") != null) {
+                        article.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+                    }
+
+                    article.setPrixInitial(rs.getInt("prix_initial"));
+                    article.setPrixVente(rs.getInt("prix_vente"));
+                    article.setEtatVente(rs.getInt("etat_vente") == 1);
+
+                    return article;
+                },
+                id // paramètre SQL
+        );
+    }
+    public Long saveOrUpdateArticle(ArticleFormDTO article) {
+        if (article.getId() == null) {
+            // INSERT
+            String insertSql = "INSERT INTO ARTICLES_VENDUS " +
+                    "(nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_adresse, etat_vente) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, article.getNomArticle());
+                ps.setString(2, article.getDescription());
+                ps.setObject(3, article.getDateDebut()); // LocalDateTime → JDBC 4.2 ok
+                ps.setObject(4, article.getDateFin());
+                ps.setDouble(5, article.getPrixInitial());
+                ps.setLong(6, 1); // no_utilisateur, remplacer par l'utilisateur connecté
+                ps.setLong(7, 1); // no_adresse
+                ps.setInt(8, 0);
+                return ps;
+            }, keyHolder);
+
+            Long generatedId = keyHolder.getKey().longValue();
+            article.setId(generatedId);
+        } else {
+            // UPDATE
+            String updateSql = "UPDATE ARTICLES_VENDUS SET nom_article=?, description=?, date_debut_encheres=?, date_fin_encheres=?, prix_initial=?, etat_vente=? WHERE no_article=?";
+            jdbcTemplate.update(updateSql,
+                    article.getNomArticle(),
+                    article.getDescription(),
+                    article.getDateDebut(),
+                    article.getDateFin(),
+                    article.getPrixInitial(),
+                    0,
+                    article.getId()
+            );
+        }
+        return article.getId();
+    }
+
+
+
+    private boolean categoryExists(Long categoryId){
+        String sql = "SELECT COUNT(*) FROM CATEGORIES WHERE no_categorie = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, categoryId);
+        return count != null && count > 0;
+    }
+    private void syncArticleCategories(Long articleId, List<Long> newCategoryIds){
+        // Récupérer les catégories actuelles liées
+        String selectSql = "SELECT no_categorie FROM ARTICLES_CATEGORIES WHERE no_article = ?";
+        List<Long> existingCategoryIds = jdbcTemplate.queryForList(selectSql, Long.class, articleId);
+
+        // Catégories à ajouter
+        List<Long> toAdd = newCategoryIds.stream()
+                .filter(id -> !existingCategoryIds.contains(id))
+                .toList();
+
+        // Catégories à supprimer
+        List<Long> toRemove = existingCategoryIds.stream()
+                .filter(id -> !newCategoryIds.contains(id))
+                .toList();
+
+        // INSERT nouvelles catégories
+        String insertSql = "INSERT INTO ARTICLES_CATEGORIES(no_article, no_categorie) VALUES (?, ?)";
+        for(Long catId : toAdd){
+            if(categoryExists(catId)) {
+                jdbcTemplate.update(insertSql, articleId, catId);
+            }
+        }
+
+        // DELETE catégories supprimées
+        String deleteSql = "DELETE FROM ARTICLES_CATEGORIES WHERE no_article=? AND no_categorie=?";
+        for(Long catId : toRemove){
+            jdbcTemplate.update(deleteSql, articleId, catId);
+        }
+    }
+}
