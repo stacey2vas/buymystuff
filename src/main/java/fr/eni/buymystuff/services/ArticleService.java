@@ -31,10 +31,10 @@ public class ArticleService {
 
     public ServiceResponse<Categories> findCategorieById(Long id) {
         if(id == 1){
-            Categories categorie = new Categories(1,"Electronique");
+            Categories categorie = new Categories(1L,"Electronique");
             return new ServiceResponse<>("4000", "Movie ajouté : ", categorie);
         }else{
-            Categories categorie = new Categories(2,"Bricolage");
+            Categories categorie = new Categories(2L,"Bricolage");
             return new ServiceResponse<>("4000", "Movie ajouté : ", categorie);
         }
 

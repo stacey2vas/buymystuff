@@ -68,8 +68,8 @@
         private void modelFormInformations(Model model) {
             List<Categories> categories = new ArrayList<>();
 
-            Categories electronique = new Categories(1,"Electronique");
-            Categories bricolage = new Categories(2,"Bricolage");
+            Categories electronique = new Categories(1L,"Electronique");
+            Categories bricolage = new Categories(2L,"Bricolage");
             Adresse adresse = new Adresse(1, "12 rue des Lilas", "44000", "Nantes");
 
             categories.add(electronique);
