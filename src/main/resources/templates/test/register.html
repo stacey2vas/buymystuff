@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/base}">
+<body>
+
+<div layout:fragment="content"
+     class="w-11/12 max-w-lg mx-auto mt-12 p-8 bg-card-dark border border-card-principal rounded-2xl shadow-lg">
+
+  <!-- Titre -->
+  <h2 class="text-3xl font-bold text-white mb-8 text-center">
+    Créer un compte
+  </h2>
+
+  <!-- Message d'erreur -->
+  <div th:if="${error}" class="text-red-500 text-sm mb-6 text-center">
+    <span th:text="${error}"></span>
+  </div>
+
+  <!-- Formulaire -->
+  <form method="POST" th:action="@{/process-register}" th:object="${utilisateur}" class="space-y-6">
+
+    <!-- CSRF -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <!-- Pseudo -->
+    <div>
+      <label class="block text-white mb-1">Pseudo</label>
+      <input type="text" th:field="*{pseudo}" required
+             class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <!-- Nom et Prénom -->
+    <div class="flex gap-4">
+      <div class="flex-1">
+        <label class="block text-white mb-1">Nom</label>
+        <input type="text" th:field="*{nom}" required
+               class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div class="flex-1">
+        <label class="block text-white mb-1">Prénom</label>
+        <input type="text" th:field="*{prenom}" required
+               class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label class="block text-white mb-1">Adresse e-mail</label>
+      <input type="email" th:field="*{email}" required
+             class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <!-- Téléphone -->
+    <div>
+      <label class="block text-white mb-1">Téléphone</label>
+      <input type="text" th:field="*{telephone}"
+             class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <!-- Adresse -->
+    <div class="pt-6 border-t border-gray-600 space-y-4">
+      <h3 class="text-white font-semibold mb-2">Adresse</h3>
+
+      <div>
+        <label class="block text-white mb-1">Rue</label>
+        <input type="text" th:field="*{adresse.rue}"
+               class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div class="flex gap-4">
+        <div class="flex-1">
+          <label class="block text-white mb-1">Ville</label>
+          <input type="text" th:field="*{adresse.ville}"
+                 class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="flex-1">
+          <label class="block text-white mb-1">Code postal</label>
+          <input type="text" th:field="*{adresse.codePostal}"
+                 class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
+    </div>
+
+    <!-- Mot de passe -->
+    <div>
+      <label class="block text-white mb-1">Mot de passe</label>
+      <input type="password" th:field="*{motDePasse}" required
+             class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <!-- Bouton -->
+    <button type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200">
+      S'inscrire
+    </button>
+
+  </form>
+
+  <!-- Lien connexion -->
+  <p class="text-gray-400 mt-6 text-center text-sm">
+    Déjà un compte ?
+    <a th:href="@{/login}" class="text-blue-400 hover:underline">
+      Se connecter
+    </a>
+  </p>
+
+</div>
+
+</body>
+</html>

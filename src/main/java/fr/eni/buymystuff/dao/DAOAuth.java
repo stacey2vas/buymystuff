@@ -14,36 +14,32 @@ public class DAOAuth  implements IDAOAuth {
     private final JdbcTemplate jdbcTemplate;
     private final UtilisateursRowMapper utilisateursRowMapper;
 
-    private String FIND_APPUSER_BY_ID_SQL = "";
+    private String INSERT_USER_SQL = "";
 
     public DAOAuth(JdbcTemplate jdbcTemplate, UtilisateursRowMapper utilisateursRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.utilisateursRowMapper = utilisateursRowMapper;
-        loadSQlScript();
 
-    }
-
-    private void loadSQlScript() {
-        // Essayer de charger le fichier SQL
-        try {
-            FIND_APPUSER_BY_ID_SQL = new ClassPathResource("sql/find_user_by_id.sql")
-                    .getContentAsString(StandardCharsets.UTF_8);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
     @Override
-    public Utilisateurs selectByEmailAndPassword(String email, String password) {
-        Utilisateurs appUser = null;
-        List<Utilisateurs> appUserList = jdbcTemplate.query(FIND_APPUSER_BY_ID_SQL, utilisateursRowMapper, email, password);
+    public Utilisateurs insert(Utilisateurs utilisateur) {
+        String sql = """
+            INSERT INTO utilisateurs (nom, prenom, email, pseudo,
+            password, telephone,credit, administrateur, no_adresse, actif)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
-        if (appUserList.size() > 0 ){
-            appUser = appUserList.get(0);
-        }
+        //ici il faut traduire
+        //bcrypt
+        String bcrypt = utilisateur.getMotDePasse();
 
-        return appUser;
+        jdbcTemplate.update(sql, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(),
+                utilisateur.getPseudo(), bcrypt, utilisateur.getTelephone(), utilisateur.getCredit(),
+                 utilisateur.isAdministrateur(), utilisateur.getAdresse().getId(), utilisateur.isActif()
+                );
+
+        return utilisateur;
     }
 }

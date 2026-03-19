@@ -1,8 +1,11 @@
 package fr.eni.buymystuff.controllers;
 
+import fr.eni.buymystuff.DTO.ArticleFormDTO;
 import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Articles;
 import fr.eni.buymystuff.bo.Categories;
+import fr.eni.buymystuff.services.ArticleService;
+import fr.eni.buymystuff.services.ServiceResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,9 +18,40 @@ import java.util.List;
 
 @Controller
 public class ArticleTestController {
+    private final ArticleService articleService;
+    public ArticleTestController(ArticleService articleService) {
+        this.articleService = articleService;
+    }
 
     @GetMapping("/add-article")
     public String showAddArticle(Model model) {
+        modelFormInformations(model);
+        model.addAttribute("articleForm", new ArticleFormDTO());
+        return "/test/ajout-article";
+    }
+    @PostMapping("/add-article")
+    public String addArticle(@ModelAttribute("articleForm") ArticleFormDTO articleFormDTO, Model model) {
+        // Vérification de l'image
+        ServiceResponse<ArticleFormDTO> imageCheck = articleService.verifyImageInput(articleFormDTO);
+        if (!"4000".equals(imageCheck.getCode())) {
+            model.addAttribute("errorMessage", imageCheck.getMessage());
+            modelFormInformations(model);
+
+            return "/test/ajout-article"; // Réaffiche le formulaire avec les données
+        }
+
+        // Si tout est OK, sauvegarder l'article
+        ServiceResponse<?> response = articleService.saveArticle(articleFormDTO);
+        if ("4000".equals(response.getCode())) {
+            return "redirect:/accueil"; // succès
+        } else {
+            model.addAttribute("errorMessage", response.getMessage());
+            modelFormInformations(model);
+
+            return "/test/ajout-article"; // Réaffiche le formulaire en cas d'erreur
+        }
+    }
+    private void modelFormInformations(Model model) {
         List<Categories> categories = new ArrayList<>();
 
         Categories electronique = new Categories(1,"Electronique");
@@ -27,33 +61,7 @@ public class ArticleTestController {
         categories.add(electronique);
         categories.add(bricolage);
 
-        model.addAttribute("articleForm", new Articles());
         model.addAttribute("categories", categories);
         model.addAttribute("adresse", adresse);
-        return "/test/ajout-article";
-    }
-    // Traiter le formulaire d'ajout de film, en validant les données et en créant ou modifiant le film dans la base de données
-    @PostMapping("/admin/save-movie")
-    public String addMovie(@ModelAttribute("articleForm") Articles article, Model model) {
-
-
-        // Si binding ou image KO
-//        if (bindingResult.hasErrors() || !"4000".equals(imageCheck.getCode())) {
-//            populateFormLists(model);
-//
-//            // Afficher message erreur image
-//            if (!"4000".equals(imageCheck.getCode())) {
-//                model.addAttribute("errorMessage", imageCheck.getMessage());
-//            }
-//            return "add-movie";
-//        }
-//        // Tout est OK → on peut sauver le film
-//        ResponseService<?> response = movieService.saveMovie(movieForm);
-//        if(response.getCode().equals("4000")){
-//            return "redirect:/"; // succès
-//        } else {
-//            return "add-movie";
-//        }
-        return "add-article";
     }
 }
