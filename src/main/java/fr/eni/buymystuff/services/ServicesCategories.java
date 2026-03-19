@@ -25,25 +25,17 @@ public class ServicesCategories {
         return ServiceResponse.buildResponse("202","Categories récupérés avec succès", categorie);
     }
 
-    public ServiceResponse<Categories> saveCategories(Categories categories) {
 
-        Categories existingByLibelle = daoCategories.selectByLibelle(categories.getLibelle());
+    public ServiceResponse<Categories> saveCategories(Categories categorie) {
+        Categories foundCategories = daoCategories.selectById(categorie.getId());
 
-        if (existingByLibelle != null && existingByLibelle.getId() != categories.getId()) {
-            return new ServiceResponse<>("4001", "Une catégorie avec ce libellé existe déjà", null);
-        }
+            daoCategories.save(categorie);
 
-        Categories foundCategorie = daoCategories.selectById(categories.getId());
+            if (foundCategories != null){
+                return new ServiceResponse<Categories>("2003", "Categorie modifié avec succès", categorie);
+            }
 
-        if (foundCategorie == null){
-            daoCategories.save(categories);
-            return new ServiceResponse<>("2002", "Catégorie créée avec succès", categories);
-
-        } else {
-            foundCategorie.setLibelle(categories.getLibelle());
-            daoCategories.save(foundCategorie);
-            return new ServiceResponse<>("2003", "Catégorie modifiée avec succès", foundCategorie);
+            return new ServiceResponse<Categories>("2002", "Categorie créer avec succès", categorie);
         }
     }
 
-    }

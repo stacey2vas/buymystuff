@@ -38,7 +38,7 @@ public class DAOCategoriesJDBC implements IDAOCategories {
                     .getContentAsString(StandardCharsets.UTF_8);
             SELECT_ALL_CATEGORIES_SQL = new ClassPathResource("sql/select_all_categories.sql")
                     .getContentAsString(StandardCharsets.UTF_8);
-            SELECT_CATEGORIE_BY_LIBELLE_SQL = new ClassPathResource("sql/select_all_categories.sql")
+            SELECT_CATEGORIE_BY_LIBELLE_SQL = new ClassPathResource("sql/select_categorie_by_libelle.sql")
                     .getContentAsString(StandardCharsets.UTF_8);
         }
         catch (IOException e) {
@@ -66,15 +66,12 @@ public class DAOCategoriesJDBC implements IDAOCategories {
 
     @Override
     public Categories selectByLibelle(String libelle) {
-        try {
-            return jdbcTemplate.queryForObject(
-                    SELECT_CATEGORIE_BY_LIBELLE_SQL,
-                    new RowMapperCategorie(),
-                    libelle
-            );
-        } catch (Exception e) {
-            return null;
-        }
+        Categories categorie = jdbcTemplate.queryForObject(
+                SELECT_CATEGORIE_BY_LIBELLE_SQL,
+                new RowMapperCategorie(),
+                libelle
+        );
+        return categorie;
     }
 
     @Override
@@ -89,7 +86,6 @@ public class DAOCategoriesJDBC implements IDAOCategories {
             return null;
         }
     }
-
 
     private Categories update(Categories categories) {
         jdbcTemplate.update(UPDATE_CATEGORIES_SQL,

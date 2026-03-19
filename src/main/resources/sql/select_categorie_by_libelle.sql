@@ -1,2 +1,2 @@
-SELECT * FROM Categories
-WHERE libelle = ?;
+SELECT * FROM categories
+WHERE libelle = ?

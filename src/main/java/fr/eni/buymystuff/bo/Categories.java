@@ -8,7 +8,7 @@ public class Categories {
     }
 
     public Categories(int id, String libelle) {
-        this.id = id;
+        this.id = (int) id;
         this.libelle = libelle;
     }
 
@@ -25,7 +25,7 @@ public class Categories {
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.id = (int) id;
     }
 
     public String getLibelle() {
