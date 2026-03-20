@@ -35,4 +35,15 @@ class BuymystuffApplicationTests {
 
 	}
 
+	@Test
+	void testAdresse() {
+		Adresse add = new Adresse();
+		add.setId(2);
+		add.setRue("6 rue de la paix");
+		add.setCodePostal("75000");
+		add.setVille("Paris");
+		auth.insertAdresse(add);
+
+	}
+
 }
