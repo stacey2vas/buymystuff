@@ -8,8 +8,9 @@ import java.io.IOException;
 import java.util.List;
 
 public interface  IDAOArticle {
-    void saveArticle(ArticleFormDTO article) throws IOException;
+    void saveArticle(ArticleFormDTO article, Long idUser) throws IOException;
     Articles findArticleById(Long id);
     List<Articles> findAllArticlesByUserId(int id);
     List<Categories> getAllCategories();
+    int findIdByPseudo(String pseudo);
 }

@@ -2,6 +2,7 @@ package fr.eni.buymystuff.dao;
 
 import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Categories;
+import fr.eni.buymystuff.bo.Utilisateurs;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -30,9 +31,9 @@ public class DAOArticle implements IDAOArticle {
     }
 
     @Override
-    public void saveArticle(ArticleFormDTO article) throws IOException{
+    public void saveArticle(ArticleFormDTO article, Long idUser) throws IOException{
         // On retourne l'id du nouvel article ou celui existant
-        Long articleId = saveOrUpdateArticle(article);
+        Long articleId = saveOrUpdateArticle(article, idUser);
         // On parcout les categories id avant d'insert en BDD
         List<Long> categoryIds = article.getCategoriesIds() != null ? article.getCategoriesIds() : List.of();
 
@@ -134,9 +135,10 @@ public class DAOArticle implements IDAOArticle {
         );
     }
 
-    public Long saveOrUpdateArticle(ArticleFormDTO article) throws IOException {
+    public Long saveOrUpdateArticle(ArticleFormDTO article, Long idUser) throws IOException {
         MultipartFile file = article.getImageFile();
         String imageName;
+        int idInsertAdresse;
 
         if (file != null && !file.isEmpty()) {
             // Nouveau fichier choisi → on le stocke et on met à jour le DTO
@@ -146,6 +148,13 @@ public class DAOArticle implements IDAOArticle {
             imageName = article.getImage();
         }
         article.setImage(imageName);
+
+        if(article.getAdresseString() != null){
+          idInsertAdresse = insertAdresse(article.getAdresseString());
+        } else {
+            idInsertAdresse = 0;
+        }
+
         if (article.getId() == null) {
             // INSERT
             String insertSql = "INSERT INTO ARTICLES_VENDUS " +
@@ -160,16 +169,14 @@ public class DAOArticle implements IDAOArticle {
                 ps.setObject(3, article.getDateDebut());
                 ps.setObject(4, article.getDateFin());
                 ps.setDouble(5, article.getPrixInitial());
-                ps.setLong(6, 1); // TODO: remplacer par l'utilisateur connecté
-                ps.setLong(7, 1); // TODO: adresse
+                ps.setLong(6, idUser); // TODO: remplacer par l'utilisateur connecté
+                ps.setLong(7, idInsertAdresse); // TODO: adresse
                 ps.setInt(8, 0);  // état vente
                 ps.setString(9, imageName); // image
                 return ps;
             }, keyHolder);
-
             Long generatedId = keyHolder.getKey().longValue();
             article.setId(generatedId);
-
         } else {
             // UPDATE
             String updateSql = "UPDATE ARTICLES_VENDUS SET nom_article=?, description=?, date_debut_encheres=?, date_fin_encheres=?, prix_initial=?, etat_vente=?, image=? WHERE no_article=?";
@@ -261,5 +268,47 @@ public class DAOArticle implements IDAOArticle {
             Files.copy(file.getInputStream(), newTarget, StandardCopyOption.REPLACE_EXISTING);
             return newFileName;
         }
+    }
+    public int insertAdresse(String adresseString) {
+
+        if (adresseString == null || adresseString.isBlank()) {
+            throw new IllegalArgumentException("Adresse invalide");
+        }
+
+        // Split
+        String[] parts = adresseString.split(",");
+
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Format attendu : rue, code postal, ville");
+        }
+
+        String rue = parts[0].trim();
+        String codePostal = parts[1].trim();
+        String ville = parts[2].trim();
+
+        String sql = "INSERT INTO adresses (rue, code_postal, ville) VALUES (?, ?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, rue);
+            ps.setString(2, codePostal);
+            ps.setString(3, ville);
+            return ps;
+        }, keyHolder);
+
+        // Récupération de l'id généré
+        if (keyHolder.getKey() != null) {
+            return keyHolder.getKey().intValue();
+        } else {
+            throw new RuntimeException("Erreur lors de la récupération de l'ID");
+        }
+    }
+    @Override
+    public int findIdByPseudo(String pseudo) {
+        String sql = "SELECT no_utilisateur FROM utilisateurs WHERE pseudo = ?";
+
+        return jdbcTemplate.queryForObject(sql, new Object[]{pseudo}, Integer.class);
     }
 }

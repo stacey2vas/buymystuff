@@ -1,6 +1,7 @@
 package fr.eni.buymystuff.mapper;
 
 import fr.eni.buymystuff.DTO.ArticleFormDTO;
+import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Articles;
 import fr.eni.buymystuff.bo.Categories;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,18 @@ public class ArticleMapper {
         dto.setPrixInitial(article.getPrixInitial());
         dto.setCategories(article.getCategories());
         dto.setAdresseProprietaire(article.getAdresseProprietaire());
+
+        Adresse adresseEntity = article.getAdresseProprietaire();
+
+        if (adresseEntity != null) {
+            String adresseString = adresseEntity.getRue()
+                    + ", " + adresseEntity.getCodePostal()
+                    + ", " + adresseEntity.getVille();
+            dto.setAdresseString(adresseString);
+        } else {
+            dto.setAdresseString("");
+        }
+        dto.setAdresseProprietaire(adresseEntity);
         dto.setImage(article.getImage());
         dto.setCategoriesIds(
                 article.getCategories()

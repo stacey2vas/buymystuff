@@ -25,6 +25,9 @@
 .bg-btn{
     background-color: #4934d3;
 }
+.bg-icon{
+    background-color: #F5F5F5;
+}
 .bg-btn:hover {
     background-color: #3b27a8;
 }
@@ -68,21 +71,23 @@ input:-webkit-autofill:focus {
 }
 
 /********************* CHOICE SELECT ********************/
-/* Conteneur du select */
+/* ============================
+   Conteneur du select
+   ============================ */
 .choices__inner {
     background-color: rgba(16,16,70,0.8); /* bg-[#101046]/80 */
     color: #ffffff;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 0.8rem; /* arrondi xl */
     padding: 0.625rem 1rem; /* px-4 py-2.5 */
+    border: 1px solid rgba(255,255,255,0.2); /* border-white/20 */
+    border-radius: 0.8rem; /* arrondi xl */
     transition: border 0.2s, box-shadow 0.2s;
     height: 48px;
 }
 
-/* Focus */
+/* Focus du select */
 .choices__inner.is-focused {
-    border-color: #4934d3;
-    box-shadow: 0 0 0 2px rgba(73,52,211,0.5);
+    border-color: #4934d3; /* focus:border-[#4934d3] */
+    box-shadow: 0 0 0 2px rgba(73,52,211,0.5); /* focus:ring-2 focus:ring-[#4934d3] */
 }
 
 /* Input de recherche transparent */
@@ -93,7 +98,9 @@ input:-webkit-autofill:focus {
     border: none;
 }
 
-/* Les tags sélectionnés (items multiples) */
+/* ============================
+   Tags sélectionnés (multi-select)
+   ============================ */
 .choices__list--multiple .choices__item {
     background-color: rgba(64,0,255,0.2);
     color: #ffffff;
@@ -103,28 +110,50 @@ input:-webkit-autofill:focus {
     margin-right: 0.25rem;
 }
 
-/* Dropdown */
+/* ============================
+   Dropdown container
+   ============================ */
 .choices__list--dropdown {
     background-color: rgba(16,16,70,0.8);
     color: #ffffff;
-    border-radius: 0.5rem;
     margin-top: 0.25rem;
 }
 
-/* Options dans la dropdown */
-.choices__list--dropdown .choices__item.choices__item--choice {
-    background-color: rgba(16,16,70,0.8);
-    color: #ffffff;
+/* ============================
+   Options dans le dropdown
+   ============================ */
+
+/* Style par défaut des options */
+.choices__list--dropdown .choices__item {
+    background-color: rgba(16,16,70,0.8) !important;
+    color: #ffffff !important;
 }
 
-/* Hover sur les options */
-.choices__list--dropdown .choices__item.choices__item--choice:hover {
-    background-color: rgba(73,52,211,0.4); /* violet clair */
-    color: #ffffff;
+/* Hover / focus (highlighted) */
+.choices__list--dropdown .choices__item.choices__item--highlighted {
+    background-color: rgba(73,52,211,0.4) !important; /* violet clair */
+    color: #ffffff !important;
 }
 
-/* Option déjà sélectionnée dans dropdown */
-.choices__item.choices__item--selectable.choices__item--selected {
-    background-color: rgba(64,0,255,0.2);
-    color: #ffffff;
+/* Option déjà sélectionnée */
+.choices__list--dropdown .choices__item.choices__item--selected {
+    background-color: rgba(64,0,255,0.2) !important;
+    color: #ffffff !important;
+}
+
+/* Supprime toute couleur blanche indésirable au focus */
+.choices__list--dropdown .choices__item:focus {
+    background-color: rgba(16,16,70,0.8) !important;
+    color: #ffffff !important;
+}
+/********************* input type date time ********************/
+/* Chrome, Edge, Safari */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);      /* rend l'icône blanche sur fond sombre */
+    cursor: pointer;        /* curseur pointer pour UX */
+}
+
+/* Firefox (moins de contrôle, mais on peut inverser l'icône si besoin) */
+input[type="datetime-local"]::-moz-focus-inner {
+    border: 0;
 }
