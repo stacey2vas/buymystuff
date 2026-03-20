@@ -13,7 +13,16 @@
             shadow-[0_05px_30px_rgba(0,0,0,0.9)]">
 
     <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">
-        Ajouter un article
+
+            <span th:if="${articleForm.id != null}">
+                Modifier l'article :
+                <span th:text="${articleForm.nomArticle}"></span>
+            </span>
+
+        <span th:if="${articleForm.id == null}">
+                Ajouter un article
+            </span>
+
     </h2>
 
     <form class="space-y-4"
@@ -23,7 +32,8 @@
           th:object="${articleForm}">
 
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
+        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{image}" />
         <!-- Nom de l'article -->
         <div class="flex gap-2">
             <div class="w-1/2">
@@ -37,14 +47,13 @@
             <!-- Catégories -->
             <div class="w-1/2">
                 <label for="categories" class="block text-white mb-1">Catégories</label>
-                <select th:field="*{categories}" id="categories" multiple
+                <select th:field="*{categoriesIds}" id="categories" multiple
                         class="choices w-full px-4 py-2.5 rounded-xl h-[46px] bg-[#101046]/80 text-white placeholder-white
-                   border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
-                   focus:border-[#4934d3] transition duration-200">
+                            border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                            focus:border-[#4934d3] transition duration-200">
                     <option th:each="categorie : ${categories}"
                             th:value="${categorie.id}"
-                            th:text="${categorie.libelle}"
-                            th:selected="${articleForm.categories != null ? articleForm.categories.contains(categorie) : false}">
+                            th:text="${categorie.libelle}">
                     </option>
                 </select>
             </div>
@@ -63,15 +72,16 @@
         <div>
             <label for="imageFile" class="block text-white font-medium mb-1">Image</label>
             <input type="file" th:field="*{imageFile}" id="imageFile" accept="image/*"
-                   class="w-full px-4 py-2 rounded-xl text-white border border-white/20
-                  focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600">
+                   class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white
+                   border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                   focus:border-[#4934d3] transition duration-200">
             <ul th:if="${#fields.hasErrors('imageFile')}">
                 <li class="text-red-500 italic" th:each="error: ${#fields.errors('imageFile')}" th:text="${error}"></li>
             </ul>
 
-            <div th:if="${articleForm.image}" class="mt-2">
-                <label class="block text-white mb-1">Image actuelle :</label>
-                <img th:src="@{/images/{img}(img=${articleForm.image})}" alt="Image article" width="150"/>
+            <div class="mt-2 h-[140px]">
+                <label class="block text-white mb-1">Image selectionnée : <span th:if="${articleForm.image}" th:text="${articleForm.image}"></span></label>
+                <img id="imageForm" th:if="${articleForm.image}" th:src="@{/images/{img}(img=${articleForm.image})}" alt="Image article" width="110"/>
             </div>
         </div>
 
@@ -88,37 +98,50 @@
         <div class="flex gap-2">
             <div class="w-1/2">
                 <label class="block text-white mb-1">Date début</label>
-                <input type="datetime-local" th:field="*{dateDebut}" required
-                       th:value="${#dates.format(articleForm.dateDebut, 'yyyy-MM-dd\'T\'HH:mm')}"
+                <input type="datetime-local" name="dateDebut" th:value="${#temporals.format(articleForm.dateDebut, 'yyyy-MM-dd''T''HH:mm')}" required
                        class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white
-                   border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
-                   focus:border-[#4934d3] transition duration-200">
+                    border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                    focus:border-[#4934d3] transition duration-200">
             </div>
 
             <div class="w-1/2">
                 <label class="block text-white mb-1">Date fin</label>
-                <input type="datetime-local" th:field="*{dateFin}" required
-                       th:value="${#dates.format(articleForm.dateFin, 'yyyy-MM-dd\'T\'HH:mm')}"
+                <input type="datetime-local" name="dateFin" th:value="${#temporals.format(articleForm.dateFin, 'yyyy-MM-dd''T''HH:mm')}" required
                        class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white
-                   border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
-                   focus:border-[#4934d3] transition duration-200">
+                    border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]
+                    focus:border-[#4934d3] transition duration-200">
             </div>
         </div>
-
         <!-- Adresse -->
-        <div>
-            <label class="block text-white mb-1">Adresse sélectionnée</label>
-            <p id="selectedAddress" class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/50 text-gray-300
-           border border-white/10"
-               th:text="${articleForm.adresseProprietaire != null ? articleForm.adresseProprietaire.rue + ', ' + articleForm.adresseProprietaire.codePostal + ' ' + articleForm.adresseProprietaire.ville : 'Aucune adresse'}">
-            </p>
+        <div class="w-full max-w-md mx-auto mt-6">
+            <label class="block text-white mb-1">Adresse</label>
+
+            <!-- Input de recherche -->
+            <input id="adresseProprietaire" type="text" placeholder="Tapez votre adresse..."
+                   class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20
+                  focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3]
+                  transition duration-200">
+
+            <!-- Input readonly pour la valeur finale -->
+            <input id="adresseSelected" name="adresseSelected" type="text" readonly
+                   class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/50 text-white border border-white/20 mt-2"
+                   placeholder="Adresse sélectionnée">
+
+            <!-- Conteneur pour les suggestions -->
+            <ul id="suggestionsList" class="bg-[#101046]/80 border border-white/20 rounded-xl mt-1 max-h-40 overflow-y-auto hidden"></ul>
         </div>
 
-        <div>
+        <div class="mt-2">
             <button type="submit"
                     class="w-full bg-btn hover:bg-btn text-white font-semibold py-2 px-4 rounded-md
                 transition-colors shadow-md transform">
-                Ajouter / Modifier l'article
+                <span th:if="${articleForm.id != null}">
+                Modifier
+                </span>
+                <span th:if="${articleForm.id == null}">
+                Ajouter
+            </span>
+                l'article
             </button>
         </div>
     </form>
