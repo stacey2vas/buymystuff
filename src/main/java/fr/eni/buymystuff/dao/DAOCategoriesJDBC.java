@@ -4,6 +4,7 @@ import fr.eni.buymystuff.bo.Categories;
 import fr.eni.buymystuff.jdbc.IDAOCategories;
 import fr.eni.buymystuff.mapper.RowMapperCategorie;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -57,10 +58,8 @@ public class DAOCategoriesJDBC implements IDAOCategories {
     @Override
     public Categories save(Categories categorie) {
         if(categorie.getId() == null){
-            // Création
             return create(categorie);
         } else {
-            // Update
             return update(categorie);
         }
     }
@@ -77,12 +76,12 @@ public class DAOCategoriesJDBC implements IDAOCategories {
 
     @Override
     public Categories selectById(Long id) {
-        // ICI faire comme libelle pour le cas où le user met un ID type 5555 donc il existe pas en BDD
-            return jdbcTemplate.queryForObject(
+        List<Categories> categorie = jdbcTemplate.query(
                     FIND_CATEGORIE_BY_ID_SQL,
                     new RowMapperCategorie(),
                     id
             );
+        return categorie.isEmpty() ? null : categorie.getFirst();
     }
 
     @Override
