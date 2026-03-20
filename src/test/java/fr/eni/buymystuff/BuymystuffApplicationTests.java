@@ -17,7 +17,7 @@ class BuymystuffApplicationTests {
 	@Test
 	void testAdresse() {
 		Adresse add = new Adresse();
-		add.setRue("7 rue de la paix");
+		add.setRue("79 rue de la paix");
 		add.setCodePostal("75000");
 		add.setVille("Paris");
 		auth.insertAdresse(add);
@@ -27,7 +27,7 @@ class BuymystuffApplicationTests {
 		Utilisateurs util = new Utilisateurs();
 		util.setNom("Terrieur2");
 		util.setPrenom("Alain2");
-		util.setPseudo("toto2");
+		util.setPseudo("toto3");
 		util.setEmail("aterrieur@eni.fr");
 		util.setTelephone("0606060606");
 		util.setMotDePasse("toto");
@@ -35,7 +35,7 @@ class BuymystuffApplicationTests {
 		util.setCredit(100);
 		util.setActif(true);
 		Adresse add = new Adresse();
-		add.setId(1L);
+		add.setId(2L);
 		util.setAdresse(add);
 
 		auth.insert(util);

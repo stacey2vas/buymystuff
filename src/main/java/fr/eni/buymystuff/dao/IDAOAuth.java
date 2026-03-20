@@ -8,4 +8,5 @@ public interface IDAOAuth {
 
     public Adresse insertAdresse(Adresse adresse);
     public Utilisateurs insert(Utilisateurs utilisateur);
+    public Utilisateurs selectById(int id);
 }
