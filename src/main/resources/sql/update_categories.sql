@@ -1,3 +1,3 @@
 UPDATE categories
 SET libelle = ?
-WHERE id = ? ;
+WHERE no_categorie = ? ;

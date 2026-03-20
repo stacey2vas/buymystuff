@@ -12,8 +12,9 @@
     <input type="hidden" th:field="*{id}"/>
 
     <label for="nom">Nom :</label>
-    <div th:if="${errorMessage}" class="text-red-600 mb-2 italic">    <p th:text="${errorMessage}"></p></div>
     <input type="text" id="nom" th:field="*{libelle}" placeholder="Nom de la catégorie" required />
+    <div th:if="${message}" class="text-red-600 mb-2 italic">    <p th:text="${message}"></p></div>
+
 
     <br/><br/>
 

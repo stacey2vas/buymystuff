@@ -4,6 +4,7 @@ import fr.eni.buymystuff.bo.Categories;
 import fr.eni.buymystuff.jdbc.IDAOCategories;
 import fr.eni.buymystuff.mapper.RowMapperCategorie;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -55,39 +56,36 @@ public class DAOCategoriesJDBC implements IDAOCategories {
     }
 
     @Override
-    public Categories save(Categories categories) {
-
-        Categories existing = selectById(categories.getId());
-        if (existing != null) {
-            return update(categories);
+    public Categories save(Categories categorie) {
+        if(categorie.getId() == null){
+            return create(categorie);
+        } else {
+            return update(categorie);
         }
-        return create(categories);
     }
 
     @Override
     public Categories selectByLibelle(String libelle) {
-        Categories categorie = jdbcTemplate.queryForObject(
+        List<Categories> result = jdbcTemplate.query(
                 SELECT_CATEGORIE_BY_LIBELLE_SQL,
                 new RowMapperCategorie(),
                 libelle
         );
-        return categorie;
+        return result.isEmpty() ? null : result.getFirst();
     }
 
     @Override
     public Categories selectById(Long id) {
-        try {
-            return jdbcTemplate.queryForObject(
+        List<Categories> categorie = jdbcTemplate.query(
                     FIND_CATEGORIE_BY_ID_SQL,
                     new RowMapperCategorie(),
                     id
             );
-        } catch (Exception e) {
-            return null;
-        }
+        return categorie.isEmpty() ? null : categorie.getFirst();
     }
 
-    private Categories update(Categories categories) {
+    @Override
+    public Categories update(Categories categories) {
         jdbcTemplate.update(UPDATE_CATEGORIES_SQL,
                 categories.getLibelle(),
                 categories.getId()
@@ -100,6 +98,7 @@ public class DAOCategoriesJDBC implements IDAOCategories {
         jdbcTemplate.update(SAVE_CATEGORIES_SQL,
                 categories.getLibelle()
         );
+
         return categories;
     }
 }
