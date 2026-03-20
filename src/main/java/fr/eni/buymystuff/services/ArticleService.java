@@ -4,6 +4,7 @@ package fr.eni.buymystuff.services;
 import fr.eni.buymystuff.DTO.ArticleFormDTO;
 import fr.eni.buymystuff.bo.Articles;
 import fr.eni.buymystuff.bo.Categories;
+import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.dao.IDAOArticle;
 
 import fr.eni.buymystuff.mapper.ArticleMapper;
@@ -44,9 +45,9 @@ public class ArticleService {
         return new ServiceResponse<>("4000", "Movie ajouté : ", categories);
     }
 
-    public ServiceResponse<?> saveArticle(ArticleFormDTO dto) {
+    public ServiceResponse<?> saveArticle(ArticleFormDTO dto, Long idUser) {
         try {
-            idaoArticle.saveArticle(dto);
+            idaoArticle.saveArticle(dto, idUser);
             return new ServiceResponse<>("4000", "Succès", dto);
         } catch (Exception e) {
             return new ServiceResponse<>("5000", "Erreur BDD", dto);
@@ -60,4 +61,9 @@ public class ArticleService {
 
         return new ServiceResponse<>("4000", "Film trouvé", articleFormDTO);
     }
+    public ServiceResponse<Integer> getUserByPseudo(String pseudo) {
+       int idUser = idaoArticle.findIdByPseudo(pseudo);
+       return new ServiceResponse<Integer>("4000", "Film trouvé", idUser);
+    }
+
 }
