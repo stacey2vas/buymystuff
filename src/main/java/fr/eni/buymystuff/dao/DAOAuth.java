@@ -2,25 +2,19 @@ package fr.eni.buymystuff.dao;
 
 import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Utilisateurs;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 @Component
 public class DAOAuth  implements IDAOAuth {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final UtilisateursRowMapper utilisateursRowMapper;
+    private final JdbcTemplate jdbcTemplate;;
     private final PasswordEncoder passwordEncoder;
 
 
-    public DAOAuth(JdbcTemplate jdbcTemplate, UtilisateursRowMapper utilisateursRowMapper, PasswordEncoder passwordEncoder) {
+    public DAOAuth(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
         this.jdbcTemplate = jdbcTemplate;
-        this.utilisateursRowMapper = utilisateursRowMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -51,9 +45,9 @@ public class DAOAuth  implements IDAOAuth {
         System.out.println("Mot de passe avant encode : " + utilisateur.getMotDePasse());
         System.out.println("Mot de passe après encode : " + bcrypt);
 
-        jdbcTemplate.update(sql, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(),
-                utilisateur.getPseudo(), bcrypt, utilisateur.getTelephone(), utilisateur.getCredit(),
-                 utilisateur.isAdministrateur(), utilisateur.getAdresse().getId(), utilisateur.isActif()
+       jdbcTemplate.update(sql, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(),
+               utilisateur.getPseudo(), bcrypt, utilisateur.getTelephone(), utilisateur.getCredit(),
+                utilisateur.isAdministrateur(), utilisateur.getAdresse().getId(), utilisateur.isActif()
                 );
 
         return utilisateur;

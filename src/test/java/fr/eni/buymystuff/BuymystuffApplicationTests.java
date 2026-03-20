@@ -15,12 +15,19 @@ class BuymystuffApplicationTests {
 	IDAOAuth auth;
 
 	@Test
+	void testAdresse() {
+		Adresse add = new Adresse();
+		add.setRue("7 rue de la paix");
+		add.setCodePostal("75000");
+		add.setVille("Paris");
+		auth.insertAdresse(add);
+	}
+	@Test
 	void contextLoads() {
 		Utilisateurs util = new Utilisateurs();
-		util.setId(1);
-		util.setNom("Terrieur");
-		util.setPrenom("Alain");
-		util.setPseudo("toto");
+		util.setNom("Terrieur2");
+		util.setPrenom("Alain2");
+		util.setPseudo("toto2");
 		util.setEmail("aterrieur@eni.fr");
 		util.setTelephone("0606060606");
 		util.setMotDePasse("toto");
@@ -28,22 +35,13 @@ class BuymystuffApplicationTests {
 		util.setCredit(100);
 		util.setActif(true);
 		Adresse add = new Adresse();
-		add.setId(1);
+		add.setId(1L);
 		util.setAdresse(add);
 
 		auth.insert(util);
 
 	}
 
-	@Test
-	void testAdresse() {
-		Adresse add = new Adresse();
-		add.setId(2);
-		add.setRue("6 rue de la paix");
-		add.setCodePostal("75000");
-		add.setVille("Paris");
-		auth.insertAdresse(add);
 
-	}
 
 }
