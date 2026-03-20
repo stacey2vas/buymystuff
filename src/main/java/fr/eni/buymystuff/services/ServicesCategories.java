@@ -15,27 +15,56 @@ public class ServicesCategories {
         this.daoCategories = daoCategories;
     }
 
-    public ServiceResponse<List<Categories>> getCategoriesCatalog() {
+    public ServiceResponse <List<Categories>> getCategoriesCatalog() {
         List<Categories> categories = daoCategories.selectAllCategories();
-        return ServiceResponse.buildResponse("202","Categories récupérés avec succès", categories);
+        return ServiceResponse.buildResponse("202","Categorie récupéré avec succès", categories);
     }
 
-    public ServiceResponse<Categories> getCategoriesByLibelle(String libelle) {
+    public ServiceResponse <Categories> getCategoriesByLibelle(String libelle) {
         Categories categorie = daoCategories.selectByLibelle(libelle);
-        return ServiceResponse.buildResponse("202","Categories récupérés avec succès", categorie);
+        if(categorie == null){
+            return new ServiceResponse<>("2005", "Categorie n'existe pas", null);
+        } else {
+            return new ServiceResponse<>("2005", "Categorie bien récupérée", categorie);
+        }
     }
 
+    public ServiceResponse <Categories> selectById(Long id) {
+
+        Categories categorie = daoCategories.selectById(id);
+        if(categorie == null) {
+            return new ServiceResponse<>("2005", "ID fourni n'existe pas", null);
+        }
+        return new ServiceResponse<>("2002", "Categorie récupérée avec succès", categorie);
+    }
+    public ServiceResponse<Categories> create(Categories categorie) {
+        daoCategories.save(categorie);
+        return new ServiceResponse<>("2002", "Categorie créée avec succès", categorie);
+    }
+
+    public ServiceResponse<Categories> update(Categories categorie) {
+        daoCategories.save(categorie);
+        return new ServiceResponse<>("2003", "Categorie modifiée avec succès", categorie);
+    }
 
     public ServiceResponse<Categories> saveCategories(Categories categorie) {
-        Categories foundCategories = daoCategories.selectById(categorie.getId());
 
-            daoCategories.save(categorie);
+        if (categorie.getId() == null) {
+            ServiceResponse<Categories> categorieExist = this.getCategoriesByLibelle(categorie.getLibelle());
 
-            if (foundCategories != null){
-                return new ServiceResponse<Categories>("2003", "Categorie modifié avec succès", categorie);
+            if (categorieExist.getData() == null) {
+                daoCategories.save(categorie);
+                return new ServiceResponse<Categories>("2004", "Categorie créée avec succès", categorie);
+            } else {
+                return new ServiceResponse<Categories>("2005", "Categorie existe déjà avec ce nom", categorie);
             }
-
-            return new ServiceResponse<Categories>("2002", "Categorie créer avec succès", categorie);
+        } else {
+            Categories categorieExistante = this.selectById(categorie.getId()).getData();
+            categorieExistante.setLibelle(categorie.getLibelle());
+            daoCategories.save(categorieExistante);
+            return new ServiceResponse<Categories>("2004", "Categorie existe modifiée", categorieExistante);
         }
+
+    }
     }
 

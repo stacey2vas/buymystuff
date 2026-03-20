@@ -37,7 +37,9 @@ public class ArticleTestController {
     @PostMapping("/add-article")
     public String addArticle(@ModelAttribute("articleForm") ArticleFormDTO articleFormDTO,@AuthenticationPrincipal UserDetails userDetails, Model model) {
 
-        // Vérification de l'image
+
+        int idUser = articleService.getUserByPseudo(userDetails.getUsername()).data;
+        long idUserLong = idUser;        // Vérification de l'image
         ServiceResponse<ArticleFormDTO> imageCheck = articleService.verifyImageInput(articleFormDTO);
         if (!"4000".equals(imageCheck.getCode())) {
             model.addAttribute("errorMessage", imageCheck.getMessage());
@@ -45,9 +47,8 @@ public class ArticleTestController {
 
             return "/test/ajout-article"; // Réaffiche le formulaire avec les données
         }
-
         // Si tout est OK, sauvegarder l'article
-        ServiceResponse<?> response = articleService.saveArticle(articleFormDTO);
+        ServiceResponse<?> response = articleService.saveArticle(articleFormDTO, idUserLong);
         if ("4000".equals(response.getCode())) {
             return "redirect:/accueil"; // succès
         } else {

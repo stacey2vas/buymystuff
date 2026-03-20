@@ -33,7 +33,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/","/accueil", "/register", "/public/**", "/login", "/formulaire-test").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/*.*").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/magic").hasRole("EMPLOYE")
+                        .requestMatchers(HttpMethod.GET, "/add-article").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/magic/ajout").hasRole("ADMIN")
 //                        .requestMatchers("/accueil").authenticated()
 //                                .anyRequest().authenticated() // ICI ON DECOMMENTERA A LA FIN POUR LES TESTS ON PERMIT ALL pour donner accès à tous les fichiers
