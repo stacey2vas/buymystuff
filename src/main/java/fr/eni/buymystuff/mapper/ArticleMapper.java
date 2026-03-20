@@ -1,16 +1,11 @@
 package fr.eni.buymystuff.mapper;
 
 import fr.eni.buymystuff.DTO.ArticleFormDTO;
-import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Articles;
 import fr.eni.buymystuff.bo.Categories;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ArticleMapper {
@@ -29,7 +24,13 @@ public class ArticleMapper {
         dto.setPrixInitial(article.getPrixInitial());
         dto.setCategories(article.getCategories());
         dto.setAdresseProprietaire(article.getAdresseProprietaire());
-
+        dto.setImage(article.getImage());
+        dto.setCategoriesIds(
+                article.getCategories()
+                        .stream()               // parcourt chaque Categorie
+                        .map(Categories::getId)  // prend seulement l'ID
+                        .collect(Collectors.toList()) // transforme en List<Long>
+        );
         return dto;
     }
 
@@ -39,7 +40,7 @@ public class ArticleMapper {
             return null;
         }
 
-       Articles article = new Articles();
+        Articles article = new Articles();
 
         article.setId(dto.getId());
         article.setNomArticle(dto.getNomArticle());

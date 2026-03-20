@@ -37,6 +37,8 @@ public class ArticleFormDTO {
 
 
     private List<Categories> categories;
+    private List<Long> categoriesIds;
+    private String adresseString;
     private Adresse adresseProprietaire;
     private MultipartFile imageFile; // champ pour upload
     private String image;
@@ -122,5 +124,20 @@ public class ArticleFormDTO {
 
     public void setImage(String image) {
         this.image = image;
+    }
+    public List<Long> getCategoriesIds() {
+        return categoriesIds;
+    }
+
+    public void setCategoriesIds(List<Long> categoriesIds) {
+        this.categoriesIds = categoriesIds;
+    }
+
+    public String getAdresseString() {
+        return adresseString;
+    }
+
+    public void setAdresseString(String adresseString) {
+        this.adresseString = adresseString;
     }
 }
