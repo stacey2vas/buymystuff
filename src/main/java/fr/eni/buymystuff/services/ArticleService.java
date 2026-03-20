@@ -10,6 +10,7 @@ import fr.eni.buymystuff.mapper.ArticleMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -37,10 +38,11 @@ public class ArticleService {
             Categories categorie = new Categories(2L,"Bricolage");
             return new ServiceResponse<>("4000", "Movie ajouté : ", categorie);
         }
-
-
     }
-
+    public ServiceResponse<List<Categories>> getAllCategories( ) {
+        List<Categories> categories = idaoArticle.getAllCategories();
+        return new ServiceResponse<>("4000", "Movie ajouté : ", categories);
+    }
 
     public ServiceResponse<?> saveArticle(ArticleFormDTO dto) {
         try {

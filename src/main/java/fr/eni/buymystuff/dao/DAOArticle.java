@@ -6,10 +6,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import fr.eni.buymystuff.DTO.ArticleFormDTO;
 import fr.eni.buymystuff.bo.Articles;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -24,13 +30,12 @@ public class DAOArticle implements IDAOArticle {
     }
 
     @Override
-    public void saveArticle(ArticleFormDTO article){
+    public void saveArticle(ArticleFormDTO article) throws IOException{
         // On retourne l'id du nouvel article ou celui existant
         Long articleId = saveOrUpdateArticle(article);
         // On parcout les categories id avant d'insert en BDD
-        List<Long> categoryIds = article.getCategories().stream()
-                .map(Categories::getId)
-                .toList();
+        List<Long> categoryIds = article.getCategoriesIds() != null ? article.getCategoriesIds() : List.of();
+
         // On adapte les catégories existantes liées au produit ( delete / insert)
         syncArticleCategories(articleId, categoryIds);
     }
@@ -89,12 +94,8 @@ public class DAOArticle implements IDAOArticle {
         );
     }
     private List<Categories> findCategoriesByArticleId(Long articleId) {
-        String sql = "SELECT c.no_categorie, c.libelle " +
-                "FROM categories c " +
-                "JOIN ARTICLES_CATEGORIES ac ON c.no_categorie = ac.no_categorie " +
-                "WHERE ac.no_article = ?";
-
-        return jdbcTemplate.query(sql,
+        String sql = "SELECT c.no_categorie, c.libelle  FROM categories c JOIN ARTICLES_CATEGORIES ac ON c.no_categorie = ac.no_categorie WHERE ac.no_article = ?";
+        List<Categories> categories = jdbcTemplate.query(sql,
                 (rs, rowNum) -> {
                     Categories cat = new Categories();
                     cat.setId(rs.getLong("no_categorie"));
@@ -103,6 +104,7 @@ public class DAOArticle implements IDAOArticle {
                 },
                 articleId
         );
+        return categories;
     }
     @Override
     public List<Articles> findAllArticlesByUserId(int id) {
@@ -132,12 +134,23 @@ public class DAOArticle implements IDAOArticle {
         );
     }
 
-    public Long saveOrUpdateArticle(ArticleFormDTO article) {
+    public Long saveOrUpdateArticle(ArticleFormDTO article) throws IOException {
+        MultipartFile file = article.getImageFile();
+        String imageName;
+
+        if (file != null && !file.isEmpty()) {
+            // Nouveau fichier choisi → on le stocke et on met à jour le DTO
+            imageName = storeFile(file); // méthode qui copie le fichier sur le serveur et retourne le nom
+        } else {
+            // Aucun fichier → on garde l'image existante
+            imageName = article.getImage();
+        }
+        article.setImage(imageName);
         if (article.getId() == null) {
             // INSERT
             String insertSql = "INSERT INTO ARTICLES_VENDUS " +
-                    "(nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_adresse, etat_vente) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    "(nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_adresse, etat_vente, image) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
@@ -147,9 +160,10 @@ public class DAOArticle implements IDAOArticle {
                 ps.setObject(3, article.getDateDebut());
                 ps.setObject(4, article.getDateFin());
                 ps.setDouble(5, article.getPrixInitial());
-                ps.setLong(6, 1); // à remplacer par l'utilisateur connecté
-                ps.setLong(7, 1); // adresse
-                ps.setInt(8, 0);
+                ps.setLong(6, 1); // TODO: remplacer par l'utilisateur connecté
+                ps.setLong(7, 1); // TODO: adresse
+                ps.setInt(8, 0);  // état vente
+                ps.setString(9, imageName); // image
                 return ps;
             }, keyHolder);
 
@@ -158,21 +172,29 @@ public class DAOArticle implements IDAOArticle {
 
         } else {
             // UPDATE
-            String updateSql = "UPDATE ARTICLES_VENDUS SET nom_article=?, description=?, date_debut_encheres=?, date_fin_encheres=?, prix_initial=?, etat_vente=? WHERE no_article=?";
+            String updateSql = "UPDATE ARTICLES_VENDUS SET nom_article=?, description=?, date_debut_encheres=?, date_fin_encheres=?, prix_initial=?, etat_vente=?, image=? WHERE no_article=?";
             jdbcTemplate.update(updateSql,
                     article.getNomArticle(),
                     article.getDescription(),
                     article.getDateDebut(),
                     article.getDateFin(),
                     article.getPrixInitial(),
-                    0,
+                    0,              // état vente
+                    imageName,
                     article.getId()
             );
         }
+        List<Long> categoryIds = article.getCategoriesIds() != null ?
+                article.getCategoriesIds() :
+                article.getCategories() != null ?
+                        article.getCategories().stream().map(Categories::getId).toList() :
+                        List.of();
+
+        syncArticleCategories(article.getId(), categoryIds);
+
         return article.getId();
     }
 
-    // Vérifie si la catégorie existe
     private boolean categoryExists(Long categoryId){
         String sql = "SELECT COUNT(*) FROM CATEGORIES WHERE no_categorie = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, categoryId);
@@ -205,6 +227,39 @@ public class DAOArticle implements IDAOArticle {
         String deleteSql = "DELETE FROM ARTICLES_CATEGORIES WHERE no_article=? AND no_categorie=?";
         for(Long catId : toRemove){
             jdbcTemplate.update(deleteSql, articleId, catId);
+        }
+    }
+
+    @Override
+    public List<Categories> getAllCategories() {
+        String sql = "SELECT * FROM categories";
+
+        return jdbcTemplate.query(
+                sql,
+                (rs, rowNum) -> {
+                    Categories categorie = new Categories();
+                    categorie.setId(rs.getLong("no_categorie")); // colonne DB
+                    categorie.setLibelle(rs.getString("libelle"));
+                    return categorie;
+                }
+        );
+    }
+    private String storeFile(MultipartFile file) throws IOException {
+        String originalFilename = file.getOriginalFilename();
+        Path uploadDir = Paths.get("src/main/resources/static/images").toAbsolutePath();
+        Files.createDirectories(uploadDir);
+
+        Path targetLocation = uploadDir.resolve(originalFilename);
+
+        if (Files.exists(targetLocation)) {
+            // Fichier déjà présent → on utilise le nom existant
+            return originalFilename;
+        } else {
+            // Fichier absent → on crée un nom unique pour éviter collisions
+            String newFileName = System.currentTimeMillis() + "_" + originalFilename;
+            Path newTarget = uploadDir.resolve(newFileName);
+            Files.copy(file.getInputStream(), newTarget, StandardCopyOption.REPLACE_EXISTING);
+            return newFileName;
         }
     }
 }
