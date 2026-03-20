@@ -5,6 +5,9 @@ import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Categories;
 import fr.eni.buymystuff.bo.Encheres;
 import fr.eni.buymystuff.bo.Utilisateurs;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -14,16 +17,29 @@ import java.util.List;
 public class ArticleFormDTO {
 
     private Long id; // pour l'édition, sinon null pour la création
+
+    // @Min(1900)
+    //     @NotEmpty(message = "Au moins un acteur doit être sélectionné")
+    @NotBlank(message = "Le nom de l'article est obligatoire")
     private String nomArticle;
+
+    @NotBlank(message = "La description est obligatoire")
     private String description;
+
+    @NotNull(message = "La date de début d'enchère est obligatoire")
     private LocalDateTime dateDebut;
+
+    @NotNull(message = "La date de début d'enchère est obligatoire")
     private LocalDateTime dateFin;
+
+    @NotNull(message = "Le prix de départ est obligatoire")
     private int prixInitial;
-    private int prixVente;
+
+
     private List<Categories> categories;
     private Adresse adresseProprietaire;
     private MultipartFile imageFile; // champ pour upload
-
+    private String image;
 
     public ArticleFormDTO() {
     }
@@ -76,14 +92,6 @@ public class ArticleFormDTO {
         this.prixInitial = prixInitial;
     }
 
-    public int getPrixVente() {
-        return prixVente;
-    }
-
-    public void setPrixVente(int prixVente) {
-        this.prixVente = prixVente;
-    }
-
     public List<Categories> getCategories() {
         return categories;
     }
@@ -106,5 +114,13 @@ public class ArticleFormDTO {
 
     public void setImageFile(MultipartFile imageFile) {
         this.imageFile = imageFile;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

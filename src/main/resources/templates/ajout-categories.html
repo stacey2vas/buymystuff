@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Categories</title>
+</head>
+<body>
+<h1>Ajouter votre categoire</h1>
+
+<form th:action="@{/ajout-categories}" th:object="${categorie}" method="post">
+
+    <input type="hidden" th:field="*{id}"/>
+
+    <label for="nom">Nom :</label>
+    <div th:if="${errorMessage}" class="text-red-600 mb-2 italic">    <p th:text="${errorMessage}"></p></div>
+    <input type="text" id="nom" th:field="*{libelle}" placeholder="Nom de la catégorie" required />
+
+    <br/><br/>
+
+    <button type="submit">Ajouter</button>
+</form>
+</body>
+</html>

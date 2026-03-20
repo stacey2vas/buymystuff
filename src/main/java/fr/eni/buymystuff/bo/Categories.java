@@ -1,14 +1,14 @@
 package fr.eni.buymystuff.bo;
 
 public class Categories {
-    private int id;
+    private Long id;
     private String libelle;
 
     public Categories() {
     }
 
-    public Categories(int id, String libelle) {
-        this.id = id;
+    public Categories(Long id, String libelle) {
+        this.id = (Long) id;
         this.libelle = libelle;
     }
 
@@ -20,12 +20,12 @@ public class Categories {
                 '}';
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(Long id) {
+        this.id = (Long) id;
     }
 
     public String getLibelle() {
