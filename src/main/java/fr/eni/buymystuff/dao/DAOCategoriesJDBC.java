@@ -55,39 +55,38 @@ public class DAOCategoriesJDBC implements IDAOCategories {
     }
 
     @Override
-    public Categories save(Categories categories) {
-
-        Categories existing = selectById(categories.getId());
-        if (existing != null) {
-            return update(categories);
+    public Categories save(Categories categorie) {
+        if(categorie.getId() == null){
+            // Création
+            return create(categorie);
+        } else {
+            // Update
+            return update(categorie);
         }
-        return create(categories);
     }
 
     @Override
     public Categories selectByLibelle(String libelle) {
-        Categories categorie = jdbcTemplate.queryForObject(
+        List<Categories> result = jdbcTemplate.query(
                 SELECT_CATEGORIE_BY_LIBELLE_SQL,
                 new RowMapperCategorie(),
                 libelle
         );
-        return categorie;
+        return result.isEmpty() ? null : result.getFirst();
     }
 
     @Override
     public Categories selectById(Long id) {
-        try {
+        // ICI faire comme libelle pour le cas où le user met un ID type 5555 donc il existe pas en BDD
             return jdbcTemplate.queryForObject(
                     FIND_CATEGORIE_BY_ID_SQL,
                     new RowMapperCategorie(),
                     id
             );
-        } catch (Exception e) {
-            return null;
-        }
     }
 
-    private Categories update(Categories categories) {
+    @Override
+    public Categories update(Categories categories) {
         jdbcTemplate.update(UPDATE_CATEGORIES_SQL,
                 categories.getLibelle(),
                 categories.getId()
@@ -100,6 +99,7 @@ public class DAOCategoriesJDBC implements IDAOCategories {
         jdbcTemplate.update(SAVE_CATEGORIES_SQL,
                 categories.getLibelle()
         );
+
         return categories;
     }
 }
