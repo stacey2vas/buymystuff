@@ -21,11 +21,7 @@ public class FrontTestController {
         this.articleService = articleService;
     }
 
-    @GetMapping("/login")
-    public String login(Model model){
-
-        return "/test/login";
-    }
+    
     
     
 

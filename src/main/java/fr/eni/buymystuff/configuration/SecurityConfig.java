@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+
 import javax.sql.DataSource;
 
 @Configuration
@@ -52,16 +54,19 @@ public class SecurityConfig {
                                     .passwordParameter("password")
                             .permitAll();
                             //redirige après le login sur la page d'accueil
-                        form.defaultSuccessUrl("/accueil", true);                        }
+                        form.defaultSuccessUrl("/", true);                        }
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")             // URL qui déclenche le logout
-                        .logoutSuccessUrl("/accueil") // où aller après déconnexion
+                        .logoutSuccessUrl("/") // où aller après déconnexion
                         .invalidateHttpSession(true)      // invalide la session
                         .deleteCookies("JSESSIONID")      // supprime le cookie de session
                         .permitAll() // Permet à tous d'accéder à l'URL de logout
-                );
-                
+                )
+                 .httpBasic(AbstractHttpConfigurer::disable) // Enlève cette saleté de popup de login basique du navigateur pour les API REST
+                .rememberMe(remember -> remember
+                .key("uniqueAndSecret") // Clé secrète pour le token de remember-me
+                .tokenValiditySeconds(7 * 24 * 60 * 60)); // Durée de validité du token (ex: 7 jours)
 
         return http.build();
     }

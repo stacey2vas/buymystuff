@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Categories</title>
-</head>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/base}">
+
 <body>
+
+    <div layout:fragment="content" class="w-[35%] bg-card-dark border border-card-principal p-8 mt-9 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
 <h1>Ajouter votre categoire</h1>
 
 <form th:action="@{/ajout-categories}" th:object="${categorie}" method="post">
@@ -13,12 +15,13 @@
 
     <label for="nom">Nom :</label>
     <input type="text" id="nom" th:field="*{libelle}" placeholder="Nom de la catégorie" required />
-    <div th:if="${message}" class="text-red-600 mb-2 italic">    <p th:text="${message}"></p></div>
+    <!-- <div th:if="${message}" class="text-red-600 mb-2 italic">    <p th:text="${message}"></p></div> -->
 
 
     <br/><br/>
 
     <button type="submit">Ajouter</button>
 </form>
+</div>
 </body>
 </html>

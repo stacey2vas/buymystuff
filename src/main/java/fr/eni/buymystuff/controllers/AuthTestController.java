@@ -4,6 +4,10 @@ import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.services.AuthService;
 import fr.eni.buymystuff.services.ServiceResponse;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +23,20 @@ public class AuthTestController
         this.authService = authService;
     }
 
+    @GetMapping("/login")
+    public String login(Model model){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String rawPassword = "user";  // ton mot de passe en clair
+        String rawPassword2 = "admin";  // ton mot de passe en clair
+        String rawPassword3 = "test";  // ton mot de passe en clair
+        String encodedPassword = encoder.encode(rawPassword);
+        String encodedPassword2 = encoder.encode(rawPassword2);
+        String encodedPassword3 = encoder.encode(rawPassword3);
+        System.out.println("user mdp : " + encodedPassword);
+        System.out.println("admin mdp : " + encodedPassword2);
+        System.out.println("test mdp : " + encodedPassword3);
+        return "login";
+    }
 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
@@ -26,7 +44,7 @@ public class AuthTestController
             model.addAttribute("utilisateur", new Utilisateurs());
             model.addAttribute("adresse", new Adresse());
 
-        return "test/register";
+        return "register";
     }
 
     @PostMapping ("/process-register")
@@ -71,5 +89,13 @@ public class AuthTestController
         return "test/formulaire-test";
     }
 
+ // Route GET de test
+    @GetMapping("/profile")
+    public String showProfil(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+       Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
+        model.addAttribute("user", user);
+
+        return "test/profile";
+    }
 
 }

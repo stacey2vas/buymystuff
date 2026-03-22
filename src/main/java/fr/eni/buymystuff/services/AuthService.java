@@ -7,6 +7,8 @@ import fr.eni.buymystuff.dao.IDAOAuth;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ch.qos.logback.classic.pattern.Util;
+
 @Service
 public class AuthService {
 
@@ -45,8 +47,12 @@ public class AuthService {
 
             return ServiceResponse.buildResponse("202","Movie récupéré avec succès", utilisateurConnecte);
         }
-        public ServiceResponse<Integer> getUserByPseudo(String pseudo) {
+        public ServiceResponse<Integer> getIdUserByPseudo(String pseudo) {
        int idUser = daoAuth.findIdByPseudo(pseudo);
        return new ServiceResponse<Integer>("4000", "Film trouvé", idUser);
+    }
+    public ServiceResponse<Utilisateurs> getUserByPseudo(String pseudo) {
+       Utilisateurs user = daoAuth.selectByPseudo(pseudo);
+       return new ServiceResponse<Utilisateurs>("4000", "Film trouvé", user);
     }
 }

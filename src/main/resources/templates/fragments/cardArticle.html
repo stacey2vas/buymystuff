@@ -12,7 +12,7 @@
 
     <!-- Description / lien -->
     <div class="text-xl font-semibold text-main min-h-[56px]">
-        <a th:href="@{/enchere/{id}(id=${article.id})}" th:text="${article.description}"></a>
+        <a  class="hover:text-[#03d6f9]" th:href="@{/enchere/{id}(id=${article.id})}" th:text="${article.description}"></a>
     </div>
 
     <!-- Prix et timer -->

@@ -104,4 +104,37 @@ public class DAOAuth  implements IDAOAuth {
 
             return jdbcTemplate.queryForObject(sql, Integer.class, pseudo);
         }
-}
+    @Override
+    public Utilisateurs selectByPseudo(String pseudo) {
+        String sql = """
+                SELECT u.no_utilisateur, u.pseudo, u.nom, u.prenom, u.email, u.telephone, 
+                    u.password, u.credit, u.administrateur, u.actif,
+                    a.rue, a.code_postal, a.ville
+                FROM utilisateurs u
+                LEFT JOIN adresses a ON u.no_adresse = a.no_adresse
+                WHERE u.pseudo = ?
+                """;
+
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+            Utilisateurs utilisateur = new Utilisateurs();
+            utilisateur.setId(rs.getInt("no_utilisateur"));          
+            utilisateur.setPseudo(rs.getString("pseudo"));
+            utilisateur.setNom(rs.getString("nom"));
+            utilisateur.setPrenom(rs.getString("prenom"));
+            utilisateur.setEmail(rs.getString("email"));
+            utilisateur.setTelephone(rs.getString("telephone"));
+            utilisateur.setMotDePasse(rs.getString("password"));    
+            utilisateur.setCredit(rs.getInt("credit"));
+            utilisateur.setAdministrateur(rs.getBoolean("administrateur"));
+            utilisateur.setActif(rs.getBoolean("actif"));
+
+            Adresse adresse = new Adresse();
+            adresse.setRue(rs.getString("rue"));
+            adresse.setCodePostal(rs.getString("code_postal"));
+            adresse.setVille(rs.getString("ville"));
+            utilisateur.setAdresse(adresse);
+
+            return utilisateur;
+        }, pseudo);
+    }
+    }

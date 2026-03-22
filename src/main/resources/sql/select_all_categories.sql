@@ -1,2 +1,2 @@
-SELECT id, libelle
+SELECT no_categorie, libelle
 FROM categories;

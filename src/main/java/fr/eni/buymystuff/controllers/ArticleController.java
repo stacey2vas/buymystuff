@@ -20,16 +20,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class ArticleTestController {
+public class ArticleController {
     private final ArticleService articleService;
     private final ServicesCategories servicesCategories;
     private final AuthService authService;
     
-    public ArticleTestController(ArticleService articleService, ServicesCategories servicesCategories, AuthService authService) {
+    public ArticleController(ArticleService articleService, ServicesCategories servicesCategories, AuthService authService) {
         this.articleService = articleService;
         this.servicesCategories = servicesCategories;
         this.authService = authService;
@@ -39,13 +38,13 @@ public class ArticleTestController {
     public String showAddArticle(Model model) {
         modelFormInformations(model);
         model.addAttribute("articleForm", new ArticleFormDTO());
-        return "/test/ajout-article";
+        return "ajout-article";
     }
     @PostMapping("/add-article")
     public String addArticle(@ModelAttribute("articleForm") ArticleFormDTO articleFormDTO,@AuthenticationPrincipal UserDetails userDetails, Model model) {
 
 
-        int idUser = authService.getUserByPseudo(userDetails.getUsername()).data;
+        int idUser = authService.getIdUserByPseudo(userDetails.getUsername()).data;
         long idUserLong = idUser;        // Vérification de l'image
         ServiceResponse<ArticleFormDTO> imageCheck = articleService.verifyImageInput(articleFormDTO);
         if (!"4000".equals(imageCheck.getCode())) {
@@ -57,7 +56,7 @@ public class ArticleTestController {
         // Si tout est OK, sauvegarder l'article
         ServiceResponse<?> response = articleService.saveArticle(articleFormDTO, idUserLong);
         if ("4000".equals(response.getCode())) {
-            return "redirect:/accueil"; // succès
+            return "redirect:/"; // succès
         } else {
             model.addAttribute("errorMessage", response.getMessage());
             modelFormInformations(model);

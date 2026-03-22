@@ -47,44 +47,69 @@ public class DAOArticle implements IDAOArticle {
     }
 
     @Override
-    public Articles findArticleById(Long id) {
-        String sql = "SELECT * FROM ARTICLES_VENDUS WHERE no_article = ?";
+public Articles findArticleById(Long id) {
+    String sql = """
+        SELECT a.no_article, a.nom_article, a.description, a.date_debut_encheres, a.date_fin_encheres,
+               a.prix_initial, a.image, a.etat_vente,
+               ad.rue, ad.code_postal, ad.ville,
+               GROUP_CONCAT(c.libelle SEPARATOR ',') AS categories_string,
+               GROUP_CONCAT(c.no_categorie SEPARATOR ',') AS categories_ids
+        FROM articles_vendus a
+        LEFT JOIN articles_categories ac ON a.no_article = ac.no_article
+        LEFT JOIN categories c ON c.no_categorie = ac.no_categorie
+        LEFT JOIN adresses ad ON ad.no_adresse = a.no_adresse
+        WHERE a.no_article = ?
+        GROUP BY a.no_article, ad.rue, ad.code_postal, ad.ville
+    """;
 
-        Articles article = jdbcTemplate.queryForObject(
-                sql,
-                (rs, rowNum) -> {
-                    Articles a = new Articles();
-                    a.setId(rs.getLong("no_article"));
-                    a.setNomArticle(rs.getString("nom_article"));
-                    a.setDescription(rs.getString("description"));
-                    a.setImage(rs.getString("image"));
-                    if (rs.getTimestamp("date_debut_encheres") != null) {
-                        a.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
-                    }
-                    if (rs.getTimestamp("date_fin_encheres") != null) {
-                        a.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-                    }
+    Articles article = jdbcTemplate.queryForObject(
+        sql,
+        (rs, rowNum) -> {
+            Articles a = new Articles();
+            a.setId(rs.getLong("no_article"));
+            a.setNomArticle(rs.getString("nom_article"));
+            a.setDescription(rs.getString("description"));
+            if (rs.getTimestamp("date_debut_encheres") != null) {
+                a.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
+            }
+            if (rs.getTimestamp("date_fin_encheres") != null) {
+                a.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+            }
+            a.setPrixInitial(rs.getInt("prix_initial"));
+            a.setImage(rs.getString("image"));
+            a.setEtatVente(rs.getBoolean("etat_vente"));
 
-                    a.setPrixInitial(rs.getInt("prix_initial"));
-                    a.setPrixVente(rs.getInt("prix_vente"));
-                    a.setEtatVente(rs.getInt("etat_vente") == 1);
+            // 📍 Adresse
+            Adresse adresse = new Adresse();
+            adresse.setRue(rs.getString("rue"));
+            adresse.setCodePostal(rs.getString("code_postal"));
+            adresse.setVille(rs.getString("ville"));
+            a.setAdresseProprietaire(adresse);
 
-                    // récupérer l'adresse
-                    Long adresseId = rs.getLong("no_adresse");
-                    if(adresseId != null && adresseId > 0){
-                        a.setAdresseProprietaire(findAdresseById(adresseId));
-                    }
+            // 🏷️ Catégories
+            String categoriesIdsStr = rs.getString("categories_ids");
+            String categoriesNamesStr = rs.getString("categories_string");
+            if (categoriesIdsStr != null && !categoriesIdsStr.isEmpty()) {
+                String[] ids = categoriesIdsStr.split(",");
+                String[] noms = categoriesNamesStr.split(",");
+                List<Categories> categories = new ArrayList<>();
+                for (int i = 0; i < ids.length; i++) {
+                    Categories cat = new Categories();
+                    cat.setId(Long.parseLong(ids[i]));
+                    cat.setLibelle(noms[i]);
+                    categories.add(cat);
+                }
+                a.setCategories(categories);
+            }
 
-                    return a;
-                },
-                id
-        );
+            return a;
+        },
+        id
+    );
 
-        // récupérer les catégories
-        article.setCategories(findCategoriesByArticleId(id));
+    return article;
+}
 
-        return article;
-    }
     private Adresse findAdresseById(Long adresseId) {
         String sql = "SELECT * FROM adresses WHERE no_adresse = ?";
         return jdbcTemplate.queryForObject(sql,
