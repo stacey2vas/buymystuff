@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/","/accueil", "/register", "/public/**", "/login", "/formulaire-test").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/*.*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/add-article").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/add-article").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/**").permitAll() // Autorisé l'accès aux routes d'API (ex: /api/films) sans authentification
                         .requestMatchers("/api/articles").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/magic/ajout").hasRole("ADMIN")
