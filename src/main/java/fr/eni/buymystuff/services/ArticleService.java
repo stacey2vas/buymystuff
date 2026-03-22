@@ -1,18 +1,16 @@
 package fr.eni.buymystuff.services;
 
 
+import fr.eni.buymystuff.DTO.ArticleFilterDTO;
 import fr.eni.buymystuff.DTO.ArticleFormDTO;
 import fr.eni.buymystuff.bo.Articles;
-import fr.eni.buymystuff.bo.Categories;
-import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.dao.IDAOArticle;
 
 import fr.eni.buymystuff.mapper.ArticleMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class ArticleService {
@@ -31,18 +29,9 @@ public class ArticleService {
         return new ServiceResponse<ArticleFormDTO>("4000", "OK", articleFormDTO);
     }
 
-    public ServiceResponse<Categories> findCategorieById(Long id) {
-        if(id == 1){
-            Categories categorie = new Categories(1L,"Electronique");
-            return new ServiceResponse<>("4000", "Movie ajouté : ", categorie);
-        }else{
-            Categories categorie = new Categories(2L,"Bricolage");
-            return new ServiceResponse<>("4000", "Movie ajouté : ", categorie);
-        }
-    }
-    public ServiceResponse<List<Categories>> getAllCategories( ) {
-        List<Categories> categories = idaoArticle.getAllCategories();
-        return new ServiceResponse<>("4000", "Movie ajouté : ", categories);
+    public ServiceResponse<List<Articles>> getAllArticles( ) {
+        List<Articles> articles = idaoArticle.getAllArticles();
+        return new ServiceResponse<>("4000", "Article récupéré : ", articles);
     }
 
     public ServiceResponse<?> saveArticle(ArticleFormDTO dto, Long idUser) {
@@ -61,9 +50,26 @@ public class ArticleService {
 
         return new ServiceResponse<>("4000", "Film trouvé", articleFormDTO);
     }
-    public ServiceResponse<Integer> getUserByPseudo(String pseudo) {
-       int idUser = idaoArticle.findIdByPseudo(pseudo);
-       return new ServiceResponse<Integer>("4000", "Film trouvé", idUser);
+
+    public ServiceResponse<List<ArticleFormDTO>> getArticlesByFilter(ArticleFilterDTO filter) {
+       // Normaliser les valeurs vides en null
+        String nomArticle = (filter.getNomArticle() == null || filter.getNomArticle().isBlank()) ? null : filter.getNomArticle();
+        String categorie = (filter.getCategorie() == null || filter.getCategorie().isBlank()) ? null : filter.getCategorie();
+        Integer prixMin = filter.getPrixMin();
+        Integer prixMax = filter.getPrixMax();
+        // Dates
+       LocalDateTime dateStart = (filter.getDateStart() != null) 
+        ? filter.getDateStart().atStartOfDay()  // 00:00:00
+        : null;
+
+        LocalDateTime dateEnd = (filter.getDateEnd() != null) 
+        ? filter.getDateEnd().atTime(23, 59, 59)  // 23:59:59
+        : null;
+        List<ArticleFormDTO> articles = idaoArticle.findBySearch(nomArticle, categorie, prixMin, prixMax, dateStart, dateEnd);
+
+        return new ServiceResponse<>("4000", "Film trouvé", articles);
     }
 
 }
+
+

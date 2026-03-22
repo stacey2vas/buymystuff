@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,10 +31,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
+        http
+        // Désactivation CSRF uniquement pour les API REST
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/","/accueil", "/register", "/public/**", "/login", "/formulaire-test").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/*.*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/add-article").hasRole("ADMIN")
+                        .requestMatchers("/api/**").permitAll() // Autorisé l'accès aux routes d'API (ex: /api/films) sans authentification
+                        .requestMatchers("/api/articles").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/magic/ajout").hasRole("ADMIN")
 //                        .requestMatchers("/accueil").authenticated()
 //                                .anyRequest().authenticated() // ICI ON DECOMMENTERA A LA FIN POUR LES TESTS ON PERMIT ALL pour donner accès à tous les fichiers
@@ -55,6 +61,7 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")      // supprime le cookie de session
                         .permitAll() // Permet à tous d'accéder à l'URL de logout
                 );
+                
 
         return http.build();
     }

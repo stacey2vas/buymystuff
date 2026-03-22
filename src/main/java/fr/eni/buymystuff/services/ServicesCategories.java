@@ -17,7 +17,7 @@ public class ServicesCategories {
 
     public ServiceResponse <List<Categories>> getCategoriesCatalog() {
         List<Categories> categories = daoCategories.selectAllCategories();
-        return ServiceResponse.buildResponse("202","Categorie récupéré avec succès", categories);
+        return new ServiceResponse<>("2000", "Categorie récupérés avec succès", categories);
     }
 
     public ServiceResponse <Categories> getCategoriesByLibelle(String libelle) {

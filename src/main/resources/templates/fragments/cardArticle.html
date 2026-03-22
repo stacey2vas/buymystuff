@@ -1,32 +1,37 @@
 <div th:fragment="cardArticle" th:each="article : ${articles}"
      class="articleCard rounded-lg p-2 flex flex-col gap-4 shadow-xl border border-card-principal hover:bg-[#000036]
             hover:shadow-2xl hover:translate-y-1 transition duration-300 relative group w-full"
-     th:data-timer="${#temporals.format(article.timer, 'yyyy-MM-dd''T''HH:mm:ss')}">
+     th:data-timer="${#temporals.format(article.dateFin, 'yyyy-MM-dd''T''HH:mm:ss')}">
 
+    <!-- Image -->
     <div class="rounded-xl w-full h-[210px] flex items-center justify-center text-muted border-card-image">
-        <img th:src="${article.imageUrl}" alt="Image"
-             class="object-cover w-full h-full rounded-xl  "/>
+       <img th:src="@{/images/{imageName}(imageName=${article.image})}" 
+     alt="Image"
+     class="object-cover w-full h-full rounded-xl"/>
     </div>
 
-    <div class="text-xl font-semibold text-main min-h-[56px]" >
-        <a th:href="@{/enchere/{id}(id=${article.id})}" th:text="${article.description}" class=""></a>
+    <!-- Description / lien -->
+    <div class="text-xl font-semibold text-main min-h-[56px]">
+        <a th:href="@{/enchere/{id}(id=${article.id})}" th:text="${article.description}"></a>
     </div>
 
+    <!-- Prix et timer -->
     <div class="flex justify-between items-center border-t border-dashed border-dash-color pt-3">
         <div class="w-1/2 flex flex-col border-r border-dashed border-dash-color p-1">
             <p class="text-sm text-muted">Prix actuel</p>
-            <p class="text-lg font-bold text-accent price-color" th:text="${article.prix} + ' €'"></p>
+            <p class="text-lg font-bold text-accent price-color" th:text="${article.prixInitial} + ' €'"></p>
         </div>
         <div class="w-1/2 flex flex-col text-right p-1">
             <p class="text-sm text-muted">Termine dans :</p>
             <p class="timer text-base font-semibold hour-color flex justify-end"
-               th:data-timer="${#temporals.format(article.timer, 'yyyy-MM-dd''T''HH:mm:ss')}">
-                <span class="skeleton w-20 h-[24px] rounded bg-gray-300 animate-pulse"></span>
+               th:data-timer="${#temporals.format(article.dateFin, 'yyyy-MM-dd''T''HH:mm:ss')}">
+                <span class="skeleton w-[85px] h-[24px] rounded bg-gray-300 animate-pulse"></span>
             </p>
         </div>
     </div>
 
+    <!-- Bouton enchérir -->
     <div class="w-full flex justify-center relative -bottom-5 left-0 transition-transform duration-300">
-        <button class="bg-btn px-6 py-2 rounded-lg shadow-lg font-semibold transition transition-all duration-300">Enchérir</button>
+        <button class="bg-btn px-6 py-2 rounded-lg shadow-lg font-semibold transition-all duration-300">Enchérir</button>
     </div>
 </div>

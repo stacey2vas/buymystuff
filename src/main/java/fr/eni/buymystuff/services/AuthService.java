@@ -45,4 +45,8 @@ public class AuthService {
 
             return ServiceResponse.buildResponse("202","Movie récupéré avec succès", utilisateurConnecte);
         }
+        public ServiceResponse<Integer> getUserByPseudo(String pseudo) {
+       int idUser = daoAuth.findIdByPseudo(pseudo);
+       return new ServiceResponse<Integer>("4000", "Film trouvé", idUser);
+    }
 }

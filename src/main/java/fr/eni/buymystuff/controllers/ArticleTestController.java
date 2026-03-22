@@ -6,7 +6,9 @@ import fr.eni.buymystuff.bo.Articles;
 import fr.eni.buymystuff.bo.Categories;
 import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.services.ArticleService;
+import fr.eni.buymystuff.services.AuthService;
 import fr.eni.buymystuff.services.ServiceResponse;
+import fr.eni.buymystuff.services.ServicesCategories;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,8 +26,13 @@ import java.util.List;
 @Controller
 public class ArticleTestController {
     private final ArticleService articleService;
-    public ArticleTestController(ArticleService articleService) {
+    private final ServicesCategories servicesCategories;
+    private final AuthService authService;
+    
+    public ArticleTestController(ArticleService articleService, ServicesCategories servicesCategories, AuthService authService) {
         this.articleService = articleService;
+        this.servicesCategories = servicesCategories;
+        this.authService = authService;
     }
 
     @GetMapping("/add-article")
@@ -38,7 +45,7 @@ public class ArticleTestController {
     public String addArticle(@ModelAttribute("articleForm") ArticleFormDTO articleFormDTO,@AuthenticationPrincipal UserDetails userDetails, Model model) {
 
 
-        int idUser = articleService.getUserByPseudo(userDetails.getUsername()).data;
+        int idUser = authService.getUserByPseudo(userDetails.getUsername()).data;
         long idUserLong = idUser;        // Vérification de l'image
         ServiceResponse<ArticleFormDTO> imageCheck = articleService.verifyImageInput(articleFormDTO);
         if (!"4000".equals(imageCheck.getCode())) {
@@ -71,7 +78,7 @@ public class ArticleTestController {
         return "/test/ajout-article";
     }
     private void modelFormInformations(Model model) {
-        List<Categories> categories = articleService.getAllCategories().data;
+        List<Categories> categories = servicesCategories.getCategoriesCatalog().data;
         Adresse adresse = new Adresse(1L, "12 rue des Lilas", "44000", "Nantes");
         model.addAttribute("categories", categories);
         model.addAttribute("adresse", adresse);

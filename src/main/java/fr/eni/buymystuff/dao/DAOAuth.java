@@ -98,4 +98,10 @@ public class DAOAuth  implements IDAOAuth {
         });
         return null ;
     }
+     @Override
+        public int findIdByPseudo(String pseudo) {
+            String sql = "SELECT no_utilisateur FROM utilisateurs WHERE pseudo = ?";
+
+            return jdbcTemplate.queryForObject(sql, Integer.class, pseudo);
+        }
 }
