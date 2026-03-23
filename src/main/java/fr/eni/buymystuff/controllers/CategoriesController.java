@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
+
 @Controller
 public class CategoriesController {
     private final ServicesCategories servicesCategories;
@@ -18,9 +20,13 @@ public class CategoriesController {
         this.servicesCategories = servicesCategories;
     }
 
-    @GetMapping("/ajout-categories")
+    @GetMapping("/add-categorie")
     public String showForm(Model model) {
+        List<Categories> categories = servicesCategories.getCategoriesCatalog().data;
+
         model.addAttribute("categorie", new Categories());
+        model.addAttribute("categories", categories);
+
         return "ajout-categories";
     }
 
