@@ -71,7 +71,7 @@ public class DAOAuth  implements IDAOAuth {
     @Override
     public Utilisateurs selectById(int id) {
         String sql = """
-                SELECT pseudo,nom,prenom,email,telephone,rue, code_postal,ville
+                SELECT pseudo,nom,prenom,email,telephone,rue,credit, code_postal,ville
                 FROM utilisateurs
                 INNER JOIN adresses ON utilisateurs.no_adresse = adresses.no_adresse
                 WHERE no_utilisateur = ?
@@ -84,7 +84,7 @@ public class DAOAuth  implements IDAOAuth {
                 utilisateur.setPrenom(rs.getString("prenom"));
                 utilisateur.setEmail(rs.getString("email"));
                 utilisateur.setTelephone(rs.getString("telephone"));
-
+                utilisateur.setCredit(rs.getInt("credit"));
                 Adresse adresse = new Adresse();
                 adresse.setRue(rs.getString("rue"));
                 adresse.setCodePostal(rs.getString("code_postal"));

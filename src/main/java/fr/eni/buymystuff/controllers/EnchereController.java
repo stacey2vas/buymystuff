@@ -8,6 +8,7 @@ import fr.eni.buymystuff.bo.Encheres;
 import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.services.ArticleService;
 import fr.eni.buymystuff.services.AuthService;
+import fr.eni.buymystuff.services.EnchereService;
 import fr.eni.buymystuff.services.ServicesCategories;
 
 import java.util.List;
@@ -25,10 +26,12 @@ public class EnchereController {
     private final ArticleService articleService;
     private final ServicesCategories servicesCategories;
     private final AuthService authService;
-    public EnchereController(ArticleService articleService, ServicesCategories servicesCategories, AuthService authService) {
+    private final EnchereService enchereService;
+    public EnchereController(ArticleService articleService, ServicesCategories servicesCategories, AuthService authService, EnchereService enchereService) {
         this.articleService = articleService;
         this.servicesCategories = servicesCategories;
         this.authService = authService;
+        this.enchereService = enchereService;
     }
 
     @GetMapping("/")
@@ -46,11 +49,10 @@ public class EnchereController {
     public String showArticle(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetails, Model model) {
         Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
         ArticleFormDTO article = articleService.getArticleDTOById(id).data;
-        Utilisateurs proprietaire = articleService.getUserById(id).data;
+        List<Encheres> encheres = enchereService.getAllEncheresByArticleId(id).data;
         model.addAttribute("article", article);
-        model.addAttribute("proprietaire",proprietaire);
         model.addAttribute("user",user);
-        System.out.println("propriétaire : " + proprietaire);
+        model.addAttribute("encheres",encheres);
         return "/test/enchere";
     }
 

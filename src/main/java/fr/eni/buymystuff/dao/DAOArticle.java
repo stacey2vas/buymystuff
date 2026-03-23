@@ -5,6 +5,7 @@ import fr.eni.buymystuff.bo.Categories;
 import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.mapper.ArticleMapper;
 
+import jdk.jshell.execution.Util;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -30,8 +31,7 @@ public class DAOArticle implements IDAOArticle {
 
     private final JdbcTemplate jdbcTemplate;
     private final ArticleMapper articleMapper;
-
-    public DAOArticle(JdbcTemplate jdbcTemplate, ArticleMapper articleMapper) {
+     public DAOArticle(JdbcTemplate jdbcTemplate, ArticleMapper articleMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.articleMapper = articleMapper;
     }
@@ -51,7 +51,7 @@ public class DAOArticle implements IDAOArticle {
     public Articles findArticleById(Long id) {
         String sql = """
                     SELECT a.no_article, a.nom_article, a.description, a.date_debut_encheres, a.date_fin_encheres,
-                           a.prix_initial, a.image, a.etat_vente,
+                           a.prix_initial,a.prix_vente, a.image, a.etat_vente,
                            ad.rue, ad.code_postal, ad.ville,
                            GROUP_CONCAT(c.libelle SEPARATOR ',') AS categories_string,
                            GROUP_CONCAT(c.no_categorie SEPARATOR ',') AS categories_ids,
@@ -79,16 +79,22 @@ public class DAOArticle implements IDAOArticle {
                         a.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
                     }
                     a.setPrixInitial(rs.getInt("prix_initial"));
+                    a.setPrixVente(rs.getInt("prix_vente"));
                     a.setImage(rs.getString("image"));
                     a.setEtatVente(rs.getBoolean("etat_vente"));
-
-                    // 📍 Adresse
+                     // 📍 Adresse
                     Adresse adresse = new Adresse();
                     adresse.setRue(rs.getString("rue"));
                     adresse.setCodePostal(rs.getString("code_postal"));
                     adresse.setVille(rs.getString("ville"));
                     a.setAdresseProprietaire(adresse);
 
+                    Utilisateurs proprietaire = new Utilisateurs();
+                    proprietaire.setId(rs.getInt("no_utilisateur"));
+                    proprietaire.setPseudo(rs.getString("pseudo"));
+                    proprietaire.setNom(rs.getString("nom"));
+                    proprietaire.setPrenom(rs.getString("prenom"));
+                    a.setUtilisateur(proprietaire);
                     // 🏷️ Catégories
                     String categoriesIdsStr = rs.getString("categories_ids");
                     String categoriesNamesStr = rs.getString("categories_string");
