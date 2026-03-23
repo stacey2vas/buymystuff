@@ -45,11 +45,11 @@
                 <!-- 🔹 Informations vendeur -->
                 <div class="bg-card-principal rounded-xl shadow-lg border border-card-principal p-4 flex flex-col gap-3">
                     <div class="flex flex-col gap-1">
-                        <span class="text-sm text-muted">Vendu par :</span>
+                        <span class="text-sm text-gray-300 text-muted">Vendu par :</span>
                         <span class="font-semibold text-lg" th:text="${article.utilisateurs.pseudo}"></span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-sm text-muted">Adresse de livraison :</span>
+                        <span class="text-sm text-gray-300  text-muted">Adresse de livraison :</span>
                         <span th:text="${article.adresseProprietaire.rue + ', ' + article.adresseProprietaire.codePostal + ', ' + article.adresseProprietaire.ville}"></span>
                     </div>
                 </div>
@@ -80,22 +80,33 @@
                     </div>
                     <!-- Formulaire enchère -->
                     <div class=" w-full relative -bottom-10 left-0  flex-col items-center justify-center rounded-lg p-4 bg-card-dark border border-card-principal">
-                        <form th:action="@{/encherir}" method="post" class="w-full flex flex-col gap-3">
-                            <input type="hidden" name="articleId" th:value="${article.id}"/>
-                            <label class="text-sm text-muted" for="prixInitial">Votre enchère (min : <span th:text="${article.prixVente + 1} + ' €'"></span>)</label>
-                            <input id="prixInitial" type="number"
-                                   th:min="${article.prixVente}"
+                        <form th:action="@{/add-enchere}" th:object="${enchereForm}" method="post" class="w-full flex flex-col gap-3">
+
+                            <!-- Champs cachés nécessaires pour le DTO -->
+                            <input type="hidden" th:field="*{id}" th:value="${user.id}"/>
+                            <input type="hidden" th:field="*{article.id}" th:value="${article.id}"/>
+                            <input type="hidden" th:field="*{utilisateur.id}" th:value="${user.id}"/>
+
+                            <!-- Champ montant enchère visible -->
+                            <label class="text-sm text-muted" for="montantEnchere">
+                                Votre enchère (min : <span th:text="${article.prixVente + 1} + ' €'"></span>)
+                            </label>
+                            <input id="montantEnchere" type="number" th:field="*{montantEnchere}"
+                                   th:min="${article.prixVente + 1}"
                                    th:placeholder="'Enchère minimum : ' + ${article.prixVente + 1} + ' €'"
                                    required
                                    class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20
-                                            focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3] transition duration-200">
+                  focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3] transition duration-200"/>
+
                             <!-- Message crédit insuffisant -->
-                            <div th:if="${user.credit < article.prixVente}" class="text-xs text-red-400 font-semibold ">
+                            <div th:if="${user.credit < article.prixVente}" class="text-xs text-red-400 font-semibold">
                                 Vous n’avez pas assez de crédits pour enchérir sur ce produit.
                             </div>
+
+                            <!-- Bouton -->
                             <button type="submit"
                                     class="cursor-pointer bg-btn px-6 py-3 rounded-lg shadow-lg font-semibold transition duration-300
-               disabled:opacity-50 disabled:cursor-not-allowed"
+                   disabled:opacity-50 disabled:cursor-not-allowed"
                                     th:disabled="${user.credit < article.prixVente}">
                                 Enchérir
                             </button>

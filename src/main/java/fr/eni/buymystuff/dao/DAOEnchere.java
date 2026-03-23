@@ -1,5 +1,6 @@
 package fr.eni.buymystuff.dao;
 
+import fr.eni.buymystuff.DTO.EnchereDTO;
 import fr.eni.buymystuff.bo.Articles;
 import fr.eni.buymystuff.bo.Encheres;
 import fr.eni.buymystuff.bo.Utilisateurs;
@@ -7,6 +8,8 @@ import fr.eni.buymystuff.mapper.ArticleMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -53,5 +56,21 @@ public class DAOEnchere implements IDAOEnchere{
 
             return enchere;
         });
+    }
+
+    @Override
+    public void addEnchere(EnchereDTO enchere, Long idUser) throws IOException {
+        System.out.println("enchere : " + enchere);
+        System.out.println("id user : " + idUser);
+//        String sql = "INSERT INTO encheres (no_utilisateur, no_article, date_enchere, montant_enchere) " +
+//                "VALUES (?, ?, ?, ?)";
+//
+//        jdbcTemplate.update(
+//                sql,
+//                idUser,
+//                enchere.getArticle().getId(),
+//                LocalDateTime.now(),  // Date de maintenant
+//                enchere.getMontantEnchere()
+//        );
     }
 }

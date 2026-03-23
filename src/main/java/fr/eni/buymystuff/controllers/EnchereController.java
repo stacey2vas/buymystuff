@@ -2,14 +2,12 @@ package fr.eni.buymystuff.controllers;
 
 
 import fr.eni.buymystuff.DTO.ArticleFormDTO;
+import fr.eni.buymystuff.DTO.EnchereDTO;
 import fr.eni.buymystuff.bo.Articles;
 import fr.eni.buymystuff.bo.Categories;
 import fr.eni.buymystuff.bo.Encheres;
 import fr.eni.buymystuff.bo.Utilisateurs;
-import fr.eni.buymystuff.services.ArticleService;
-import fr.eni.buymystuff.services.AuthService;
-import fr.eni.buymystuff.services.EnchereService;
-import fr.eni.buymystuff.services.ServicesCategories;
+import fr.eni.buymystuff.services.*;
 
 import java.util.List;
 
@@ -18,7 +16,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class EnchereController {
@@ -46,14 +46,21 @@ public class EnchereController {
         return "/test/accueil";
     }
     @GetMapping("/enchere/{id}")
-    public String showArticle(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String showArticle(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetails, EnchereDTO enchereDTO, Model model) {
         Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
         ArticleFormDTO article = articleService.getArticleDTOById(id).data;
         List<Encheres> encheres = enchereService.getAllEncheresByArticleId(id).data;
         model.addAttribute("article", article);
         model.addAttribute("user",user);
         model.addAttribute("encheres",encheres);
+        model.addAttribute("enchereForm",new EnchereDTO());
         return "/test/enchere";
     }
+    @PostMapping("/add-enchere")
+    public String addEnchere(@ModelAttribute("articleForm") @AuthenticationPrincipal UserDetails userDetails, EnchereDTO enchereDTO,
+                             Model model) {
 
+        model.addAttribute("enchereForm",new EnchereDTO());
+        return "/test/enchere";
+    }
 }

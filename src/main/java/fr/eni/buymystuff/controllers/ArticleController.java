@@ -45,7 +45,7 @@ public class ArticleController {
 
 
         int idUser = authService.getIdUserByPseudo(userDetails.getUsername()).data;
-        long idUserLong = idUser;        // Vérification de l'image
+        long idUserLong = idUser; // Vérification de l'image
         ServiceResponse<ArticleFormDTO> imageCheck = articleService.verifyImageInput(articleFormDTO);
         if (!"4000".equals(imageCheck.getCode())) {
             model.addAttribute("errorMessage", imageCheck.getMessage());
