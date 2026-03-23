@@ -36,6 +36,7 @@ public class ArticleMapper {
         } else {
             dto.setAdresseString("");
         }
+        dto.setPrixVente(article.getPrixVente());
         dto.setAdresseProprietaire(adresseEntity);
         dto.setImage(article.getImage());
         dto.setCategoriesIds(

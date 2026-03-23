@@ -30,13 +30,14 @@ public class DAOArticle implements IDAOArticle {
 
     private final JdbcTemplate jdbcTemplate;
     private final ArticleMapper articleMapper;
+
     public DAOArticle(JdbcTemplate jdbcTemplate, ArticleMapper articleMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.articleMapper = articleMapper;
     }
 
     @Override
-    public void saveArticle(ArticleFormDTO article, Long idUser) throws IOException{
+    public void saveArticle(ArticleFormDTO article, Long idUser) throws IOException {
         // On retourne l'id du nouvel article ou celui existant
         Long articleId = saveOrUpdateArticle(article, idUser);
         // On parcout les categories id avant d'insert en BDD
@@ -47,68 +48,70 @@ public class DAOArticle implements IDAOArticle {
     }
 
     @Override
-public Articles findArticleById(Long id) {
-    String sql = """
-        SELECT a.no_article, a.nom_article, a.description, a.date_debut_encheres, a.date_fin_encheres,
-               a.prix_initial, a.image, a.etat_vente,
-               ad.rue, ad.code_postal, ad.ville,
-               GROUP_CONCAT(c.libelle SEPARATOR ',') AS categories_string,
-               GROUP_CONCAT(c.no_categorie SEPARATOR ',') AS categories_ids
-        FROM articles_vendus a
-        LEFT JOIN articles_categories ac ON a.no_article = ac.no_article
-        LEFT JOIN categories c ON c.no_categorie = ac.no_categorie
-        LEFT JOIN adresses ad ON ad.no_adresse = a.no_adresse
-        WHERE a.no_article = ?
-        GROUP BY a.no_article, ad.rue, ad.code_postal, ad.ville
-    """;
+    public Articles findArticleById(Long id) {
+        String sql = """
+                    SELECT a.no_article, a.nom_article, a.description, a.date_debut_encheres, a.date_fin_encheres,
+                           a.prix_initial, a.image, a.etat_vente,
+                           ad.rue, ad.code_postal, ad.ville,
+                           GROUP_CONCAT(c.libelle SEPARATOR ',') AS categories_string,
+                           GROUP_CONCAT(c.no_categorie SEPARATOR ',') AS categories_ids,
+                           u.no_utilisateur, u.pseudo, u.nom, u.prenom
+                    FROM articles_vendus a
+                    LEFT JOIN articles_categories ac ON a.no_article = ac.no_article
+                    LEFT JOIN categories c ON c.no_categorie = ac.no_categorie
+                    LEFT JOIN adresses ad ON ad.no_adresse = a.no_adresse
+                    LEFT JOIN utilisateurs u ON u.no_utilisateur = a.no_utilisateur
+                    WHERE a.no_article = ?
+                    GROUP BY a.no_article, ad.rue, ad.code_postal, ad.ville
+                """;
 
-    Articles article = jdbcTemplate.queryForObject(
-        sql,
-        (rs, rowNum) -> {
-            Articles a = new Articles();
-            a.setId(rs.getLong("no_article"));
-            a.setNomArticle(rs.getString("nom_article"));
-            a.setDescription(rs.getString("description"));
-            if (rs.getTimestamp("date_debut_encheres") != null) {
-                a.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
-            }
-            if (rs.getTimestamp("date_fin_encheres") != null) {
-                a.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-            }
-            a.setPrixInitial(rs.getInt("prix_initial"));
-            a.setImage(rs.getString("image"));
-            a.setEtatVente(rs.getBoolean("etat_vente"));
+        Articles article = jdbcTemplate.queryForObject(
+                sql,
+                (rs, rowNum) -> {
+                    Articles a = new Articles();
+                    a.setId(rs.getLong("no_article"));
+                    a.setNomArticle(rs.getString("nom_article"));
+                    a.setDescription(rs.getString("description"));
+                    if (rs.getTimestamp("date_debut_encheres") != null) {
+                        a.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
+                    }
+                    if (rs.getTimestamp("date_fin_encheres") != null) {
+                        a.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+                    }
+                    a.setPrixInitial(rs.getInt("prix_initial"));
+                    a.setImage(rs.getString("image"));
+                    a.setEtatVente(rs.getBoolean("etat_vente"));
 
-            // 📍 Adresse
-            Adresse adresse = new Adresse();
-            adresse.setRue(rs.getString("rue"));
-            adresse.setCodePostal(rs.getString("code_postal"));
-            adresse.setVille(rs.getString("ville"));
-            a.setAdresseProprietaire(adresse);
+                    // 📍 Adresse
+                    Adresse adresse = new Adresse();
+                    adresse.setRue(rs.getString("rue"));
+                    adresse.setCodePostal(rs.getString("code_postal"));
+                    adresse.setVille(rs.getString("ville"));
+                    a.setAdresseProprietaire(adresse);
 
-            // 🏷️ Catégories
-            String categoriesIdsStr = rs.getString("categories_ids");
-            String categoriesNamesStr = rs.getString("categories_string");
-            if (categoriesIdsStr != null && !categoriesIdsStr.isEmpty()) {
-                String[] ids = categoriesIdsStr.split(",");
-                String[] noms = categoriesNamesStr.split(",");
-                List<Categories> categories = new ArrayList<>();
-                for (int i = 0; i < ids.length; i++) {
-                    Categories cat = new Categories();
-                    cat.setId(Long.parseLong(ids[i]));
-                    cat.setLibelle(noms[i]);
-                    categories.add(cat);
-                }
-                a.setCategories(categories);
-            }
+                    // 🏷️ Catégories
+                    String categoriesIdsStr = rs.getString("categories_ids");
+                    String categoriesNamesStr = rs.getString("categories_string");
+                    if (categoriesIdsStr != null && !categoriesIdsStr.isEmpty()) {
+                        String[] ids = categoriesIdsStr.split(",");
+                        String[] noms = categoriesNamesStr.split(",");
+                        List<Categories> categories = new ArrayList<>();
+                        for (int i = 0; i < ids.length; i++) {
+                            Categories cat = new Categories();
+                            cat.setId(Long.parseLong(ids[i]));
+                            cat.setLibelle(noms[i]);
+                            categories.add(cat);
+                        }
+                        a.setCategories(categories);
+                    }
 
-            return a;
-        },
-        id
-    );
+                    return a;
+                },
+                id
+        );
 
-    return article;
-}
+        return article;
+    }
 
     private Adresse findAdresseById(Long adresseId) {
         String sql = "SELECT * FROM adresses WHERE no_adresse = ?";
@@ -124,6 +127,7 @@ public Articles findArticleById(Long id) {
                 adresseId
         );
     }
+
     private List<Categories> findCategoriesByArticleId(Long articleId) {
         String sql = "SELECT c.no_categorie, c.libelle  FROM categories c JOIN ARTICLES_CATEGORIES ac ON c.no_categorie = ac.no_categorie WHERE ac.no_article = ?";
         List<Categories> categories = jdbcTemplate.query(sql,
@@ -137,6 +141,7 @@ public Articles findArticleById(Long id) {
         );
         return categories;
     }
+
     @Override
     public List<Articles> findAllArticlesByUserId(int id) {
         String sql = "SELECT * FROM ARTICLES_VENDUS WHERE no_utilisateur = ?";
@@ -179,8 +184,8 @@ public Articles findArticleById(Long id) {
         }
         article.setImage(imageName);
 
-        if(article.getAdresseString() != null){
-          idInsertAdresse = insertAdresse(article.getAdresseString());
+        if (article.getAdresseString() != null) {
+            idInsertAdresse = insertAdresse(article.getAdresseString());
         } else {
             idInsertAdresse = 0;
         }
@@ -232,13 +237,14 @@ public Articles findArticleById(Long id) {
         return article.getId();
     }
 
-    private boolean categoryExists(Long categoryId){
+    private boolean categoryExists(Long categoryId) {
         String sql = "SELECT COUNT(*) FROM CATEGORIES WHERE no_categorie = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, categoryId);
         return count != null && count > 0;
     }
+
     // Synchronisation des catégories
-    private void syncArticleCategories(Long articleId, List<Long> newCategoryIds){
+    private void syncArticleCategories(Long articleId, List<Long> newCategoryIds) {
         // Récupérer les catégories actuelles
         String selectSql = "SELECT no_categorie FROM ARTICLES_CATEGORIES WHERE no_article = ?";
         List<Long> existingCategoryIds = jdbcTemplate.queryForList(selectSql, Long.class, articleId);
@@ -254,15 +260,15 @@ public Articles findArticleById(Long id) {
                 .toList();
         // INSERT nouvelles catégories
         String insertSql = "INSERT INTO ARTICLES_CATEGORIES(no_article, no_categorie) VALUES (?, ?)";
-        for(Long catId : toAdd){
-            if(categoryExists(catId)) {
+        for (Long catId : toAdd) {
+            if (categoryExists(catId)) {
                 jdbcTemplate.update(insertSql, articleId, catId);
             }
         }
 
         // DELETE catégories supprimées
         String deleteSql = "DELETE FROM ARTICLES_CATEGORIES WHERE no_article=? AND no_categorie=?";
-        for(Long catId : toRemove){
+        for (Long catId : toRemove) {
             jdbcTemplate.update(deleteSql, articleId, catId);
         }
     }
@@ -285,6 +291,7 @@ public Articles findArticleById(Long id) {
             return newFileName;
         }
     }
+
     public int insertAdresse(String adresseString) {
 
         if (adresseString == null || adresseString.isBlank()) {
@@ -321,10 +328,10 @@ public Articles findArticleById(Long id) {
             throw new RuntimeException("Erreur lors de la récupération de l'ID");
         }
     }
-   
-        @Override
-            public List<Articles> getAllArticles() {
-                String sql = """
+
+    @Override
+    public List<Articles> getAllArticles() {
+        String sql = """
                     SELECT 
                         a.no_article,
                         a.nom_article,
@@ -346,163 +353,184 @@ public Articles findArticleById(Long id) {
                     GROUP BY a.no_article;
                 """;
 
-                return jdbcTemplate.query(sql, (rs, rowNum) -> {
-                    Articles article = new Articles();
-                    article.setId(rs.getLong("no_article"));
-                    article.setNomArticle(rs.getString("nom_article"));
-                    article.setDescription(rs.getString("description"));
-                    article.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
-                    article.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-                    article.setPrixInitial(rs.getInt("prix_initial"));
-                    article.setImage(rs.getString("image"));
-                    article.setEtatVente(rs.getBoolean("etat_vente"));
-                    Adresse adresse = new Adresse();
-                    adresse.setRue(rs.getString("rue"));
-                    adresse.setCodePostal(rs.getString("code_postal"));
-                    adresse.setVille(rs.getString("ville"));
-                    article.setAdresseProprietaire(adresse);
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Articles article = new Articles();
+            article.setId(rs.getLong("no_article"));
+            article.setNomArticle(rs.getString("nom_article"));
+            article.setDescription(rs.getString("description"));
+            article.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
+            article.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+            article.setPrixInitial(rs.getInt("prix_initial"));
+            article.setImage(rs.getString("image"));
+            article.setEtatVente(rs.getBoolean("etat_vente"));
+            Adresse adresse = new Adresse();
+            adresse.setRue(rs.getString("rue"));
+            adresse.setCodePostal(rs.getString("code_postal"));
+            adresse.setVille(rs.getString("ville"));
+            article.setAdresseProprietaire(adresse);
 
-                   // Mapping des catégories
-                    String categoriesIdsStr = rs.getString("categories_ids");
-                    String categoriesNamesStr = rs.getString("categories_string");
+            // Mapping des catégories
+            String categoriesIdsStr = rs.getString("categories_ids");
+            String categoriesNamesStr = rs.getString("categories_string");
 
-                    if (categoriesIdsStr != null && !categoriesIdsStr.isEmpty()) {
-                        String[] ids = categoriesIdsStr.split(",");
-                        String[] noms = categoriesNamesStr.split(",");
+            if (categoriesIdsStr != null && !categoriesIdsStr.isEmpty()) {
+                String[] ids = categoriesIdsStr.split(",");
+                String[] noms = categoriesNamesStr.split(",");
 
-                        List<Categories> categories = new ArrayList<>();
-                        for (int i = 0; i < ids.length; i++) {
-                            Categories cat = new Categories();
-                            cat.setId(Long.parseLong(ids[i]));
-                            cat.setLibelle(noms[i]);
-                            categories.add(cat);
-                        }
-                        article.setCategories(categories);
-                    }
-                    return article;
-                });
+                List<Categories> categories = new ArrayList<>();
+                for (int i = 0; i < ids.length; i++) {
+                    Categories cat = new Categories();
+                    cat.setId(Long.parseLong(ids[i]));
+                    cat.setLibelle(noms[i]);
+                    categories.add(cat);
+                }
+                article.setCategories(categories);
             }
-        @Override
-public List<ArticleFormDTO> findBySearch(String nomArticle, String categorie,
-                                         Integer prixMin, Integer prixMax,
-                                         LocalDateTime dateStart, LocalDateTime dateEnd) {
-
-    StringBuilder sql = new StringBuilder("""
-        SELECT 
-            a.no_article,
-            a.nom_article,
-            a.description,
-            a.date_debut_encheres,
-            a.date_fin_encheres,
-            a.prix_initial,
-            a.image,
-            a.etat_vente,
-            ad.rue,
-            ad.code_postal,
-            ad.ville,
-            GROUP_CONCAT(c.libelle SEPARATOR ',') AS categories_string,
-            GROUP_CONCAT(c.no_categorie SEPARATOR ',') AS categories_ids
-        FROM articles_vendus a
-        LEFT JOIN articles_categories ac ON a.no_article = ac.no_article
-        LEFT JOIN categories c ON c.no_categorie = ac.no_categorie
-        LEFT JOIN adresses ad ON ad.no_adresse = a.no_adresse
-        WHERE 1=1
-    """);
-
-    List<Object> params = new ArrayList<>();
-
-    // 🔎 Filtre nom
-    if (nomArticle != null && !nomArticle.isBlank()) {
-        sql.append(" AND LOWER(a.nom_article) LIKE LOWER(?)");
-        params.add("%" + nomArticle + "%");
+            return article;
+        });
     }
 
-    // 🔎 Filtre catégorie (CORRIGÉ avec EXISTS)
-    if (categorie != null && !categorie.isBlank()) {
-        sql.append("""
-            AND EXISTS (
-                SELECT 1 FROM articles_categories ac2
-                WHERE ac2.no_article = a.no_article
-                AND ac2.no_categorie = ?
-            )
-        """);
-        params.add(Long.parseLong(categorie));
-    }
+    @Override
+    public List<ArticleFormDTO> findBySearch(String nomArticle, String categorie,
+                                             Integer prixMin, Integer prixMax,
+                                             LocalDateTime dateStart, LocalDateTime dateEnd) {
 
-    // 🔎 Filtre prix min
-    if (prixMin != null) {
-        sql.append(" AND a.prix_initial >= ?");
-        params.add(prixMin);
-    }
+        StringBuilder sql = new StringBuilder("""
+                    SELECT 
+                        a.no_article,
+                        a.nom_article,
+                        a.description,
+                        a.date_debut_encheres,
+                        a.date_fin_encheres,
+                        a.prix_initial,
+                        a.image,
+                        a.etat_vente,
+                        ad.rue,
+                        ad.code_postal,
+                        ad.ville,
+                        GROUP_CONCAT(c.libelle SEPARATOR ',') AS categories_string,
+                        GROUP_CONCAT(c.no_categorie SEPARATOR ',') AS categories_ids
+                    FROM articles_vendus a
+                    LEFT JOIN articles_categories ac ON a.no_article = ac.no_article
+                    LEFT JOIN categories c ON c.no_categorie = ac.no_categorie
+                    LEFT JOIN adresses ad ON ad.no_adresse = a.no_adresse
+                    WHERE 1=1
+                """);
 
-    // 🔎 Filtre prix max
-    if (prixMax != null) {
-        sql.append(" AND a.prix_initial <= ?");
-        params.add(prixMax);
-    }
+        List<Object> params = new ArrayList<>();
 
-    // 🔎 Filtre date début
-    if (dateStart != null) {
-        sql.append(" AND a.date_debut_encheres >= ?");
-        params.add(java.sql.Timestamp.valueOf(dateStart));
-    }
-
-    // 🔎 Filtre date fin
-    if (dateEnd != null) {
-        sql.append(" AND a.date_fin_encheres <= ?");
-        params.add(java.sql.Timestamp.valueOf(dateEnd));
-    }
-
-    // 🔥 IMPORTANT : group by pour éviter doublons
-    sql.append(" GROUP BY a.no_article");
-
-    // 🔥 Execution
-    List<Articles> articles = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
-
-        Articles article = new Articles();
-        article.setId(rs.getLong("no_article"));
-        article.setNomArticle(rs.getString("nom_article"));
-        article.setDescription(rs.getString("description"));
-        article.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
-        article.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
-        article.setPrixInitial(rs.getInt("prix_initial"));
-        article.setImage(rs.getString("image"));
-        article.setEtatVente(rs.getBoolean("etat_vente"));
-
-        // 📍 Adresse
-        Adresse adresse = new Adresse();
-        adresse.setRue(rs.getString("rue"));
-        adresse.setCodePostal(rs.getString("code_postal"));
-        adresse.setVille(rs.getString("ville"));
-        article.setAdresseProprietaire(adresse);
-
-        // 🏷️ Catégories
-        String categoriesIdsStr = rs.getString("categories_ids");
-        String categoriesNamesStr = rs.getString("categories_string");
-
-        if (categoriesIdsStr != null && !categoriesIdsStr.isEmpty()) {
-            String[] ids = categoriesIdsStr.split(",");
-            String[] noms = categoriesNamesStr.split(",");
-
-            List<Categories> categories = new ArrayList<>();
-
-            for (int i = 0; i < ids.length; i++) {
-                Categories cat = new Categories();
-                cat.setId(Long.parseLong(ids[i]));
-                cat.setLibelle(noms[i]);
-                categories.add(cat);
-            }
-
-            article.setCategories(categories);
+        // 🔎 Filtre nom
+        if (nomArticle != null && !nomArticle.isBlank()) {
+            sql.append(" AND LOWER(a.nom_article) LIKE LOWER(?)");
+            params.add("%" + nomArticle + "%");
         }
 
-        return article;
+        // 🔎 Filtre catégorie (CORRIGÉ avec EXISTS)
+        if (categorie != null && !categorie.isBlank()) {
+            sql.append("""
+                        AND EXISTS (
+                            SELECT 1 FROM articles_categories ac2
+                            WHERE ac2.no_article = a.no_article
+                            AND ac2.no_categorie = ?
+                        )
+                    """);
+            params.add(Long.parseLong(categorie));
+        }
 
-    }, params.toArray());
+        // 🔎 Filtre prix min
+        if (prixMin != null) {
+            sql.append(" AND a.prix_initial >= ?");
+            params.add(prixMin);
+        }
 
-    // 🔁 Mapping vers DTO
-    return articles.stream()
-            .map(articleMapper::toFormDTO)
-            .toList();
+        // 🔎 Filtre prix max
+        if (prixMax != null) {
+            sql.append(" AND a.prix_initial <= ?");
+            params.add(prixMax);
+        }
+
+        // 🔎 Filtre date début
+        if (dateStart != null) {
+            sql.append(" AND a.date_debut_encheres >= ?");
+            params.add(java.sql.Timestamp.valueOf(dateStart));
+        }
+
+        // 🔎 Filtre date fin
+        if (dateEnd != null) {
+            sql.append(" AND a.date_fin_encheres <= ?");
+            params.add(java.sql.Timestamp.valueOf(dateEnd));
+        }
+
+        // 🔥 IMPORTANT : group by pour éviter doublons
+        sql.append(" GROUP BY a.no_article");
+
+        // 🔥 Execution
+        List<Articles> articles = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
+
+            Articles article = new Articles();
+            article.setId(rs.getLong("no_article"));
+            article.setNomArticle(rs.getString("nom_article"));
+            article.setDescription(rs.getString("description"));
+            article.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
+            article.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
+            article.setPrixInitial(rs.getInt("prix_initial"));
+            article.setImage(rs.getString("image"));
+            article.setEtatVente(rs.getBoolean("etat_vente"));
+
+            // 📍 Adresse
+            Adresse adresse = new Adresse();
+            adresse.setRue(rs.getString("rue"));
+            adresse.setCodePostal(rs.getString("code_postal"));
+            adresse.setVille(rs.getString("ville"));
+            article.setAdresseProprietaire(adresse);
+
+            // 🏷️ Catégories
+            String categoriesIdsStr = rs.getString("categories_ids");
+            String categoriesNamesStr = rs.getString("categories_string");
+
+            if (categoriesIdsStr != null && !categoriesIdsStr.isEmpty()) {
+                String[] ids = categoriesIdsStr.split(",");
+                String[] noms = categoriesNamesStr.split(",");
+
+                List<Categories> categories = new ArrayList<>();
+
+                for (int i = 0; i < ids.length; i++) {
+                    Categories cat = new Categories();
+                    cat.setId(Long.parseLong(ids[i]));
+                    cat.setLibelle(noms[i]);
+                    categories.add(cat);
+                }
+
+                article.setCategories(categories);
+            }
+
+            return article;
+
+        }, params.toArray());
+
+        // 🔁 Mapping vers DTO
+        return articles.stream()
+                .map(articleMapper::toFormDTO)
+                .toList();
+    }
+
+
+    @Override
+    public Utilisateurs selectUserById(Long id) {
+        String sql = """
+        SELECT pseudo, nom, prenom, email, telephone
+        FROM utilisateurs
+        WHERE no_utilisateur = ?
+    """;
+
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
+            Utilisateurs utilisateur = new Utilisateurs();
+            utilisateur.setPseudo(rs.getString("pseudo"));
+            utilisateur.setNom(rs.getString("nom"));
+            utilisateur.setPrenom(rs.getString("prenom"));
+            utilisateur.setEmail(rs.getString("email"));
+            utilisateur.setTelephone(rs.getString("telephone"));
+            return utilisateur;
+        });
+    }
 }
-        }

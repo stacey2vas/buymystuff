@@ -42,6 +42,7 @@ public class ArticleFormDTO {
     private Adresse adresseProprietaire;
     private MultipartFile imageFile; // champ pour upload
     private String image;
+    private int prixVente;
 
     public ArticleFormDTO() {
     }
@@ -139,5 +140,13 @@ public class ArticleFormDTO {
 
     public void setAdresseString(String adresseString) {
         this.adresseString = adresseString;
+    }
+
+    public int getPrixVente() {
+        return prixVente;
+    }
+
+    public void setPrixVente(int prixVente) {
+        this.prixVente = prixVente;
     }
 }
