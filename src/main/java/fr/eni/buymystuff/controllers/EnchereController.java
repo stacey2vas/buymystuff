@@ -5,11 +5,15 @@ import fr.eni.buymystuff.DTO.ArticleFormDTO;
 import fr.eni.buymystuff.bo.Articles;
 import fr.eni.buymystuff.bo.Categories;
 import fr.eni.buymystuff.bo.Encheres;
+import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.services.ArticleService;
+import fr.eni.buymystuff.services.AuthService;
 import fr.eni.buymystuff.services.ServicesCategories;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +24,11 @@ public class EnchereController {
 
     private final ArticleService articleService;
     private final ServicesCategories servicesCategories;
-
-    public EnchereController(ArticleService articleService, ServicesCategories servicesCategories) {
+    private final AuthService authService;
+    public EnchereController(ArticleService articleService, ServicesCategories servicesCategories, AuthService authService) {
         this.articleService = articleService;
         this.servicesCategories = servicesCategories;
+        this.authService = authService;
     }
 
     @GetMapping("/")
@@ -38,10 +43,14 @@ public class EnchereController {
         return "/test/accueil";
     }
     @GetMapping("/enchere/{id}")
-    public String showArticle(@PathVariable("id") Long id, Model model) {
+    public String showArticle(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+        Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
         ArticleFormDTO article = articleService.getArticleDTOById(id).data;
+        Utilisateurs proprietaire = articleService.getUserById(id).data;
         model.addAttribute("article", article);
-
+        model.addAttribute("proprietaire",proprietaire);
+        model.addAttribute("user",user);
+        System.out.println("propriétaire : " + proprietaire);
         return "/test/enchere";
     }
 

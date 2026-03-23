@@ -3,6 +3,7 @@ package fr.eni.buymystuff.dao;
 import fr.eni.buymystuff.DTO.ArticleFormDTO;
 import fr.eni.buymystuff.bo.Articles;
 import fr.eni.buymystuff.bo.Categories;
+import fr.eni.buymystuff.bo.Utilisateurs;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -16,4 +17,5 @@ public interface  IDAOArticle {
     List<ArticleFormDTO> findBySearch(String nomArticle, String categorie,
                                    Integer prixMin, Integer prixMax,
                                    LocalDateTime dateStart, LocalDateTime dateEnd);
+    Utilisateurs selectUserById(Long id);
 }

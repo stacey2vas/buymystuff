@@ -4,6 +4,7 @@ package fr.eni.buymystuff.services;
 import fr.eni.buymystuff.DTO.ArticleFilterDTO;
 import fr.eni.buymystuff.DTO.ArticleFormDTO;
 import fr.eni.buymystuff.bo.Articles;
+import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.dao.IDAOArticle;
 
 import fr.eni.buymystuff.mapper.ArticleMapper;
@@ -69,7 +70,10 @@ public class ArticleService {
 
         return new ServiceResponse<>("4000", "Film trouvé", articles);
     }
-
+    public ServiceResponse<Utilisateurs> getUserById(Long id) {
+        Utilisateurs user = idaoArticle.selectUserById(id);
+        return new ServiceResponse<Utilisateurs>("4000", "Film trouvé", user);
+    }
 }
 
 
