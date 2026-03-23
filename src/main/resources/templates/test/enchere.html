@@ -82,14 +82,14 @@
                                 Enchérir
                             </button>
 
-                            <!-- Message si pas assez de crédits -->
-                            <div th:if="${user.credit < article.prixVente}" class="text-red-400 font-semibold mt-2">
-                                Vous n’avez pas assez de crédits pour enchérir sur ce produit.
-                            </div>
-                            <div th:if="${user.credit > article.prixVente}"  th:text="${article.prixInitial + 5} + ' €'" class="text-sm italic text-muted mt-2 text-gray-300">
-                             </div>
-                        </form>
 
+                        </form>
+                        <!-- Message si pas assez de crédits -->
+                        <div th:if="${user.credit < article.prixVente}" class="text-red-400 font-semibold mt-2">
+                            Vous n’avez pas assez de crédits pour enchérir sur ce produit.
+                        </div>
+                        <div th:if="${user.credit > article.prixVente}"  th:text="'enchère minimum : ' + ${article.prixInitial + 5} + ' €'" class="w-full text-sm italic text-muted text-gray-300">
+                        </div>
 
 
                         <!-- Feedback -->
