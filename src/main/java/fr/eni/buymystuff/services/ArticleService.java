@@ -18,9 +18,12 @@ public class ArticleService {
 
     private final IDAOArticle idaoArticle;
     private final ArticleMapper articleMapper;
-    public ArticleService(IDAOArticle idaoArticle, ArticleMapper articleMapper) {
+    private final AuthService authService;
+
+    public ArticleService(IDAOArticle idaoArticle, ArticleMapper articleMapper, AuthService authService) {
         this.idaoArticle = idaoArticle;
         this.articleMapper = articleMapper;
+        this.authService = authService;
     }
 
     public ServiceResponse<ArticleFormDTO> verifyImageInput(ArticleFormDTO articleFormDTO) {
@@ -48,7 +51,6 @@ public class ArticleService {
     public ServiceResponse<ArticleFormDTO> getArticleDTOById(Long id) {
         Articles article = idaoArticle.findArticleById(id);
         ArticleFormDTO articleFormDTO = articleMapper.toFormDTO(article);
-
         return new ServiceResponse<>("4000", "Film trouvé", articleFormDTO);
     }
 
