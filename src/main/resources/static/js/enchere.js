@@ -1,4 +1,5 @@
 function init() {
+    console.log('init chargé ')
     afficherTimer();
     verificationInputDate();
     verificationInputPrix();
@@ -13,16 +14,6 @@ function init() {
 
             // La date fin ne peut pas être avant la date début
             dateEnd.min = dateStart.value;
-        });
-    }
-
-    // Optionnel : empêcher l'envoi du formulaire si validation échoue
-    const form = document.getElementById("filterArticle");
-    if (form) {
-        form.addEventListener("submit", (e) => {
-            if (!validerFormulaire()) {
-                e.preventDefault();
-            }
         });
     }
 }
@@ -41,15 +32,21 @@ function afficherTimer() {
                 return;
             }
 
-            const h = Math.floor(diff / 1000 / 60 / 60);
-            const m = Math.floor(diff / 1000 / 60 % 60);
-            const s = Math.floor(diff / 1000 % 60);
+            const totalSeconds = Math.floor(diff / 1000);
+            const d = Math.floor(totalSeconds / 86400); // jours
+            const h = Math.floor((totalSeconds % 86400) / 3600); // heures
+            const m = Math.floor((totalSeconds % 3600) / 60); // minutes
+            const s = totalSeconds % 60; // secondes
 
             // Supprime le skeleton seulement au moment de la première mise à jour
             const skeleton = el.querySelector('.skeleton');
             if (skeleton) skeleton.remove();
 
-            el.textContent = `${h}h ${m}m ${s}s`;
+            let timeStr = "";
+            if (d > 0) timeStr += `${d}j `;
+            timeStr += `${h}h ${m}m ${s}s`;
+
+            el.textContent = timeStr;
         }, 1000);
     });
 }
@@ -104,32 +101,43 @@ function validerFormulaire() {
 
     return true;
 }
-function submitForm(event){
+function submitForm(event) {
     event.preventDefault();
-    console.log('coucou');
+
+    // validation AVANT tout
+    if (!validerFormulaire()) {
+        return;
+    }
+
     const filter = {
         nomArticle: document.getElementById("nomArticle").value,
         categorie: document.getElementById("categorie").value,
-        prixMin: document.getElementById("prixMin").value,
-        prixMax: document.getElementById("prixMax").value,
+        prixMin: document.getElementById("prixMin").value || null,
+        prixMax: document.getElementById("prixMax").value || null,
         dateStart: document.getElementById("dateStart").value,
         dateEnd: document.getElementById("dateEnd").value,
     };
+
     console.log(filter);
-    // fetch("/api/films", {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify(filter),
-    //     credentials: "same-origin" // 👈 important pour inclure le cookie de session
-    // })
-    //     .then(r => r.text())
-    //     .then(html => {
-    //         const container = document.getElementById("filmsContainer");
-    //         const tempDiv = document.createElement("div");
-    //         tempDiv.innerHTML = html;       // html = uniquement les <div class="relative bg-card ...">
-    //         container.replaceChildren(...tempDiv.children);        })
-    //     .catch(error => console.error("Erreur :", error));
+
+    fetch("/api/articles", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(filter),
+        credentials: "same-origin"
+    })
+    .then(r => r.text())
+    .then(html => {
+        const container = document.getElementById("articlesContainer");
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = html;
+
+        container.replaceChildren(...tempDiv.children);
+        afficherTimer();
+    })
+    .catch(error => console.error("Erreur :", error));
 }
-document.addEventListener('DOMContentLoaded', init);
+
+document.addEventListener("DOMContentLoaded", init);

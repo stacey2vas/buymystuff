@@ -11,12 +11,14 @@
     <div th:replace="fragments/search :: div"></div>
 
     <!-- Grid de cartes -->
-<!--    <p class="h-[50vh] bg-gray-500">Test</p>-->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        <div th:each="article : ${articles}"
-             th:replace="fragments/card :: cardArticle(article=${article})">
-        </div>
+    <div id="articlesContainer"
+     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+
+    <div th:each="article : ${articles}"
+         th:replace="fragments/cardArticle :: cardArticle(article=${article})">
     </div>
+
+</div>
     <script th:src="@{/js/enchere.js}" defer></script>
 </div>
 </body>

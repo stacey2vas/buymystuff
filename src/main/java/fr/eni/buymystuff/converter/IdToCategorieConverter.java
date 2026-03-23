@@ -2,16 +2,18 @@ package fr.eni.buymystuff.converter;
 
 import fr.eni.buymystuff.bo.Categories;
 import fr.eni.buymystuff.services.ArticleService;
+import fr.eni.buymystuff.services.ServicesCategories;
+
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
 public class IdToCategorieConverter implements Converter<String, Categories> {
 
-    private final ArticleService articleService;
+    private final ServicesCategories servicesCategories;
 
-    public IdToCategorieConverter(ArticleService articleService) {
-        this.articleService = articleService;
+    public IdToCategorieConverter(ServicesCategories servicesCategories) {
+        this.servicesCategories = servicesCategories;
     }
 
     @Override
@@ -21,7 +23,7 @@ public class IdToCategorieConverter implements Converter<String, Categories> {
         }
         try {
             Long categorieId = Long.parseLong(id);
-            return articleService.findCategorieById(categorieId).data;
+            return servicesCategories.selectById(categorieId).data;
         } catch (NumberFormatException e) {
             return null;
         }
