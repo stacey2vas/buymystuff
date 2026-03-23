@@ -2,53 +2,63 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{fragments/base}">
+      layout:decorate="~{fragments/base}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
+
 <div layout:fragment="content"
-     class="w-10/12 max-w-3xl
-            bg-card-dark
-            border border-card-principal
-            p-8 mt-9 rounded-xl
-            shadow-[0_05px_30px_rgba(0,0,0,0.9)]">
+     class="flex gap-12 w-8/12 justify-center items-start mt-9">
 
-    <!-- Conteneur principal en ligne -->
-    <div class="flex gap-8 items-start">
+    <!-- Photo de l'utilisateur 1ER block -->
 
-        <!-- Avatar de l'utilisateur -->
-        <div class="w-5/12 flex flex-col items-center justify-center
-        bg-[#1a1a1a] p-7 rounded-xl border border-card-principal">
-
-            <div class="w-20 h-20 flex items-center justify-center
+    <div class="w-[40%] flex justify-center flex-col items-center bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
+        <div class="w-20 h-20 flex items-center justify-center
                         rounded-full bg-[#03d6f9] text-2xl font-bold">
                 <span class="text-[#4934d3]"
                       th:text="${#authentication.principal.username.substring(0,1).toUpperCase()}">
                 </span>
-            </div>
-
-            <p class="text-white mt-4 font-semibold"
-               th:text="${user.pseudo}">
-            </p>
         </div>
 
-        <!-- Bloc Infos -->
-        <div class="flex-1">
+        <p class="text-white mt-4 font-semibold"
+           th:text="${user.pseudo}">
+        </p>
+        <p><span th:text="${user.email}"></span></p>
+        <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()" class="mt-4">
+            <button type="submit"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Se déconnecter
+            </button>
+        </form>
+    </div>
 
+
+    <!-- ================= Pofil ============ -->
+
+    <div class="w-[60%] flex flex-col gap-2">
+        <div class="w-full bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
             <!-- Titre -->
-            <h2 class="text-2xl font-bold text-white mb-6 drop-shadow">
+            <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">
                 Profil de <span th:text="${user.pseudo}"></span>
             </h2>
+
             <!-- Informations de l'utilisateur -->
             <ul class="space-y-3 text-white">
                 <li><strong>Nom :</strong> <span th:text="${user.nom}"></span></li>
                 <li><strong>Prénom :</strong> <span th:text="${user.prenom}"></span></li>
                 <li><strong>Pseudo :</strong> <span th:text="${user.pseudo}"></span></li>
-                <li><strong>E-Mail :</strong> <span th:text="${user.email}"></span></li>
+            </ul>
+
+            <!-- Adresse de l'utilisateur -->
+
+        </div>
+        <div class="w-full bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
+            <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">Adresse</h2>
+            <ul class="space-y-3 text-white">
                 <li><strong>Rue :</strong> <span th:text="${user.adresse.rue}"></span></li>
                 <li><strong>Code Postal :</strong> <span th:text="${user.adresse.codePostal}"></span></li>
                 <li><strong>Ville :</strong> <span th:text="${user.adresse.ville}"></span></li>
             </ul>
-
         </div>
-
     </div>
 </div>
+</body>
+</html>
