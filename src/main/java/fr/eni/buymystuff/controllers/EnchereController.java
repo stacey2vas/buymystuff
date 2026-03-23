@@ -9,6 +9,7 @@ import fr.eni.buymystuff.bo.Encheres;
 import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.services.*;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -56,11 +57,16 @@ public class EnchereController {
         model.addAttribute("enchereForm",new EnchereDTO());
         return "/test/enchere";
     }
-    @PostMapping("/add-enchere")
-    public String addEnchere(@ModelAttribute("articleForm") @AuthenticationPrincipal UserDetails userDetails, EnchereDTO enchereDTO,
-                             Model model) {
+    @PostMapping("/add-enchere/{id}")
+    public String addEnchere(@PathVariable("id") Long id,
+                             @AuthenticationPrincipal UserDetails userDetails,
+                             @ModelAttribute("enchereForm") EnchereDTO enchereDTO) throws IOException {
 
-        model.addAttribute("enchereForm",new EnchereDTO());
-        return "/test/enchere";
+        Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
+        ArticleFormDTO articleDTO = articleService.getArticleDTOById(id).data;
+
+        enchereService.addEnchere(enchereDTO, articleDTO, user);
+
+        return "redirect:/enchere/" + id;
     }
 }

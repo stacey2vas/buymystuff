@@ -59,18 +59,16 @@ public class DAOEnchere implements IDAOEnchere{
     }
 
     @Override
-    public void addEnchere(EnchereDTO enchere, Long idUser) throws IOException {
-        System.out.println("enchere : " + enchere);
-        System.out.println("id user : " + idUser);
-//        String sql = "INSERT INTO encheres (no_utilisateur, no_article, date_enchere, montant_enchere) " +
-//                "VALUES (?, ?, ?, ?)";
-//
-//        jdbcTemplate.update(
-//                sql,
-//                idUser,
-//                enchere.getArticle().getId(),
-//                LocalDateTime.now(),  // Date de maintenant
-//                enchere.getMontantEnchere()
-//        );
+    public void addEnchere(EnchereDTO enchere) throws IOException {
+        String sql = "INSERT INTO encheres (no_utilisateur, no_article, date_enchere, montant_enchere) " +
+                "VALUES (?, ?, ?, ?)";
+
+        jdbcTemplate.update(
+                sql,
+                enchere.getUtilisateur().getId(),
+                enchere.getArticle().getId(),
+                LocalDateTime.now(),
+                enchere.getMontantEnchere()
+        );
     }
 }

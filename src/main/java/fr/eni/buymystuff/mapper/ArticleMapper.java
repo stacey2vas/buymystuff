@@ -63,8 +63,19 @@ public class ArticleMapper {
         article.setDateDebut(dto.getDateDebut());
         article.setDateFin(dto.getDateFin());
         article.setPrixInitial(dto.getPrixInitial());
+        article.setPrixVente(dto.getPrixVente());
+
+        // ⚠️ Catégories (si déjà chargées)
         article.setCategories(dto.getCategories());
+
+        // ⚠️ Adresse
         article.setAdresseProprietaire(dto.getAdresseProprietaire());
+
+        // ⚠️ Image
+        article.setImage(dto.getImage());
+
+        // ⚠️ Utilisateur (propriétaire)
+        article.setUtilisateur(dto.getUtilisateurs());
 
         return article;
     }

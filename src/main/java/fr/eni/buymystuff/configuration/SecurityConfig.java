@@ -43,9 +43,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/enchere/{id}").hasAnyRole("USER", "ADMIN")
                        .requestMatchers("/api/**").permitAll() // Autorisé l'accès aux routes d'API (ex: /api/films) sans authentification
                         .requestMatchers("/api/articles").permitAll()
-                       .requestMatchers(HttpMethod.GET, "/magic/ajout").hasRole("ADMIN")
                         .requestMatchers("/accueil").authenticated()
-                                .anyRequest().authenticated() // ICI ON DECOMMENTERA A LA FIN POUR LES TESTS ON PERMIT ALL pour donner accès à tous les fichiers
+                                //.anyRequest().authenticated() // ICI ON DECOMMENTERA A LA FIN POUR LES TESTS ON PERMIT ALL pour donner accès à tous les fichiers
                                 .anyRequest().permitAll()
                 )
                 .formLogin( form -> {

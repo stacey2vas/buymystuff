@@ -80,7 +80,7 @@
                     </div>
                     <!-- Formulaire enchère -->
                     <div class=" w-full relative -bottom-10 left-0  flex-col items-center justify-center rounded-lg p-4 bg-card-dark border border-card-principal">
-                        <form th:action="@{/add-enchere}" th:object="${enchereForm}" method="post" class="w-full flex flex-col gap-3">
+                        <form th:action="@{'/add-enchere/' + ${article.id}}" th:object="${enchereForm}" method="post" class="w-full flex flex-col gap-3">
 
                             <!-- Champs cachés nécessaires pour le DTO -->
                             <input type="hidden" th:field="*{id}" th:value="${user.id}"/>
