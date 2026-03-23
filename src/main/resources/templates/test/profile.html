@@ -2,7 +2,8 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{fragments/base}">
+      layout:decorate="~{fragments/base}" xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:hover="http://www.w3.org/1999/xhtml">
 <body>
 <div layout:fragment="content"
      class="w-10/12 max-w-3xl
@@ -14,7 +15,7 @@
     <!-- Conteneur principal en ligne -->
     <div class="flex gap-8 items-start">
 
-        <!-- Avatar de l'utilisateur -->
+        <!-- Avatar de l'utilisateur + lien de deconnexion -->
         <div class="w-5/12 flex flex-col items-center justify-center
         bg-[#1a1a1a] p-7 rounded-xl border border-card-principal">
 
@@ -28,6 +29,13 @@
             <p class="text-white mt-4 font-semibold"
                th:text="${user.pseudo}">
             </p>
+            <p> <span th:text="${user.email}"></span></p>
+            <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()" class="mt-4">
+                <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Se déconnecter
+                </button>
+            </form>
         </div>
 
         <!-- Bloc Infos -->
@@ -42,7 +50,6 @@
                 <li><strong>Nom :</strong> <span th:text="${user.nom}"></span></li>
                 <li><strong>Prénom :</strong> <span th:text="${user.prenom}"></span></li>
                 <li><strong>Pseudo :</strong> <span th:text="${user.pseudo}"></span></li>
-                <li><strong>E-Mail :</strong> <span th:text="${user.email}"></span></li>
                 <li><strong>Rue :</strong> <span th:text="${user.adresse.rue}"></span></li>
                 <li><strong>Code Postal :</strong> <span th:text="${user.adresse.codePostal}"></span></li>
                 <li><strong>Ville :</strong> <span th:text="${user.adresse.ville}"></span></li>
