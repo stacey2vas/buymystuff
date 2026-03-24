@@ -89,6 +89,9 @@ input:-webkit-autofill:focus {
     scrollbar-width: thin;
     scrollbar-color: #4934d3 #101046;
 }
+
+/******************** INPUT TOGGLE ***************************/
+
 /********************* CHOICE SELECT ********************/
 /* ============================
    Conteneur du select
