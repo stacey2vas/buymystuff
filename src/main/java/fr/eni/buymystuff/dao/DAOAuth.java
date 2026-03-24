@@ -104,6 +104,22 @@ public class DAOAuth  implements IDAOAuth {
 
             return jdbcTemplate.queryForObject(sql, Integer.class, pseudo);
         }
+
+    @Override
+    public Utilisateurs save(Utilisateurs utilisateur) {
+    String sql = " ";
+        jdbcTemplate.update(sql,
+                movie.title,
+                movie.synopsis,
+                movie.duration,
+                movie.year,
+                movie.director.id,
+                movie.genre.id,
+                movie.id
+        );
+        return utilisateur;
+    }
+
     @Override
     public Utilisateurs selectByPseudo(String pseudo) {
         String sql = """
