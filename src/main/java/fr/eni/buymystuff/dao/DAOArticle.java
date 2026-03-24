@@ -337,6 +337,7 @@ public class DAOArticle implements IDAOArticle {
 
     @Override
     public List<Articles> getAllArticles() {
+        changeEtatVente();
         String sql = """
                     SELECT 
                         a.no_article,
@@ -356,6 +357,7 @@ public class DAOArticle implements IDAOArticle {
                     LEFT JOIN articles_categories ac ON a.no_article = ac.no_article
                     LEFT JOIN categories c ON c.no_categorie = ac.no_categorie
                     LEFT JOIN adresses ad ON ad.no_adresse = a.no_adresse
+                    WHERE a.etat_vente = 0
                     GROUP BY a.no_article;
                 """;
 
@@ -538,5 +540,20 @@ public class DAOArticle implements IDAOArticle {
             utilisateur.setTelephone(rs.getString("telephone"));
             return utilisateur;
         });
+    }
+    public void changeEtatVente (){
+        // Désactive la sécurité de mysql workbench pour l'update de plusieurs lignes de données
+        jdbcTemplate.execute("SET SQL_SAFE_UPDATES = 0;");
+        // Update des encheres en fonction de la date de fin d'enchère et de maintenant
+        String updateEnchere = """
+                
+                    UPDATE articles_vendus
+                     SET etat_vente = 1
+                    WHERE etat_vente = 0 AND date_fin_encheres < NOW()
+                """;
+        jdbcTemplate.update(updateEnchere);
+        // Réactive la sécurité de mysql workbench pour l'update de plusieurs lignes de données
+        jdbcTemplate.execute("SET SQL_SAFE_UPDATES = 1;");
+
     }
 }

@@ -7,32 +7,35 @@ async function init() {
 }
 
 
-
 function verificationInputPrixEnchere(credit) {
     console.log('je suis dans verification input prix enchere');
-    const inputMontantEnchere = document.getElementById("montantEnchere");
-    let prixVente = parseFloat(inputMontantEnchere.min);
-    let boutonSubmit = document.getElementById("submitBtn");
-    let indicationMessage = document.getElementById("indicationMessage");
-    inputMontantEnchere.addEventListener('input', () => {
-        let valeurUser = parseFloat(inputMontantEnchere.value);
-        const creditRestant = credit - valeurUser;
-        if (valeurUser < prixVente || creditRestant < 0) {
-            boutonSubmit.disabled = true;
-            indicationMessage.classList.remove('hidden');
-            if(creditRestant < 0){
-                indicationMessage.innerText="Enchère impossible car vous n'avez pas assez de crédit";
+    let prixVente = 0;
+    if (document.getElementById("montantEnchere")) {
+        let inputMontantEnchere = document.getElementById("montantEnchere");
+        prixVente = parseFloat(inputMontantEnchere.min);
+        let boutonSubmit = document.getElementById("submitBtn");
+        let indicationMessage = document.getElementById("indicationMessage");
+        inputMontantEnchere.addEventListener('input', () => {
+            let valeurUser = parseFloat(inputMontantEnchere.value);
+            const creditRestant = credit - valeurUser;
+            if (valeurUser < prixVente || creditRestant < 0) {
+                boutonSubmit.disabled = true;
+                indicationMessage.classList.remove('hidden');
+                if (creditRestant < 0) {
+                    indicationMessage.innerText = "Enchère impossible car vous n'avez pas assez de crédit";
 
+                } else {
+                    indicationMessage.innerText = "Le montant saisi doit être supérieur au prix de vente actuel";
+                }
             } else {
-            indicationMessage.innerText="Le montant saisi doit être supérieur au prix de vente actuel";
-        }
-        } else {
-            indicationMessage.classList.add('hidden');
-            boutonSubmit.disabled = false;
-        }
-    });
+                indicationMessage.classList.add('hidden');
+                boutonSubmit.disabled = false;
+            }
+        });
+    }
 }
-function afficherTimer(){
+
+function afficherTimer() {
     const el = document.getElementById('timer');
     const bidButton = document.querySelector('form button[type="submit"]');
 

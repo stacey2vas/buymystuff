@@ -69,7 +69,26 @@ input:-webkit-autofill:focus {
     caret-color: #fff;
     box-shadow: 0 0 0 2px #4934d3 inset; /* simule le focus violet */
 }
+/*************************   SCROLL BAR STYLE     *************************/
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    width: 8px;
+ }
 
+::-webkit-scrollbar-track {
+    background: #101046;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #4934d3; /* gray-600 */
+    border-radius: 9999px;
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #4934d3 #101046;
+}
 /********************* CHOICE SELECT ********************/
 /* ============================
    Conteneur du select
