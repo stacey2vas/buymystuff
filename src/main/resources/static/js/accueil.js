@@ -3,8 +3,7 @@ function init() {
     afficherTimer();
     verificationInputDate();
     verificationInputPrix();
-    verificationInputPrixEnchere();
-     document.getElementById("filterArticle").addEventListener("submit", submitForm );
+    document.getElementById("filterArticle").addEventListener("submit", submitForm);
 
     const dateStart = document.getElementById("dateStart");
 
@@ -17,6 +16,28 @@ function init() {
             dateEnd.min = dateStart.value;
         });
     }
+    const buttons = document.querySelectorAll('.toggle-btn');
+    const statutInput = document.getElementById('statutInput');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const value = btn.dataset.value;
+            const isSelected = btn.classList.contains("bg-[#4934d3]");
+            console.log('is selected : ' + isSelected);
+            if (isSelected){
+                btn.classList.remove('bg-[#4934d3]')
+                return;
+            }
+            console.log('je passe ici');
+            buttons.forEach(b => b.classList.remove('bg-[#4934d3]'));
+
+            // Sélectionner le bouton cliqué
+            btn.classList.add('bg-[#4934d3]');
+
+            // Mettre à jour la valeur de l'input
+            statutInput.value = value;
+        });
+    });
 }
 
 // Timer dynamique
@@ -71,37 +92,14 @@ function verificationInputPrix() {
 
     if (!prixMin || !prixMax) return;
 
-    prixMin.addEventListener("input", function() {
+    prixMin.addEventListener("input", function () {
         if (this.value !== "") {
             prixMax.min = this.value;
         }
     });
 }
 
-// Validation complète du formulaire
-function validerFormulaire() {
-    const prixMin = parseFloat(document.getElementById("prixMin")?.value || 0);
-    const prixMax = parseFloat(document.getElementById("prixMax")?.value || 0);
-    const dateStart = document.getElementById("dateStart")?.value;
-    const dateEnd = document.getElementById("dateEnd")?.value;
 
-    if (prixMin < 0) {
-        alert("Le prix minimum doit être supérieur ou égal à 0");
-        return false;
-    }
-
-    if (prixMax && prixMax < prixMin) {
-        alert("Le prix maximum doit être supérieur ou égal au prix minimum");
-        return false;
-    }
-
-    if (dateStart && dateEnd && dateEnd < dateStart) {
-        alert("La date de fin doit être supérieure ou égale à la date de début");
-        return false;
-    }
-
-    return true;
-}
 function submitForm(event) {
     event.preventDefault();
 
@@ -129,34 +127,41 @@ function submitForm(event) {
         body: JSON.stringify(filter),
         credentials: "same-origin"
     })
-    .then(r => r.text())
-    .then(html => {
-        const container = document.getElementById("articlesContainer");
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = html;
+        .then(r => r.text())
+        .then(html => {
+            const container = document.getElementById("articlesContainer");
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = html;
 
-        container.replaceChildren(...tempDiv.children);
-        afficherTimer();
-    })
-    .catch(error => console.error("Erreur :", error));
+            container.replaceChildren(...tempDiv.children);
+            afficherTimer();
+        })
+        .catch(error => console.error("Erreur :", error));
 }
-function verificationInputPrixEnchere() {
-    console.log('je suis dans verification input prix enchere');
-    let inputMontantEnchere = document.getElementById("montantEnchere");
-    let prixVente = parseFloat(inputMontantEnchere.min);
-    let boutonSubmit = document.getElementById("submitBtn");
-    let indicationMessage = document.getElementById("indicationMessage");
 
-    inputMontantEnchere.addEventListener('input', () => {
-        let valeurUser = parseFloat(inputMontantEnchere.value);
+// Validation complète du formulaire
+function validerFormulaire() {
+    const prixMin = parseFloat(document.getElementById("prixMin")?.value || 0);
+    const prixMax = parseFloat(document.getElementById("prixMax")?.value || 0);
+    const dateStart = document.getElementById("dateStart")?.value;
+    const dateEnd = document.getElementById("dateEnd")?.value;
 
-        if (valeurUser < prixVente) {
-            boutonSubmit.disabled = true;
-            indicationMessage.classList.remove('hidden');
-        } else {
-            indicationMessage.classList.add('hidden');
-            boutonSubmit.disabled = false;
-        }
-    });
+    if (prixMin < 0) {
+        alert("Le prix minimum doit être supérieur ou égal à 0");
+        return false;
+    }
+
+    if (prixMax && prixMax < prixMin) {
+        alert("Le prix maximum doit être supérieur ou égal au prix minimum");
+        return false;
+    }
+
+    if (dateStart && dateEnd && dateEnd < dateStart) {
+        alert("La date de fin doit être supérieure ou égale à la date de début");
+        return false;
+    }
+
+    return true;
 }
+
 document.addEventListener("DOMContentLoaded", init);
