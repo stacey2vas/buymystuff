@@ -16,6 +16,6 @@ public interface  IDAOArticle {
     List<Articles> getAllArticles();
     List<ArticleFormDTO> findBySearch(String nomArticle, String categorie,
                                       Integer prixMin, Integer prixMax,
-                                      String statut);
+                                      String statut,String selectValue, Long idUser);
     Utilisateurs selectUserById(Long id);
 }

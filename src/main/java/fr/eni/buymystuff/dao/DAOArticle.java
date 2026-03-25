@@ -401,7 +401,7 @@ public class DAOArticle implements IDAOArticle {
     @Override
     public List<ArticleFormDTO> findBySearch(String nomArticle, String categorie,
                                              Integer prixMin, Integer prixMax,
-                                             String statut) {
+                                             String statut, String selectValue, Long idUser) {
 
         StringBuilder sql = new StringBuilder("""
                     SELECT 
@@ -477,9 +477,48 @@ public class DAOArticle implements IDAOArticle {
                     break;
             }
         }
-        // 🔥 IMPORTANT : group by pour éviter doublons
-        sql.append(" GROUP BY a.no_article");
+        if (selectValue != null && idUser != null) {
+            switch (selectValue) {
 
+                case "participation":
+                    sql.append("""
+                AND EXISTS (
+                    SELECT 1 FROM encheres e
+                    WHERE e.no_article = a.no_article
+                    AND e.no_utilisateur = ?
+                )
+            """);
+                    params.add(idUser);
+                    break;
+
+                case "gagnees":
+                    sql.append("""
+                AND EXISTS (
+                    SELECT 1 FROM encheres e
+                    WHERE e.no_article = a.no_article
+                    AND e.no_utilisateur = ?
+                    AND e.montant = (
+                        SELECT MAX(e2.montant)
+                        FROM encheres e2
+                        WHERE e2.no_article = a.no_article
+                    )
+                )
+                AND a.date_fin_encheres < NOW()
+            """);
+                    params.add(idUser);
+                    break;
+
+                case "mesVentes":
+                    sql.append(" AND a.no_utilisateur = ?");
+                    params.add(idUser);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        // 🔥 IMPORTANT : group by pour éviter doublons
+        sql.append(" GROUP BY a.no_article ORDER BY a.date_fin_encheres DESC");
         // 🔥 Execution
         List<Articles> articles = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 

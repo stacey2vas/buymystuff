@@ -1,45 +1,13 @@
 let statut = null;
+let selectValue = null;
 function init() {
     console.log('init chargé ')
     afficherTimer();
     verificationInputDate();
     verificationInputPrix();
-
-    const dateStart = document.getElementById("dateStart");
-
-    if (dateStart) {
-        dateStart.addEventListener("change", () => {
-            const dateEnd = document.getElementById("dateEnd");
-            if (!dateEnd) return;
-            // La date fin ne peut pas être avant la date début
-            dateEnd.min = dateStart.value;
-        });
-    }
-    const buttons = document.querySelectorAll('.toggle-btn');
-    buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const value = btn.dataset.value;
-            const isSelected = btn.classList.contains("bg-[#4934d3]");
-
-            if (isSelected) {
-                btn.classList.remove('bg-[#4934d3]');
-                filtreSelected.statut = null;
-                return;
-            }
-
-            // reset visuel
-            buttons.forEach(b => b.classList.remove('bg-[#4934d3]'));
-
-            // active bouton
-            btn.classList.add('bg-[#4934d3]');
-
-            // stocke dans ton state
-            statut = value;
-
-        });
-        document.getElementById("filterArticle").addEventListener("submit", submitForm);
-
-    });
+    verificationsButtonsSearch();
+    disabledButtonsToSelectValue();
+    document.getElementById("filterArticle").addEventListener("submit", submitForm);
 }
 
 // Timer dynamique
@@ -115,10 +83,11 @@ function submitForm(event) {
         categorie: document.getElementById("categorie").value,
         prixMin: document.getElementById("prixMin").value || null,
         prixMax: document.getElementById("prixMax").value || null,
-        statut: statut
+        statut: statut,
+        selectValue : selectValue
     };
 
-    console.log(filter);
+    console.log("filter select: " + filter.selectValue);
 
     fetch("/api/articles", {
         method: "POST",
@@ -157,5 +126,85 @@ function validerFormulaire() {
 
     return true;
 }
+function verificationsButtonsSearch (){
+    const buttons = document.querySelectorAll('.toggle-btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const value = btn.dataset.value;
+            const isSelected = btn.classList.contains("bg-[#4934d3]");
 
+            if (isSelected) {
+                btn.classList.remove('bg-[#4934d3]');
+                statut = null;
+                return;
+            }
+
+            // reset visuel
+            buttons.forEach(b => b.classList.remove('bg-[#4934d3]'));
+            // active bouton
+            btn.classList.add('bg-[#4934d3]');
+            // stocke dans ton state
+            statut = value;
+
+        });
+
+
+    });
+}
+function disabledButtonsToSelectValue() {
+    const select = document.querySelector("select[name='vue']");
+    if(select) {
+        const buttons = document.querySelectorAll(".toggle-btn");
+
+        select.addEventListener("change", () => {
+            const value = select.value;
+
+            // reset visuel + activation
+            buttons.forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove("opacity-50", "cursor-not-allowed");
+            });
+
+            // reset statut global si besoin
+            statut = null;
+            buttons.forEach(b => b.classList.remove('bg-[#4934d3]'));
+
+            // 🔥 LOGIQUE
+            if (value === "gagnees") {
+                buttons.forEach(btn => {
+                    if (btn.dataset.value !== "terminee") {
+                        disableButton(btn);
+                    }
+                });
+
+                // auto sélection "terminée"
+                const btnTerminee = document.querySelector('[data-value="terminee"]');
+                btnTerminee.classList.add('bg-[#4934d3]');
+                statut = "terminee";
+            }
+
+            if (value === "participation") {
+                buttons.forEach(btn => {
+                    if (btn.dataset.value === "pascommencee") {
+                        disableButton(btn);
+                    }
+                });
+            }
+            if (value === "mesVentes") {
+                // tout autorisé → rien à faire
+            }
+            if (value === "toutes") {
+                selectValue = null;
+            } else {
+                selectValue = value;
+            }
+        });
+    }
+}
+
+// helper propre
+function disableButton(btn) {
+    btn.disabled = true;
+    btn.classList.add("opacity-50", "cursor-not-allowed");
+}
 document.addEventListener("DOMContentLoaded", init);
