@@ -1,7 +1,7 @@
 package fr.eni.buymystuff.services;
 
 import fr.eni.buymystuff.bo.Categories;
-import fr.eni.buymystuff.jdbc.IDAOCategories;
+import fr.eni.buymystuff.dao.IDAOCategories;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

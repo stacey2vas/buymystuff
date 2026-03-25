@@ -54,4 +54,5 @@ public class EnchereDTO {
     public void setMontantEnchere(int montantEnchere) {
         this.montantEnchere = montantEnchere;
     }
+
 }
