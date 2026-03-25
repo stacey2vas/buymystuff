@@ -117,6 +117,7 @@ public class DAOAuth implements IDAOAuth {
         u.nom = ?, 
         u.prenom = ?, 
         u.email = ?, 
+        u.telephone = ?,
         a.rue = ?, 
         a.code_postal = ?, 
         a.ville = ?
@@ -128,11 +129,12 @@ public class DAOAuth implements IDAOAuth {
             ps.setString(2, utilisateur.getNom());
             ps.setString(3, utilisateur.getPrenom());
             ps.setString(4, utilisateur.getEmail());
-            ps.setString(5, utilisateur.getAdresse().getRue());
-            ps.setString(6, utilisateur.getAdresse().getCodePostal());
-            ps.setString(7, utilisateur.getAdresse().getVille());
-            ps.setLong(8, utilisateur.getId());
-            ps.setLong(9, utilisateur.getAdresse().getId());
+            ps.setString(5, utilisateur.getTelephone());
+            ps.setString(6, utilisateur.getAdresse().getRue());
+            ps.setString(7, utilisateur.getAdresse().getCodePostal());
+            ps.setString(8, utilisateur.getAdresse().getVille());
+            ps.setLong(9, utilisateur.getId());
+            ps.setLong(10, utilisateur.getAdresse().getId());
         });
         return utilisateur;
     }
