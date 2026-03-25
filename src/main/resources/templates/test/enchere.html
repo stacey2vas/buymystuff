@@ -29,6 +29,11 @@
                             <span class="text-accent font-bold" th:text="${enchere.montantEnchere} + ' €'"></span>
                         </div>
                     </div>
+                    <div class="flex flex-col gap-3 max-h-[340px] overflow-y-auto  pr-3" th:if="${encheres.isEmpty()}">
+                        <div  class="bg-[#0f0f3d] border-red-700 flex justify-between items-center p-3 rounded-lg border text-gray-200">
+                            Aucune enchère n'a été effectuée.
+                        </div>
+                    </div>
                 </div>
             </div>
 
