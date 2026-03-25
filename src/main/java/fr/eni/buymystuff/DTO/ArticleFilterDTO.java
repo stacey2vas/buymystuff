@@ -1,15 +1,12 @@
 package fr.eni.buymystuff.DTO;
 
-import java.time.LocalDate;
-
 public class ArticleFilterDTO {
 
     private String nomArticle;
     private String categorie;
     private Integer prixMin;
     private Integer prixMax;
-    private LocalDate dateStart;
-    private LocalDate dateEnd;
+    private String statut;
 
     // ----- Getters et Setters -----
     public String getNomArticle() {
@@ -44,19 +41,13 @@ public class ArticleFilterDTO {
         this.prixMax = prixMax;
     }
 
-    public LocalDate getDateStart() {
-        return dateStart;
+    public String getStatut() {
+        return statut;
     }
 
-    public void setDateStart(LocalDate dateStart) {
-        this.dateStart = dateStart;
+    public void setStatut(String statut) {
+        this.statut = statut;
     }
 
-    public LocalDate getDateEnd() {
-        return dateEnd;
-    }
 
-    public void setDateEnd(LocalDate dateEnd) {
-        this.dateEnd = dateEnd;
-    }
 }

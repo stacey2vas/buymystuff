@@ -15,7 +15,7 @@ public interface  IDAOArticle {
     List<Articles> findAllArticlesByUserId(int id);
     List<Articles> getAllArticles();
     List<ArticleFormDTO> findBySearch(String nomArticle, String categorie,
-                                   Integer prixMin, Integer prixMax,
-                                   LocalDateTime dateStart, LocalDateTime dateEnd);
+                                      Integer prixMin, Integer prixMax,
+                                      String statut);
     Utilisateurs selectUserById(Long id);
 }

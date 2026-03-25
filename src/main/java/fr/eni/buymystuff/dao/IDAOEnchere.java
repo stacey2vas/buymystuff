@@ -10,5 +10,5 @@ import java.util.List;
 public interface IDAOEnchere {
     List<Encheres> selectEncheresByArticleId(Long id);
     void addEnchere(EnchereDTO enchere) throws IOException;
-
+    public Encheres selectLastEnchereByArticleId(Long id);
 }

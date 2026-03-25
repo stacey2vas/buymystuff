@@ -55,4 +55,13 @@ public class AuthService {
        Utilisateurs user = daoAuth.selectByPseudo(pseudo);
        return new ServiceResponse<Utilisateurs>("4000", "Film trouvé", user);
     }
+
+    public ServiceResponse<Utilisateurs> save(Utilisateurs utilisateur) {
+        Utilisateurs user = daoAuth.save(utilisateur);
+        return new ServiceResponse<Utilisateurs>("4000", "Film trouvé", user);
+    }
+    public ServiceResponse<?> deleteAccount(Utilisateurs utilisateur) {
+        Utilisateurs user = daoAuth.deleteAccount(utilisateur);
+        return new ServiceResponse<Utilisateurs>("4000", "Film trouvé", user);
+    }
 }

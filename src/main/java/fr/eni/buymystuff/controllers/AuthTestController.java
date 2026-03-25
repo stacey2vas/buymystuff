@@ -89,7 +89,7 @@ public class AuthTestController
         return "test/formulaire-test";
     }
 
- // Route GET de test
+ // Route GET pour afficher le profil
     @GetMapping("/profile")
     public String showProfil(@AuthenticationPrincipal UserDetails userDetails, Model model) {
        Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
@@ -98,4 +98,19 @@ public class AuthTestController
         return "test/profile";
     }
 
+    // Route GET pour modifier le profil
+    @GetMapping("/update")
+    public String showUpdateProfilForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
+        model.addAttribute("user", user);
+
+        return "test/update-profile";
+    }
+
+    @PostMapping ("/process-update")
+    public String processUdpdate(@ModelAttribute("user") Utilisateurs user, Model model) {
+        // On ajoute l'utilisateur et l'adresse reçue dans la bdd
+        ServiceResponse<Utilisateurs> response = authService.save(user);
+        return "test/register";
+    }
 }
