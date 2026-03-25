@@ -49,7 +49,7 @@
 
     <!-- ================= Pofil ============ -->
 
-    <div class="w-[60%] flex flex-col gap-2">
+    <div class="w-[60%] flex flex-col gap-8">
         <div class="w-full bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
             <!-- Titre -->
             <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">
@@ -58,10 +58,10 @@
 
             <!-- Informations de l'utilisateur -->
             <ul class="space-y-3 text-white">
-                <li><strong>Nom :</strong> <span th:text="${user.nom}"></span></li>
-                <li><strong>Prénom :</strong> <span th:text="${user.prenom}"></span></li>
-                <li><strong>Pseudo :</strong> <span th:text="${user.pseudo}"></span></li>
-                <li><strong>N° de Téléphone :</strong> <span th:text="${user.telephone}"></span></li>
+                <li><strong class="space-y-3 text-gray-400">Nom :</strong> <span th:text="${user.nom}"></span></li>
+                <li><strong class="space-y-3 text-gray-400">Prénom :</strong> <span th:text="${user.prenom}"></span></li>
+                <li><strong class="space-y-3 text-gray-400">Pseudo :</strong> <span th:text="${user.pseudo}"></span></li>
+                <li><strong class="space-y-3 text-gray-400">N° de Téléphone :</strong> <span th:text="${user.telephone}"></span></li>
             </ul>
 
             <!-- Adresse de l'utilisateur -->
@@ -70,9 +70,9 @@
         <div class="w-full bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
             <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">Adresse</h2>
             <ul class="space-y-3 text-white">
-                <li><strong>Rue :</strong> <span th:text="${user.adresse.rue}"></span></li>
-                <li><strong>Code Postal :</strong> <span th:text="${user.adresse.codePostal}"></span></li>
-                <li><strong>Ville :</strong> <span th:text="${user.adresse.ville}"></span></li>
+                <li><strong class="space-y-3 text-gray-400">Rue :</strong> <span th:text="${user.adresse.rue}"></span></li>
+                <li><strong class="space-y-3 text-gray-400">Code Postal :</strong> <span th:text="${user.adresse.codePostal}"></span></li>
+                <li><strong class="space-y-3 text-gray-400">Ville :</strong> <span th:text="${user.adresse.ville}"></span></li>
             </ul>
         </div>
     </div>
