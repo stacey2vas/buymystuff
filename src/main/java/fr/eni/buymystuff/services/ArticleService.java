@@ -54,17 +54,17 @@ public class ArticleService {
         return new ServiceResponse<>("4000", "Film trouvé", articleFormDTO);
     }
 
-    public ServiceResponse<List<ArticleFormDTO>> getArticlesByFilter(ArticleFilterDTO filter) {
+    public ServiceResponse<List<ArticleFormDTO>> getArticlesByFilter(ArticleFilterDTO filter, Long id) {
         // Normaliser les valeurs vides en null
         String nomArticle = (filter.getNomArticle() == null || filter.getNomArticle().isBlank()) ? null : filter.getNomArticle();
         String categorie = (filter.getCategorie() == null || filter.getCategorie().isBlank()) ? null : filter.getCategorie();
         Integer prixMin = filter.getPrixMin();
         Integer prixMax = filter.getPrixMax();
         String statut = (filter.getStatut() == null ) ? null : filter.getStatut();
-
+        String selectValue =  (filter.getSelectValue() == null ) ? null : filter.getSelectValue();
         // Dates
 
-        List<ArticleFormDTO> articles = idaoArticle.findBySearch(nomArticle, categorie, prixMin, prixMax, statut);
+        List<ArticleFormDTO> articles = idaoArticle.findBySearch(nomArticle, categorie, prixMin, prixMax, statut, selectValue, id);
 
         return new ServiceResponse<>("4000", "Film trouvé", articles);
     }

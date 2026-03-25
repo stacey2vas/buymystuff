@@ -22,12 +22,12 @@
             <h3 class="text-xl text-white font-semibold mb-3">Informations de l’article</h3>
             <div class="flex gap-2">
                 <div class="flex-1">
-                    <label for="nom" class="block text-white mb-1">Nom de l'article</label>
+                    <label for="nom" class="block text-gray-400 mb-1">Nom de l'article</label>
                     <input id="nom" type="text" th:field="*{nomArticle}" required
                            class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white placeholder-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3] transition duration-200">
                 </div>
                 <div>
-                    <label for="prixInitial" class="block text-white mb-1">Prix initial</label>
+                    <label for="prixInitial" class="block text-gray-400 mb-1">Prix initial</label>
                     <input id="prixInitial" type="number" th:field="*{prixInitial}" required
                            class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3] transition duration-200">
                     <p class="text-gray-400 text-sm mt-1">En euros, montant minimum 1€</p>
@@ -35,7 +35,7 @@
 
             </div>
             <div class="flex-1">
-                <label for="categories" class="block text-white mb-1">Catégories</label>
+                <label for="categories" class="block text-gray-400 mb-1">Catégories</label>
                 <select th:field="*{categoriesIds}" id="categories" multiple
                         class="choices w-full px-4 py-2.5 rounded-xl h-[46px] bg-[#101046]/80 text-white placeholder-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3] transition duration-200">
                     <option th:each="categorie : ${categories}" th:value="${categorie.id}" th:text="${categorie.libelle}"></option>
@@ -53,14 +53,14 @@
             <div class="flex flex-col">
             <div class="flex gap-2">
                 <div class="flex-1">
-                    <label class="block text-white mb-1">Date début</label>
+                    <label class="block text-gray-400 mb-1">Date début</label>
                     <input type="datetime-local" name="dateDebut" id="dateDebut"
                            th:value="${#temporals.format(articleForm.dateDebut, 'yyyy-MM-dd''T''HH:mm')}" required
                            class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3] transition duration-200">
                 </div>
 
                 <div class="flex-1">
-                    <label class="block text-white mb-1">Date fin</label>
+                    <label class="block text-gray-400 mb-1">Date fin</label>
                     <input type="datetime-local" name="dateFin" id="dateFin"
                            th:value="${#temporals.format(articleForm.dateFin, 'yyyy-MM-dd''T''HH:mm')}" required
                            class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3] transition duration-200">
@@ -74,13 +74,13 @@
             <!-- ===================== Adresse ===================== -->
             <h3 class="text-xl text-white font-semibold">Adresse</h3>
             <div>
-                <label class="block text-white mb-1">Recherche par rue</label>
+                <label class="block text-gray-400 mb-1">Recherche par rue</label>
                 <input id="adresseProprietaire" type="text" placeholder="Ex : 10 rue de la Paix"
                        class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3] transition duration-200">
                 <ul id="suggestionsList" class="bg-[#101046]/80 border border-white/20 rounded-xl mt-1 max-h-40 overflow-y-auto hidden"></ul>
                 <p class="text-red-500 text-sm mt-1 h-[25px]" id="adresseHelp" hidden>Tapez un nom de rue pour obtenir des suggestions précises.</p>
                 <div class="flex flex-col mt-2">
-                    <span>Adresse sélectionnée :</span>
+                    <span class="text-gray-400">Adresse sélectionnée :</span>
                     <input th:field="*{adresseString}" id="adresseSelected" name="adresseSelected" type="text" readonly
                            class="w-full px-4 py-2.5 rounded-xl bg-transparent text-white border border-white/20 mt-1"
                            placeholder="Adresse sélectionnée">

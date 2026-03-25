@@ -7,7 +7,7 @@ public class ArticleFilterDTO {
     private Integer prixMin;
     private Integer prixMax;
     private String statut;
-
+    private String selectValue;
     // ----- Getters et Setters -----
     public String getNomArticle() {
         return nomArticle;
@@ -49,5 +49,11 @@ public class ArticleFilterDTO {
         this.statut = statut;
     }
 
+    public String getSelectValue() {
+        return selectValue;
+    }
 
+    public void setSelectValue(String selectValue) {
+        this.selectValue = selectValue;
+    }
 }

@@ -107,7 +107,8 @@
                          class="flex flex-col gap-4 justify-center items-center mb-6 pt-6 ">
                         <input id="montantEnchereHidden" type="number"
                                th:min="${article.prixVente + 1}"  class="hidden"/>
-                        <a href="#">Modifier la vente</a>
+                        <a th:href="@{/modify-article/{id}(id=${article.id})}" class="  bg-btn text-white font-semibold py-2 px-6 rounded-md transition-colors shadow-md transform hover:bg-btn
+           disabled:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-500">Modifier la vente</a>
                     </div>
                     <!-- Formulaire enchère -->
                     <div th:if="${user.id != article.utilisateurs.id && T(java.time.LocalDateTime).now().isBefore(article.dateFin)}"

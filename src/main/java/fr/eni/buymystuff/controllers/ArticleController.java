@@ -62,7 +62,7 @@ public class ArticleController {
             model.addAttribute("errorMessage", response.getMessage());
             modelFormInformations(model);
 
-            return "/test/ajout-article"; // Réaffiche le formulaire en cas d'erreur
+            return "/ajout-article"; // Réaffiche le formulaire en cas d'erreur
         }
     }
 
@@ -75,12 +75,10 @@ public class ArticleController {
         System.out.println("articleFormDTO : " + articleFormDTO.getCategoriesIds());
 
         modelFormInformations(model);
-        return "/test/ajout-article";
+        return "/ajout-article";
     }
     private void modelFormInformations(Model model) {
         List<Categories> categories = servicesCategories.getCategoriesCatalog().data;
-        Adresse adresse = new Adresse(1L, "12 rue des Lilas", "44000", "Nantes");
         model.addAttribute("categories", categories);
-        model.addAttribute("adresse", adresse);
     }
 }

@@ -32,12 +32,24 @@ public class APIController {
     }
 
     @PostMapping("/articles")
-    public String getArticles(@RequestBody ArticleFilterDTO filter, Model model) {
+    public String getArticles(@AuthenticationPrincipal UserDetails userDetails,
+                              @RequestBody ArticleFilterDTO filter,
+                              Model model) {
         try {
-            // récupère les articles filtrés
-            List<ArticleFormDTO> articles = articleService.getArticlesByFilter(filter).data;
-            model.addAttribute("articles", articles);
-            return "fragments/cardArticle :: cardArticle"; // ton fragment
+
+            // ✅ Test complet avant d'utiliser userDetails
+            if (userDetails != null) {
+                ServiceResponse<Integer> response = authService.getIdUserByPseudo(userDetails.getUsername());
+                if (response != null && response.data != null) {
+                    long id = response.data.longValue();
+                    List<ArticleFormDTO> articles = articleService.getArticlesByFilter(filter, id).data;
+                    model.addAttribute("articles", articles);
+                }
+            } else {
+                List<ArticleFormDTO> articles = articleService.getArticlesByFilter(filter, null).data;
+                model.addAttribute("articles", articles);
+            }
+            return "fragments/cardArticle :: cardArticle";
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", e.getMessage());
