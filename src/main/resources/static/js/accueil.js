@@ -1,9 +1,9 @@
+let statut = null;
 function init() {
     console.log('init chargé ')
     afficherTimer();
     verificationInputDate();
     verificationInputPrix();
-    document.getElementById("filterArticle").addEventListener("submit", submitForm);
 
     const dateStart = document.getElementById("dateStart");
 
@@ -11,32 +11,34 @@ function init() {
         dateStart.addEventListener("change", () => {
             const dateEnd = document.getElementById("dateEnd");
             if (!dateEnd) return;
-
             // La date fin ne peut pas être avant la date début
             dateEnd.min = dateStart.value;
         });
     }
     const buttons = document.querySelectorAll('.toggle-btn');
-    const statutInput = document.getElementById('statutInput');
-
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
             const value = btn.dataset.value;
             const isSelected = btn.classList.contains("bg-[#4934d3]");
-            console.log('is selected : ' + isSelected);
-            if (isSelected){
-                btn.classList.remove('bg-[#4934d3]')
+
+            if (isSelected) {
+                btn.classList.remove('bg-[#4934d3]');
+                filtreSelected.statut = null;
                 return;
             }
-            console.log('je passe ici');
+
+            // reset visuel
             buttons.forEach(b => b.classList.remove('bg-[#4934d3]'));
 
-            // Sélectionner le bouton cliqué
+            // active bouton
             btn.classList.add('bg-[#4934d3]');
 
-            // Mettre à jour la valeur de l'input
-            statutInput.value = value;
+            // stocke dans ton state
+            statut = value;
+
         });
+        document.getElementById("filterArticle").addEventListener("submit", submitForm);
+
     });
 }
 
@@ -113,8 +115,7 @@ function submitForm(event) {
         categorie: document.getElementById("categorie").value,
         prixMin: document.getElementById("prixMin").value || null,
         prixMax: document.getElementById("prixMax").value || null,
-        dateStart: document.getElementById("dateStart").value,
-        dateEnd: document.getElementById("dateEnd").value,
+        statut: statut
     };
 
     console.log(filter);
@@ -143,8 +144,6 @@ function submitForm(event) {
 function validerFormulaire() {
     const prixMin = parseFloat(document.getElementById("prixMin")?.value || 0);
     const prixMax = parseFloat(document.getElementById("prixMax")?.value || 0);
-    const dateStart = document.getElementById("dateStart")?.value;
-    const dateEnd = document.getElementById("dateEnd")?.value;
 
     if (prixMin < 0) {
         alert("Le prix minimum doit être supérieur ou égal à 0");
@@ -153,11 +152,6 @@ function validerFormulaire() {
 
     if (prixMax && prixMax < prixMin) {
         alert("Le prix maximum doit être supérieur ou égal au prix minimum");
-        return false;
-    }
-
-    if (dateStart && dateEnd && dateEnd < dateStart) {
-        alert("La date de fin doit être supérieure ou égale à la date de début");
         return false;
     }
 

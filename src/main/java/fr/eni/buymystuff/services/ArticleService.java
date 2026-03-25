@@ -55,20 +55,16 @@ public class ArticleService {
     }
 
     public ServiceResponse<List<ArticleFormDTO>> getArticlesByFilter(ArticleFilterDTO filter) {
-       // Normaliser les valeurs vides en null
+        // Normaliser les valeurs vides en null
         String nomArticle = (filter.getNomArticle() == null || filter.getNomArticle().isBlank()) ? null : filter.getNomArticle();
         String categorie = (filter.getCategorie() == null || filter.getCategorie().isBlank()) ? null : filter.getCategorie();
         Integer prixMin = filter.getPrixMin();
         Integer prixMax = filter.getPrixMax();
-        // Dates
-       LocalDateTime dateStart = (filter.getDateStart() != null) 
-        ? filter.getDateStart().atStartOfDay()  // 00:00:00
-        : null;
+        String statut = (filter.getStatut() == null ) ? null : filter.getStatut();
 
-        LocalDateTime dateEnd = (filter.getDateEnd() != null) 
-        ? filter.getDateEnd().atTime(23, 59, 59)  // 23:59:59
-        : null;
-        List<ArticleFormDTO> articles = idaoArticle.findBySearch(nomArticle, categorie, prixMin, prixMax, dateStart, dateEnd);
+        // Dates
+
+        List<ArticleFormDTO> articles = idaoArticle.findBySearch(nomArticle, categorie, prixMin, prixMax, statut);
 
         return new ServiceResponse<>("4000", "Film trouvé", articles);
     }

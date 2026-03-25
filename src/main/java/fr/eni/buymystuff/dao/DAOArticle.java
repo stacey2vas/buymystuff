@@ -401,7 +401,7 @@ public class DAOArticle implements IDAOArticle {
     @Override
     public List<ArticleFormDTO> findBySearch(String nomArticle, String categorie,
                                              Integer prixMin, Integer prixMax,
-                                             LocalDateTime dateStart, LocalDateTime dateEnd) {
+                                             String statut) {
 
         StringBuilder sql = new StringBuilder("""
                     SELECT 
@@ -457,18 +457,26 @@ public class DAOArticle implements IDAOArticle {
             params.add(prixMax);
         }
 
-        // 🔎 Filtre date début
-        if (dateStart != null) {
-            sql.append(" AND a.date_debut_encheres >= ?");
-            params.add(java.sql.Timestamp.valueOf(dateStart));
+        // 🔎 Filtre statut
+        if (statut != null && !statut.isBlank()) {
+            switch (statut) {
+                case "terminee":
+                    // articles dont la date de fin est passée
+                    sql.append(" AND a.date_fin_encheres < NOW()");
+                    break;
+                case "encours":
+                    // articles dont la date de début est passée et la date de fin est future
+                    sql.append(" AND a.date_debut_encheres <= NOW() AND a.date_fin_encheres >= NOW()");
+                    break;
+                case "pascommencee":
+                    // articles dont la date de début est dans le futur
+                    sql.append(" AND a.date_debut_encheres > NOW()");
+                    break;
+                default:
+                    // rien, pas de filtre
+                    break;
+            }
         }
-
-        // 🔎 Filtre date fin
-        if (dateEnd != null) {
-            sql.append(" AND a.date_fin_encheres <= ?");
-            params.add(java.sql.Timestamp.valueOf(dateEnd));
-        }
-
         // 🔥 IMPORTANT : group by pour éviter doublons
         sql.append(" GROUP BY a.no_article");
 

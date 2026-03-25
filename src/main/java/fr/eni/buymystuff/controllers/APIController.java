@@ -4,6 +4,8 @@ import java.util.List;
 
 import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.services.AuthService;
+import fr.eni.buymystuff.services.ServiceResponse;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,10 +49,16 @@ public class APIController {
         System.out.println("je passe ici");
         Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
         return ResponseEntity.ok(user.getCredit());
-    // ResponseEntity est une classe de Spring qui te permet de contrôler complètement la réponse HTTP.
+        // ResponseEntity est une classe de Spring qui te permet de contrôler complètement la réponse HTTP.
         //👉 Avec ça tu peux gérer :
         //le body (les données envoyées)
         //le status HTTP (200, 404, 401…)
         //les headers
-        }
+    }
+    @PostMapping("/delete-account")
+    public void getArticles(@AuthenticationPrincipal UserDetails userDetails) {
+        Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
+        ServiceResponse<?> response = authService.deleteAccount(user);
+
+    }
 }

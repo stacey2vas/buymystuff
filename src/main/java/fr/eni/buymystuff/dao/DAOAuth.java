@@ -12,9 +12,10 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 @Component
-public class DAOAuth  implements IDAOAuth {
+public class DAOAuth implements IDAOAuth {
 
-    private final JdbcTemplate jdbcTemplate;;
+    private final JdbcTemplate jdbcTemplate;
+    ;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -49,10 +50,10 @@ public class DAOAuth  implements IDAOAuth {
     @Override
     public Utilisateurs insert(Utilisateurs utilisateur) {
         String sql = """
-            INSERT INTO utilisateurs (nom, prenom, email, pseudo,
-            password, telephone,credit, administrateur, no_adresse, actif)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """;
+                    INSERT INTO utilisateurs (nom, prenom, email, pseudo,
+                    password, telephone,credit, administrateur, no_adresse, actif)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """;
 
         //ici il faut traduire
         //bcrypt
@@ -60,10 +61,10 @@ public class DAOAuth  implements IDAOAuth {
         System.out.println("Mot de passe avant encode : " + utilisateur.getMotDePasse());
         System.out.println("Mot de passe après encode : " + bcrypt);
 
-       jdbcTemplate.update(sql, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(),
-               utilisateur.getPseudo(), bcrypt, utilisateur.getTelephone(), utilisateur.getCredit(),
+        jdbcTemplate.update(sql, utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(),
+                utilisateur.getPseudo(), bcrypt, utilisateur.getTelephone(), utilisateur.getCredit(),
                 utilisateur.isAdministrateur(), utilisateur.getAdresse().getId(), 1
-                );
+        );
 
         return utilisateur;
     }
@@ -76,7 +77,8 @@ public class DAOAuth  implements IDAOAuth {
                 INNER JOIN adresses ON utilisateurs.no_adresse = adresses.no_adresse
                 WHERE no_utilisateur = ?
                 """;
-        jdbcTemplate.query(sql, new Object[]{id}, rs -> {;
+        jdbcTemplate.query(sql, new Object[]{id}, rs -> {
+            ;
             if (rs.next()) {
                 Utilisateurs utilisateur = new Utilisateurs();
                 utilisateur.setPseudo(rs.getString("pseudo"));
@@ -96,28 +98,30 @@ public class DAOAuth  implements IDAOAuth {
             }
             return null;
         });
-        return null ;
+        return null;
     }
-     @Override
-        public int findIdByPseudo(String pseudo) {
-            String sql = "SELECT no_utilisateur FROM utilisateurs WHERE pseudo = ?";
 
-            return jdbcTemplate.queryForObject(sql, Integer.class, pseudo);
-        }
+    @Override
+    public int findIdByPseudo(String pseudo) {
+        String sql = "SELECT no_utilisateur FROM utilisateurs WHERE pseudo = ?";
+
+        return jdbcTemplate.queryForObject(sql, Integer.class, pseudo);
+    }
 
     @Override
     public Utilisateurs save(Utilisateurs utilisateur) {
-    String sql = " ";
-        jdbcTemplate.update(sql,
-                movie.title,
-                movie.synopsis,
-                movie.duration,
-                movie.year,
-                movie.director.id,
-                movie.genre.id,
-                movie.id
-        );
-        return utilisateur;
+//        String sql = " ";
+//        jdbcTemplate.update(sql,
+//                movie.title,
+//                movie.synopsis,
+//                movie.duration,
+//                movie.year,
+//                movie.director.id,
+//                movie.genre.id,
+//                movie.id
+//        );
+        Utilisateurs user = new Utilisateurs();
+        return user;
     }
 
     @Override
@@ -133,13 +137,13 @@ public class DAOAuth  implements IDAOAuth {
 
         return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
             Utilisateurs utilisateur = new Utilisateurs();
-            utilisateur.setId(rs.getInt("no_utilisateur"));          
+            utilisateur.setId(rs.getInt("no_utilisateur"));
             utilisateur.setPseudo(rs.getString("pseudo"));
             utilisateur.setNom(rs.getString("nom"));
             utilisateur.setPrenom(rs.getString("prenom"));
             utilisateur.setEmail(rs.getString("email"));
             utilisateur.setTelephone(rs.getString("telephone"));
-            utilisateur.setMotDePasse(rs.getString("password"));    
+            utilisateur.setMotDePasse(rs.getString("password"));
             utilisateur.setCredit(rs.getInt("credit"));
             utilisateur.setAdministrateur(rs.getBoolean("administrateur"));
             utilisateur.setActif(rs.getBoolean("actif"));
@@ -153,4 +157,19 @@ public class DAOAuth  implements IDAOAuth {
             return utilisateur;
         }, pseudo);
     }
+
+    public Utilisateurs deleteAccount(Utilisateurs user) {
+        String sql = "UPDATE utilisateurs SET actif = 0 WHERE id_utilisateur = ?";
+
+        int rowsUpdated = jdbcTemplate.update(sql, user.getId());
+
+        if (rowsUpdated == 0) {
+            throw new RuntimeException("Aucun utilisateur trouvé avec l'ID " + user.getId());
+        }
+
+        // Optionnel : tu peux mettre à jour l’objet pour refléter la désactivation
+        user.setActif(false);
+
+        return user;
     }
+}

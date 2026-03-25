@@ -12,4 +12,5 @@ public interface IDAOAuth {
     public Utilisateurs selectByPseudo(String pseudo);
     int findIdByPseudo(String pseudo);
     public Utilisateurs save(Utilisateurs utilisateur);
+    public Utilisateurs deleteAccount(Utilisateurs utilisateur);
 }
