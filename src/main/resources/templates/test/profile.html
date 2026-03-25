@@ -11,7 +11,7 @@
     <!-- Photo de l'utilisateur 1ER block -->
 
     <div class="w-[40%] flex justify-center flex-col items-center bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
-        <a href="\update">
+        <a href="\update" class="block ml-auto w-fit">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -52,6 +52,7 @@
                 <li><strong>Nom :</strong> <span th:text="${user.nom}"></span></li>
                 <li><strong>Prénom :</strong> <span th:text="${user.prenom}"></span></li>
                 <li><strong>Pseudo :</strong> <span th:text="${user.pseudo}"></span></li>
+                <li><strong>N° de Téléphone :</strong> <span th:text="${user.telephone}"></span></li>
             </ul>
 
             <!-- Adresse de l'utilisateur -->
@@ -64,6 +65,14 @@
                 <li><strong>Code Postal :</strong> <span th:text="${user.adresse.codePostal}"></span></li>
                 <li><strong>Ville :</strong> <span th:text="${user.adresse.ville}"></span></li>
             </ul>
+        </div>
+        <!-- Boutton suppression -->
+        <div>
+            <form th:action="@{/delete-account}" method="post" sec:authorize="isAuthenticated()" class="mt-4">
+                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full">
+                    Supprimer le compte
+                </button>
+            </form>
         </div>
     </div>
 </div>
