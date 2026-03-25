@@ -110,25 +110,38 @@ public class DAOAuth implements IDAOAuth {
 
     @Override
     public Utilisateurs save(Utilisateurs utilisateur) {
-//        String sql = " ";
-//        jdbcTemplate.update(sql,
-//                movie.title,
-//                movie.synopsis,
-//                movie.duration,
-//                movie.year,
-//                movie.director.id,
-//                movie.genre.id,
-//                movie.id
-//        );
-        Utilisateurs user = new Utilisateurs();
-        return user;
+        String sql = """
+    UPDATE utilisateurs u
+    JOIN adresses a ON u.no_adresse = a.no_adresse
+    SET u.pseudo = ?, 
+        u.nom = ?, 
+        u.prenom = ?, 
+        u.email = ?, 
+        a.rue = ?, 
+        a.code_postal = ?, 
+        a.ville = ?
+    WHERE u.no_utilisateur = ? 
+      AND a.no_adresse = ?;
+""";
+        jdbcTemplate.update(sql, ps -> {
+            ps.setString(1, utilisateur.getPseudo());
+            ps.setString(2, utilisateur.getNom());
+            ps.setString(3, utilisateur.getPrenom());
+            ps.setString(4, utilisateur.getEmail());
+            ps.setString(5, utilisateur.getAdresse().getRue());
+            ps.setString(6, utilisateur.getAdresse().getCodePostal());
+            ps.setString(7, utilisateur.getAdresse().getVille());
+            ps.setLong(8, utilisateur.getId());
+            ps.setLong(9, utilisateur.getAdresse().getId());
+        });
+        return utilisateur;
     }
 
     @Override
     public Utilisateurs selectByPseudo(String pseudo) {
         String sql = """
                 SELECT u.no_utilisateur, u.pseudo, u.nom, u.prenom, u.email, u.telephone, 
-                    u.password, u.credit, u.administrateur, u.actif,
+                    u.password, u.credit, u.administrateur, u.actif,a.no_adresse,
                     a.rue, a.code_postal, a.ville
                 FROM utilisateurs u
                 LEFT JOIN adresses a ON u.no_adresse = a.no_adresse
@@ -149,6 +162,7 @@ public class DAOAuth implements IDAOAuth {
             utilisateur.setActif(rs.getBoolean("actif"));
 
             Adresse adresse = new Adresse();
+            adresse.setId(rs.getLong("no_adresse"));
             adresse.setRue(rs.getString("rue"));
             adresse.setCodePostal(rs.getString("code_postal"));
             adresse.setVille(rs.getString("ville"));

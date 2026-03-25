@@ -77,26 +77,14 @@
                     <input id="email" type="email" th:field="*{email}"
                            class="w-64 rounded-md border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none text-black">
                 </div>
-                <!-- Bouton de validation -->
-                <div class="flex items-center">
-                    <button type="submit"
-                            class="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg shadow transition duration-200">
-                        Enregistrer les modifications
-                    </button>
-                </div>
-            </form>
-            </form>
-        </div>
-        <!-- Adresse de l'utilisateur -->
-        <div class="w-full bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
-            <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">Adresse</h2>
-            <form method="POST" th:action="@{/process-update}" th:object="${user}" class="space-y-6">
+                <!-- Adresse de l'utilisateur -->
+                <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">Adresse</h2>
                 <div class="flex items-center">
                     <!-- Rue -->
                     <label for="rue" class="w-20 text-sm font-medium text-gray-700">
                         <strong>Rue :</strong>
                     </label>
-
+                    <input type="hidden" th:field="*{adresse.id}">
                     <input id="rue" type="text" th:field="*{adresse.rue}"
                            class="w-64 rounded-md border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none text-black">
                 </div>
@@ -126,7 +114,7 @@
                 </div>
             </form>
         </div>
+        </div>
     </div>
-</div>
 </body>
 </html>

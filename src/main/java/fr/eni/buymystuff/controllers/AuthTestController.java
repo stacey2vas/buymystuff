@@ -108,9 +108,11 @@ public class AuthTestController
     }
 
     @PostMapping ("/process-update")
-    public String processUdpdate(@ModelAttribute("user") Utilisateurs user, Model model) {
+    public String processUdpdate(@ModelAttribute("user") Utilisateurs user, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         // On ajoute l'utilisateur et l'adresse reçue dans la bdd
+         int idUtil = authService.getIdUserByPseudo(userDetails.getUsername()).data;
+         user.setId(idUtil);
         ServiceResponse<Utilisateurs> response = authService.save(user);
-        return "test/register";
+        return "test/profile";
     }
 }
