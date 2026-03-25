@@ -12,7 +12,7 @@
 
 
      <!-- Description / lien -->
-    <div class="text-xl font-semibold text-main min-h-[56px]">
+    <div class="text-lg md:text-xl font-semibold text-main min-h-[56px]">
         <a  class="hover:text-[#03d6f9]" th:href="@{/enchere/{id}(id=${article.id})}" th:text="${article.description}"></a>
     </div>
 
@@ -23,7 +23,11 @@
             <p class="text-lg font-bold text-accent price-color" th:text="${article.prixInitial} + ' €'"></p>
         </div>
         <div class="w-1/2 flex flex-col text-right p-1">
-            <p class="text-sm text-muted">Termine dans :</p>
+            <p class="text-sm text-muted">
+                <span th:if="${T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}">Début dans :</span>
+                <span th:if="${article.dateDebut.isBefore(T(java.time.LocalDateTime).now()) && T(java.time.LocalDateTime).now().isBefore(article.dateFin)}">Termine dans :</span>
+                <span th:if="${article.dateFin.isBefore(T(java.time.LocalDateTime).now())}">Statut de l'enchère :</span>
+            </p>
             <p class="timer text-base font-semibold hour-color flex justify-end"
                th:data-timer="${#temporals.format(article.dateFin, 'yyyy-MM-dd''T''HH:mm:ss')}">
                 <span class="skeleton w-[85px] h-[24px] rounded bg-gray-300 animate-pulse"></span>
