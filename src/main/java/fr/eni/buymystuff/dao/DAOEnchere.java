@@ -39,10 +39,8 @@ public class DAOEnchere implements IDAOEnchere{
         return jdbcTemplate.query(sql, new Object[]{id}, (rs, rowNum) -> {
             Encheres enchere = new Encheres();
 
-            // Id de l'enchère
             enchere.setId(rs.getInt("id_enchere"));
 
-            // Utilisateur minimal
             Utilisateurs utilisateur = new Utilisateurs();
             utilisateur.setId(rs.getInt("no_utilisateur"));
             utilisateur.setPseudo(rs.getString("pseudo"));
@@ -50,7 +48,6 @@ public class DAOEnchere implements IDAOEnchere{
             utilisateur.setPrenom(rs.getString("prenom"));
             enchere.setUtilisateur(utilisateur);
 
-            // Date et montant
             enchere.setDateEnchere(rs.getTimestamp("date_enchere").toLocalDateTime());
             enchere.setMontantEnchere(rs.getInt("montant_enchere"));
 

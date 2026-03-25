@@ -1,10 +1,8 @@
 package fr.eni.buymystuff.dao;
 
 import fr.eni.buymystuff.bo.Categories;
-import fr.eni.buymystuff.jdbc.IDAOCategories;
 import fr.eni.buymystuff.mapper.RowMapperCategorie;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
