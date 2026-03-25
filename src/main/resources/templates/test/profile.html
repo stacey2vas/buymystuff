@@ -10,7 +10,7 @@
 
     <!-- Photo de l'utilisateur 1ER block -->
 
-    <div class="w-[40%] flex justify-center flex-col items-center bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
+    <div class="w-[45%] flex justify-center flex-col items-center bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
         <a href="\update" class="block ml-auto w-fit">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="size-6">
@@ -29,12 +29,21 @@
            th:text="${user.pseudo}">
         </p>
         <p><span th:text="${user.email}"></span></p>
-        <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()" class="mt-4">
-            <button type="submit"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Se déconnecter
-            </button>
-        </form>
+        <div class="flex gap-4 mt-4">
+            <!-- Bouton deconnexion -->
+            <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()">
+                <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Se déconnecter
+                </button>
+            </form>
+            <!-- Bouton supression-->
+            <form th:action="@{/delete-account}" method="post" sec:authorize="isAuthenticated()">
+                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    Supprimer le compte
+                </button>
+            </form>
+        </div>
     </div>
 
 
@@ -65,14 +74,6 @@
                 <li><strong>Code Postal :</strong> <span th:text="${user.adresse.codePostal}"></span></li>
                 <li><strong>Ville :</strong> <span th:text="${user.adresse.ville}"></span></li>
             </ul>
-        </div>
-        <!-- Boutton suppression -->
-        <div>
-            <form th:action="@{/delete-account}" method="post" sec:authorize="isAuthenticated()" class="mt-4">
-                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full">
-                    Supprimer le compte
-                </button>
-            </form>
         </div>
     </div>
 </div>
