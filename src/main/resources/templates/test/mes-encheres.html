@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/base}">
+
+<body>
+<div layout:fragment="content" class="w-4/5 flex justify-center text-white">
+    <div class="w-11/12 mb-12 flex flex-col gap-8">
+
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-main">Mes enchères</h1>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+             th:if="${encheres != null and !encheres.isEmpty()}">
+
+
+            <div th:each="enchere : ${encheres}"
+                 class="bg-card-principal rounded-xl shadow-lg border border-card-principal p-5 flex flex-col gap-4 hover:scale-[1.02] transition duration-300">
+
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-muted">Vendu par</span>
+                    <span class="font-semibold text-accent"
+                          th:text="${enchere.article.utilisateur.pseudo}"></span>
+                </div>
+
+                <div class="w-full h-48 overflow-hidden rounded-lg">
+                    <img th:src="@{'/images/' + ${enchere.article.image}}" alt="Image de l'article" class="w-full h-full object-cover">
+                </div>
+
+                <div class="flex flex-col items-center justify-center py-4 border-y border-dashed border-dash-color">
+                    <span class="text-sm text-muted">Montant</span>
+                    <span class="text-3xl font-bold text-green-400"
+                          th:text="${enchere.montantEnchere} + ' €'"></span>
+                </div>
+
+                <div class="flex justify-between text-sm text-gray-300">
+                    <span>Date</span>
+                    <span th:text="${#temporals.format(enchere.dateEnchere, 'dd/MM/yyyy HH:mm')}"></span>
+                </div>
+
+                <div class="flex justify-end mt-2">
+                    <a th:href="@{'/enchere/' + ${enchere.article.id}}"
+                       class="text-sm bg-btn px-4 py-2 rounded-lg hover:opacity-80 transition">
+                        Voir l’enchere
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <div th:if="${encheres == null or encheres.isEmpty()}"
+             class="flex flex-col items-center justify-center gap-4 mt-10">
+
+            <p class="text-lg text-gray-400">Vous n’avez encore fait aucune enchère</p>
+
+            <a th:href="@{/}"
+               class="bg-btn px-6 py-3 rounded-lg shadow-lg hover:opacity-80 transition">
+                Voir les articles
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

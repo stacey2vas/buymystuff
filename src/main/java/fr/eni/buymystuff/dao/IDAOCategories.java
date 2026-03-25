@@ -1,4 +1,4 @@
-package fr.eni.buymystuff.jdbc;
+package fr.eni.buymystuff.dao;
 
 import fr.eni.buymystuff.bo.Categories;
 
