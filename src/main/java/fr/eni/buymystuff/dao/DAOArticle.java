@@ -291,7 +291,7 @@ public class DAOArticle implements IDAOArticle {
             return originalFilename;
         } else {
             // Fichier absent → on crée un nom unique pour éviter collisions
-            String newFileName = System.currentTimeMillis() + "_" + originalFilename;
+            String newFileName = originalFilename;
             Path newTarget = uploadDir.resolve(newFileName);
             Files.copy(file.getInputStream(), newTarget, StandardCopyOption.REPLACE_EXISTING);
             return newFileName;
