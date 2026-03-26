@@ -281,22 +281,19 @@ public class DAOArticle implements IDAOArticle {
     }
 
     private String storeFile(MultipartFile file) throws IOException {
-        String originalFilename = file.getOriginalFilename();
+        // Le dossier où on stocke les fichiers
         Path uploadDir = Paths.get("src/main/resources/static/images").toAbsolutePath();
         Files.createDirectories(uploadDir);
 
+        // On récupère juste le nom original
+        String originalFilename = file.getOriginalFilename();
         Path targetLocation = uploadDir.resolve(originalFilename);
 
-        if (Files.exists(targetLocation)) {
-            // Fichier déjà présent → on utilise le nom existant
-            return originalFilename;
-        } else {
-            // Fichier absent → on crée un nom unique pour éviter collisions
-            String newFileName = originalFilename;
-            Path newTarget = uploadDir.resolve(newFileName);
-            Files.copy(file.getInputStream(), newTarget, StandardCopyOption.REPLACE_EXISTING);
-            return newFileName;
-        }
+        // On copie le fichier (remplace s'il existe déjà)
+        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+        // On retourne le nom tel quel pour mettre en base de données
+        return originalFilename;
     }
 
     public int insertAdresse(String adresseString) {
