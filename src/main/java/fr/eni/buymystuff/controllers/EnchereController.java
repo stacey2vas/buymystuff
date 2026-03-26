@@ -16,10 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class EnchereController {
@@ -36,7 +33,14 @@ public class EnchereController {
     }
 
     @GetMapping("/")
-    public String accueil(Model model) {
+    public String accueil(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        if(userDetails != null){
+        Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
+        if (user != null) {
+            model.addAttribute("userCredit", user.getCredit());
+            model.addAttribute("user", user);
+        }
+        }
         List<Articles> articles = articleService.getAllArticles().data;
         List<Categories> categories = servicesCategories.getCategoriesCatalog().data;
 
@@ -68,5 +72,20 @@ public class EnchereController {
         enchereService.addEnchere(enchereDTO, articleDTO, user);
 
         return "redirect:/enchere/" + id;
+    }
+    @PostMapping("/add-enchere-modal")
+    public String addEnchereModal(@AuthenticationPrincipal UserDetails userDetails,
+                                  @RequestParam("articleId") Long articleId,
+                                  @RequestParam("montantEnchere") Integer montantEnchere) throws IOException {
+
+        Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
+        ArticleFormDTO articleDTO = articleService.getArticleDTOById(articleId).data;
+
+        EnchereDTO enchereDTO = new EnchereDTO();
+        enchereDTO.setMontantEnchere(montantEnchere);
+
+        enchereService.addEnchere(enchereDTO, articleDTO, user);
+
+        return "redirect:/enchere/" + articleId; // ou JSON si tu veux faire un fetch/AJAX
     }
 }

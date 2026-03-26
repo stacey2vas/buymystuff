@@ -1,5 +1,6 @@
 let statut = null;
 let selectValue = null;
+
 function init() {
     console.log('init chargé ')
     afficherTimer();
@@ -7,8 +8,10 @@ function init() {
     verificationInputPrix();
     verificationsButtonsSearch();
     disabledButtonsToSelectValue();
+    afficherModal();
     document.getElementById("filterArticle").addEventListener("submit", submitForm);
-}
+    const formModal = document.querySelector("#modalEnchere form");
+    formModal.addEventListener("submit", submitEnchereModal);}
 
 // Timer dynamique
 function afficherTimer() {
@@ -84,7 +87,7 @@ function submitForm(event) {
         prixMin: document.getElementById("prixMin").value || null,
         prixMax: document.getElementById("prixMax").value || null,
         statut: statut,
-        selectValue : selectValue
+        selectValue: selectValue
     };
 
     console.log("filter select: " + filter.selectValue);
@@ -126,7 +129,8 @@ function validerFormulaire() {
 
     return true;
 }
-function verificationsButtonsSearch (){
+
+function verificationsButtonsSearch() {
     const buttons = document.querySelectorAll('.toggle-btn');
     buttons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -151,9 +155,10 @@ function verificationsButtonsSearch (){
 
     });
 }
+
 function disabledButtonsToSelectValue() {
     const select = document.querySelector("select[name='vue']");
-    if(select) {
+    if (select) {
         const buttons = document.querySelectorAll(".toggle-btn");
 
         select.addEventListener("change", () => {
@@ -206,5 +211,56 @@ function disabledButtonsToSelectValue() {
 function disableButton(btn) {
     btn.disabled = true;
     btn.classList.add("opacity-50", "cursor-not-allowed");
+}
+
+function afficherModal() {
+    const modal = document.getElementById("modalEnchere");
+    const closeBtn = document.getElementById("closeModal");
+    const articleIdInput = modal.querySelector("#articleId");
+    const articleTitleSpan = modal.querySelector("#articleTitle");
+    const prixMinP = modal.querySelector("#prixMin");
+    const buttons = document.querySelectorAll(".btnModal");
+    const modalContent = modal.querySelector("div.relative"); // Le contenu de la modale
+
+    modal.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    })
+    // Empêcher la fermeture quand on clique sur le contenu de la modale
+    modalContent.addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
+    // Fermer la modale
+    closeBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+    // Ouvrir la modale avec les infos de l'article
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const articleId = btn.dataset.id;
+            const articleTitle = btn.dataset.title;
+            const articlePrice = parseInt(btn.dataset.price);
+            const articlePriceInitial = parseInt(btn.dataset.priceInitial);
+            const montantInput = modal.querySelector("#montantEnchere");
+
+            let minEnchere = (articlePrice !== 0) ? articlePrice + 1 : articlePriceInitial + 1;
+            // Remplir les champs dans la modale
+            articleIdInput.value = articleId;
+            articleTitleSpan.textContent = articleTitle;
+            prixMinP.textContent = "Enchère minimale : " + minEnchere + " €";
+
+            montantInput.min = minEnchere;
+
+            montantInput.value = minEnchere;            // Afficher la modale
+            modal.classList.remove('hidden');
+
+            console.log("Article:", articleId, articleTitle, articlePrice);
+        });
+    });
+}
+function submitEnchereModal(event){
+    event.preventDefault();
+    let valueEnchere = document.getElementById('montantEnchere').value;
+    let idArticle = document.getElementById('articleId').value;
+    console.log('Les données : ' + valueEnchere + ' et : ' + idArticle);
 }
 document.addEventListener("DOMContentLoaded", init);

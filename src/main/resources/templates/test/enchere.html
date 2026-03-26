@@ -30,7 +30,7 @@
                         </div>
                     </div>
                     <div class="flex flex-col gap-3 max-h-[340px] overflow-y-auto  pr-3" th:if="${encheres.isEmpty()}">
-                        <div  class="bg-[#0f0f3d] border-red-700 flex justify-between items-center p-3 rounded-lg border text-gray-200">
+                        <div class="bg-[#0f0f3d] border-red-700 flex justify-between items-center p-3 rounded-lg border text-gray-200">
                             Aucune enchère n'a été effectuée.
                         </div>
                     </div>
@@ -72,8 +72,9 @@
                         <!-- Prix actuel -->
                         <div class="flex flex-col items-center justify-center w-1/2 pl-4">
                             <p class="text-sm text-muted">Prix
-                                <span th:if="${article.dateFin.isBefore(T(java.time.LocalDateTime).now())}" >Final</span>
-                                <span th:if="${T(java.time.LocalDateTime).now().isBefore(article.dateFin)}" >Actuel</span></p>
+                                <span th:if="${article.dateFin.isBefore(T(java.time.LocalDateTime).now())}">Final</span>
+                                <span th:if="${T(java.time.LocalDateTime).now().isBefore(article.dateFin)}">Actuel</span>
+                            </p>
                             <p class="text-4xl font-bold text-accent price-color animate-pulse-on-change"
                                th:text="${article.prixVente} + ' €'"></p>
                         </div>
@@ -81,8 +82,10 @@
                     <!-- Timer -->
                     <div th:if="${T(java.time.LocalDateTime).now().isBefore(article.dateFin)}"
                          class="flex flex-col gap-6 justify-center items-center border-t border-dashed border-dash-color pt-6 ">
-                        <p th:if="${T(java.time.LocalDateTime).now().isBefore(article.dateFin) && article.dateDebut.isBefore(T(java.time.LocalDateTime).now())}" class="text-muted" >Temps restant avant la fin de l'enchère :</p>
-                        <p th:if="${T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}" class="text-muted" >Début de l'enchère dans:</p>
+                        <p th:if="${T(java.time.LocalDateTime).now().isBefore(article.dateFin) && article.dateDebut.isBefore(T(java.time.LocalDateTime).now())}"
+                           class="text-muted">Temps restant avant la fin de l'enchère :</p>
+                        <p th:if="${T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}" class="text-muted">
+                            Début de l'enchère dans:</p>
                         <p class="timer text-2xl font-semibold hour-color" id="timer"
                            th:data-timer="${#temporals.format(article.dateFin, 'yyyy-MM-dd''T''HH:mm:ss')}">
                             <span class="skeleton w-[160px] h-[32px] rounded bg-gray-300 animate-pulse"></span>
@@ -111,9 +114,10 @@
                     <div th:if="${user.id == article.utilisateurs.id && T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}"
                          class="flex flex-col gap-4 justify-center items-center mb-6 pt-6 ">
                         <input id="montantEnchereHidden" type="number"
-                               th:min="${article.prixVente + 1}"  class="hidden"/>
+                               th:min="${article.prixVente + 1}" class="hidden"/>
                         <a th:href="@{/modify-article/{id}(id=${article.id})}" class="  bg-btn text-white font-semibold py-2 px-6 rounded-md transition-colors shadow-md transform hover:bg-btn
-           disabled:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-500">Modifier la vente</a>
+                                                                disabled:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-500">
+                            Modifier la vente</a>
                     </div>
                     <!-- Formulaire enchère -->
                     <div th:if="${user.id != article.utilisateurs.id && T(java.time.LocalDateTime).now().isBefore(article.dateFin)}"
@@ -139,7 +143,6 @@
                                    required
                                    class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20
                   focus:outline-none focus:ring-2 focus:ring-[#4934d3] focus:border-[#4934d3] transition duration-200"/>
-
                             <!-- Message crédit insuffisant -->
                             <div th:if="${user.credit < article.prixVente}" class="text-xs text-red-400 font-semibold">
                                 Vous n’avez pas assez de crédits pour enchérir sur ce produit.
