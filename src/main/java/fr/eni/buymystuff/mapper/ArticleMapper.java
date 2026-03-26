@@ -4,6 +4,7 @@ import fr.eni.buymystuff.DTO.ArticleFormDTO;
 import fr.eni.buymystuff.bo.Adresse;
 import fr.eni.buymystuff.bo.Articles;
 import fr.eni.buymystuff.bo.Categories;
+import fr.eni.buymystuff.bo.Utilisateurs;
 import fr.eni.buymystuff.services.ArticleService;
 import fr.eni.buymystuff.services.AuthService;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ public class ArticleMapper {
             return null;
         }
         ArticleFormDTO dto = new ArticleFormDTO();
+
         dto.setId(article.getId());
         dto.setNomArticle(article.getNomArticle());
         dto.setDescription(article.getDescription());
@@ -26,7 +28,9 @@ public class ArticleMapper {
         dto.setPrixInitial(article.getPrixInitial());
         dto.setCategories(article.getCategories());
         dto.setAdresseProprietaire(article.getAdresseProprietaire());
-        dto.setUtilisateurs(article.getUtilisateur());
+
+        Utilisateurs user = article.getUtilisateur();
+        dto.setUtilisateur(user);
         Adresse adresseEntity = article.getAdresseProprietaire();
 
         if (adresseEntity != null) {
@@ -75,7 +79,7 @@ public class ArticleMapper {
         article.setImage(dto.getImage());
 
         // ⚠️ Utilisateur (propriétaire)
-        article.setUtilisateur(dto.getUtilisateurs());
+        article.setUtilisateur(dto.getUtilisateur());
 
         return article;
     }

@@ -43,7 +43,7 @@ public class ArticleFormDTO {
     private MultipartFile imageFile; // champ pour upload
     private String image;
     private int prixVente;
-    private Utilisateurs utilisateurs;
+    private Utilisateurs utilisateur;
     public ArticleFormDTO() {
     }
 
@@ -150,11 +150,11 @@ public class ArticleFormDTO {
         this.prixVente = prixVente;
     }
 
-    public Utilisateurs getUtilisateurs() {
-        return utilisateurs;
+    public Utilisateurs getUtilisateur() {
+        return utilisateur;
     }
 
-    public void setUtilisateurs(Utilisateurs utilisateurs) {
-        this.utilisateurs = utilisateurs;
+    public void setUtilisateur(Utilisateurs utilisateur) {
+        this.utilisateur = utilisateur;
     }
 }
