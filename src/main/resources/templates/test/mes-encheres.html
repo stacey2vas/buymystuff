@@ -25,9 +25,12 @@
                           th:text="${enchere.article.utilisateur.pseudo}"></span>
                 </div>
 
-                <div class="w-full h-48 overflow-hidden rounded-lg">
-                    <img th:src="@{'/images/' + ${enchere.article.image}}" alt="Image de l'article" class="w-full h-full object-cover">
-                </div>
+                <a th:href="@{/enchere/{id}(id=${enchere.article.id})}"
+                   class="rounded-xl w-full h-[210px] flex items-center justify-center text-muted border-card-image">
+                    <img th:src="@{/images/{imageName}(imageName=${enchere.article.image})}"
+                         alt="Image"
+                         class="object-cover w-full h-full rounded-xl"/>
+                </a>
 
                 <div class="flex flex-col items-center justify-center py-4 border-y border-dashed border-dash-color">
                     <span class="text-sm text-muted">Montant</span>

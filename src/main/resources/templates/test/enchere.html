@@ -51,11 +51,11 @@
                 <!-- 🔹 Informations vendeur -->
                 <div class="bg-card-principal rounded-xl shadow-lg border border-card-principal p-4 flex flex-col gap-3">
                     <div class="flex flex-col gap-1">
-                        <span class="text-sm text-gray-300 text-muted">Vendu par :</span>
+                        <span class="text-sm text-gray-400 text-muted">Vendu par :</span>
                         <span class="font-semibold text-lg" th:text="${article.utilisateurs.pseudo}"></span>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <span class="text-sm text-gray-300  text-muted">Adresse de livraison :</span>
+                        <span class="text-sm text-gray-400  text-muted">Adresse de livraison :</span>
                         <span th:text="${article.adresseProprietaire.rue + ', ' + article.adresseProprietaire.codePostal + ', ' + article.adresseProprietaire.ville}"></span>
                     </div>
                 </div>

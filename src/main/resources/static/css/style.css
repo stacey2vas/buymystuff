@@ -1,3 +1,15 @@
+
+.exo-2{
+            font-family: "Exo 2", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+body { font-family: 'Roboto', sans-serif; }
+h1, h2, h3 { font-family: 'Oswald', sans-serif; }
+.price { font-weight: 700; color: #e53935; }
+
 /* BACKGROUNDS */
 .bg-header { background-color: #000036; }
 .bg-main { background-color: #101046; }
