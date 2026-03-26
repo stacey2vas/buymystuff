@@ -43,7 +43,6 @@ public class ArticleController {
     @PostMapping("/add-article")
     public String addArticle(@ModelAttribute("articleForm") ArticleFormDTO articleFormDTO,@AuthenticationPrincipal UserDetails userDetails, Model model) {
 
-
         int idUser = authService.getIdUserByPseudo(userDetails.getUsername()).data;
         long idUserLong = idUser;
         // Vérification de l'image
