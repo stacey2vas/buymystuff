@@ -6,12 +6,12 @@
 
 <body>
 
-    <div layout:fragment="content"
-         class="flex gap-12 w-8/12 justify-center items-start mt-9">
+<div layout:fragment="content"
+     class="flex gap-12 w-8/12 justify-center items-start mt-9">
 
-        <div class="w-[50%] bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
+    <div class="w-[50%] bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]">
 
-            <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">
+        <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">
             <span th:if="${categorie.id != null}">Modifier la categorie : <span th:text="${categorie.libelle}"></span></span>
             <span th:if="${categorie.id == null}">Ajouter une categorie</span>
         </h2>
@@ -28,39 +28,39 @@
                 </div>
             </div>
 
-                <button type="submit" id="submitButton"
-                        class="w-full mt-6 bg-btn text-white font-semibold py-2 px-4 rounded-md transition-colors shadow-md transform hover:bg-btn
+            <button type="submit" id="submitButton"
+                    class="w-full mt-6 bg-btn text-white font-semibold py-2 px-4 rounded-md transition-colors shadow-md transform hover:bg-btn
            disabled:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-500">
-                    <span th:text="${categorie.id != null} ? 'Modifier la catégorie' : 'Ajouter la catégorie'"></span>
-                </button>
+                <span th:text="${categorie.id != null} ? 'Modifier la catégorie' : 'Ajouter la catégorie'"></span>
+            </button>
         </form>
-        </div>
+    </div>
 
-        <!-- ================= Liste des categories déja crées ============ -->
+    <!-- ================= Liste des categories déja crées ============ -->
 
-        <div class="w-[60%] bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]" th:if="${categories != null}">
+    <div class="w-[60%] bg-card-dark border border-card-principal p-8 rounded-xl shadow-[0_5px_30px_rgba(0,0,0,0.9)]" th:if="${categories != null}">
 
         <div th:if="${categories != null}">
 
-                <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">Liste des catégories déja crées</h2>
+            <h2 class="text-2xl font-bold text-white mb-6 text-center drop-shadow">Liste des catégories déja crées</h2>
 
             <div class="space-y-3 overflow-auto max-h-[400px] pr-3">
                 <div th:each="categorie : ${categories}"
-                         class="flex items-center justify-between bg-[#101046]/80 border border-white/20 rounded-xl px-4 py-3 shadow">
+                     class="flex items-center justify-between bg-[#101046]/80 border border-white/20 rounded-xl px-4 py-3 shadow">
 
-                        <span class="text-white font-medium" th:text="${categorie.libelle}"></span>
+                    <span class="text-white font-medium" th:text="${categorie.libelle}"></span>
 
-                        <div class="flex gap-2">
-                            <a th:href="@{/modifier-categorie/{id}(id=${categorie.id})}"
-                               class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition">
-                                Modifier
-                            </a>
-                        </div>
-
+                    <div class="flex gap-2">
+                        <a th:href="@{/modifier-categorie/{id}(id=${categorie.id})}"
+                           class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition">
+                            Modifier
+                        </a>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>
