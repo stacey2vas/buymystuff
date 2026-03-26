@@ -40,6 +40,8 @@ public class APIController {
             // ✅ Test complet avant d'utiliser userDetails
             if (userDetails != null) {
                 ServiceResponse<Integer> response = authService.getIdUserByPseudo(userDetails.getUsername());
+                Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
+                model.addAttribute("user", user);
                 if (response != null && response.data != null) {
                     long id = response.data.longValue();
                     List<ArticleFormDTO> articles = articleService.getArticlesByFilter(filter, id).data;

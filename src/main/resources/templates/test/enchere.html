@@ -52,7 +52,7 @@
                 <div class="bg-card-principal rounded-xl shadow-lg border border-card-principal p-4 flex flex-col gap-3">
                     <div class="flex flex-col gap-1">
                         <span class="text-sm text-gray-300 text-muted">Vendu par :</span>
-                        <span class="font-semibold text-lg" th:text="${article.utilisateurs.pseudo}"></span>
+                        <span class="font-semibold text-lg" th:text="${article.utilisateur.pseudo}"></span>
                     </div>
                     <div class="flex flex-col gap-1">
                         <span class="text-sm text-gray-300  text-muted">Adresse de livraison :</span>
@@ -111,7 +111,7 @@
                             </p>
                         </div>
                     </div>
-                    <div th:if="${user.id == article.utilisateurs.id && T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}"
+                    <div th:if="${user.id == article.utilisateur.id && T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}"
                          class="flex flex-col gap-4 justify-center items-center mb-6 pt-6 ">
                         <input id="montantEnchereHidden" type="number"
                                th:min="${article.prixVente + 1}" class="hidden"/>
@@ -120,7 +120,7 @@
                             Modifier la vente</a>
                     </div>
                     <!-- Formulaire enchère -->
-                    <div th:if="${user.id != article.utilisateurs.id && T(java.time.LocalDateTime).now().isBefore(article.dateFin)}"
+                    <div th:if="${user.id != article.utilisateur.id && T(java.time.LocalDateTime).now().isBefore(article.dateFin)}"
                          class=" w-full relative -bottom-10 left-0  flex-col items-center justify-center rounded-lg p-4 bg-card-dark border border-card-principal">
                         <form th:action="@{'/add-enchere/' + ${article.id}}" th:object="${enchereForm}" method="post"
                               class="w-full flex flex-col gap-3">

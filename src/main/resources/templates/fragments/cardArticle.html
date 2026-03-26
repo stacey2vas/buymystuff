@@ -1,5 +1,5 @@
 <div th:fragment="cardArticle" th:each="article : ${articles}"
-     class="articleCard rounded-lg p-2 flex flex-col gap-4 shadow-xl border border-card-principal hover:bg-[#000036]
+     class="articleCard rounded-lg p-2 flex flex-col gap-4 md:mb-5 shadow-xl border border-card-principal hover:bg-[#000036]
             hover:shadow-2xl hover:translate-y-1 transition duration-300 relative group w-full"
      th:data-timer="${#temporals.format(article.dateFin, 'yyyy-MM-dd''T''HH:mm:ss')}"
      xmlns:sec="http://www.w3.org/1999/xhtml">
@@ -19,50 +19,74 @@
            th:text="${article.description}"></a>
     </div>
     <!-- Prix et timer -->
-    <div class="flex justify-between items-center border-t border-dashed border-dash-color pt-3">
-        <div class="w-1/2 flex flex-col border-r border-dashed border-dash-color p-1">
-            <p class="text-sm text-muted">Prix actuel</p>
-            <p class="text-lg font-bold text-accent price-color"
-               th:text="${article.prixVente != null && article.prixVente != 0 } ? ${article.prixVente} + ' €' : ${article.prixInitial} + ' €'">
-            </p>
+    <div class="flex flex-col border-t border-dashed border-dash-color pt-3">
+        <div class="flex justify-between items-center ">
+            <div class="w-1/2 flex flex-col border-r border-dashed border-dash-color p-1">
+                <p class="text-sm text-muted">Prix actuel</p>
+                <p class="text-lg font-bold text-accent price-color"
+                   th:text="${article.prixVente != null && article.prixVente != 0 } ? ${article.prixVente} + ' €' : ${article.prixInitial} + ' €'">
+                </p>
+            </div>
+            <div class="w-1/2 flex flex-col text-right p-1">
+                <p class="text-sm text-muted">
+                    <span th:if="${T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}">Début dans :</span>
+                    <span th:if="${article.dateDebut.isBefore(T(java.time.LocalDateTime).now()) && T(java.time.LocalDateTime).now().isBefore(article.dateFin)}">Termine dans :</span>
+                    <span th:if="${article.dateFin.isBefore(T(java.time.LocalDateTime).now())}">Statut de l'enchère :</span>
+                </p>
+                <p class="timer text-base font-semibold hour-color flex justify-end"
+                   th:data-timer="${#temporals.format(article.dateFin, 'yyyy-MM-dd''T''HH:mm:ss')}">
+                    <span class="skeleton w-[85px] h-[24px] rounded bg-gray-300 animate-pulse"></span>
+                </p>
+            </div>
         </div>
-        <div class="w-1/2 flex flex-col text-right p-1">
-            <p class="text-sm text-muted">
-                <span th:if="${T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}">Début dans :</span>
-                <span th:if="${article.dateDebut.isBefore(T(java.time.LocalDateTime).now()) && T(java.time.LocalDateTime).now().isBefore(article.dateFin)}">Termine dans :</span>
-                <span th:if="${article.dateFin.isBefore(T(java.time.LocalDateTime).now())}">Statut de l'enchère :</span>
-            </p>
-            <p class="timer text-base font-semibold hour-color flex justify-end"
-               th:data-timer="${#temporals.format(article.dateFin, 'yyyy-MM-dd''T''HH:mm:ss')}">
-                <span class="skeleton w-[85px] h-[24px] rounded bg-gray-300 animate-pulse"></span>
-            </p>
+
+        <!-- Enchérir (déjà correct) -->
+        <div sec:authorize="isAuthenticated()"
+             th:if="${article.utilisateur != null and user != null and user.id != article.utilisateur.id and article.dateDebut != null and article.dateDebut.isBefore(T(java.time.LocalDateTime).now()) and article.dateFin.isAfter(T(java.time.LocalDateTime).now())}"
+             class="w-full flex justify-center relative -bottom-8">
+            <button class="btnModal bg-btn px-7 py-3 rounded-lg shadow-lg font-semibold transition-all duration-300">
+                Enchérir
+            </button>
+        </div>
+
+        <!-- Non connecté (déjà correct) -->
+        <div sec:authorize="isAnonymous()"
+             class="w-full flex justify-center relative -bottom-8">
+            <a th:href="@{/login}"
+               class="bg-btn px-7 py-3 rounded-lg shadow-lg font-semibold transition-all duration-300">
+                Connectez-vous pour enchérir
+            </a>
+        </div>
+
+        <!-- Propriétaire : Modifier la vente si pas commencé -->
+        <div sec:authorize="isAuthenticated()"
+             th:if="${article.utilisateur != null and user != null and user.id == article.utilisateur.id and article.dateDebut != null and T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}"
+             class="w-full flex justify-center relative -bottom-8">
+            <a th:href="@{/modify-article/{id}(id=${article.id})}"
+               class="bg-btn text-white font-semibold px-7 py-3 rounded-md shadow-md">
+                Modifier la vente
+            </a>
+        </div>
+
+        <!-- Propriétaire : Voir votre enchère si en cours ou terminée -->
+        <div sec:authorize="isAuthenticated()"
+             th:if="${article.utilisateur != null and user != null and user.id == article.utilisateur.id and article.dateDebut != null and T(java.time.LocalDateTime).now().isAfter(article.dateDebut)}"
+             class="w-full flex justify-center relative -bottom-8">
+            <a th:href="@{/enchere/{id}(id=${article.id})}"
+               class="bg-btn text-white font-semibold px-7 py-3 rounded-md shadow-md">
+                Voir votre enchère
+            </a>
+        </div>
+
+        <!-- Non propriétaire : Voir l'enchère si pas commencée ou terminée -->
+        <div sec:authorize="isAuthenticated()"
+             th:if="${article.utilisateur != null and user != null and user.id != article.utilisateur.id and (article.dateDebut != null and (T(java.time.LocalDateTime).now().isBefore(article.dateDebut) or T(java.time.LocalDateTime).now().isAfter(article.dateFin)))}"
+             class="w-full flex justify-center relative -bottom-8">
+            <a th:href="@{/enchere/{id}(id=${article.id})}"
+               class="bg-btn text-white font-semibold px-7 py-3 rounded-md shadow-md">
+                Voir l'enchère
+            </a>
         </div>
     </div>
 
-    <!-- Bouton enchérir -->
-    <div class="w-full flex justify-center relative -bottom-5 left-0 transition-transform duration-300">
-        <button sec:authorize="isAuthenticated()" th:if="${user.id != article.utilisateur.id && article.dateDebut.isBefore(T(java.time.LocalDateTime).now())}" class="btnModal bg-btn px-6 py-2 rounded-lg shadow-lg font-semibold transition-all duration-300"
-                th:data-id="${article.id}"
-                th:data-title="${article.description}"
-                th:data-price="${article.prixVente}"
-                th:data-price-initial="${article.prixInitial}">Enchérir
-        </button>
-             <!-- Lien stylisé en bouton vers login -->
-            <a sec:authorize="isAnonymous()" th:href="@{/login}"
-               class=" bg-btn px-6 py-2 rounded-lg shadow-lg font-semibold transition-all duration-300">
-               Connectez-vous pour enchérir
-            </a>
-<!--        <div sec:authorize="isAuthenticated()" th:if="${user.id == article.utilisateurs.id && T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}"-->
-<!--             class="flex flex-col gap-4 justify-center items-center mb-6 pt-6 ">-->
-<!--            <a th:href="@{/modify-article/{id}(id=${article.id})}" class="  bg-btn text-white font-semibold py-2 px-6 rounded-md transition-colors shadow-md transform hover:bg-btn-->
-<!--                                                                disabled:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-500">-->
-<!--                Modifier la vente</a>-->
-<!--        </div>-->
-        <div sec:authorize="isAuthenticated()" th:if="${user.id == article.utilisateur.id && article.dateDebut.isBefore(T(java.time.LocalDateTime).now())}"
-             class="flex flex-col gap-4 justify-center items-center mb-6 pt-6 ">
-            <a th:href="@{/enchere/{id}(id=${article.id})}" class="  bg-btn text-white font-semibold py-2 px-6 rounded-md transition-colors shadow-md transform hover:bg-btn
-                                                                disabled:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-500">
-                Voir la vente</a>
-        </div>
-     </div>
 </div>

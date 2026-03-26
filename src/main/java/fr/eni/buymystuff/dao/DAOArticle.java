@@ -416,24 +416,26 @@ public class DAOArticle implements IDAOArticle {
                                              String statut, String selectValue, Long idUser) {
 
         StringBuilder sql = new StringBuilder("""
-                    SELECT 
-                        a.no_article,
+                 SELECT a.no_article,
                         a.nom_article,
                         a.description,
                         a.date_debut_encheres,
                         a.date_fin_encheres,
                         a.prix_initial,
+                        a.prix_vente,
                         a.image,
                         a.etat_vente,
                         ad.rue,
                         ad.code_postal,
                         ad.ville,
+                        u.no_utilisateur, u.pseudo, u.nom, u.prenom,
                         GROUP_CONCAT(c.libelle SEPARATOR ',') AS categories_string,
                         GROUP_CONCAT(c.no_categorie SEPARATOR ',') AS categories_ids
                     FROM articles_vendus a
                     LEFT JOIN articles_categories ac ON a.no_article = ac.no_article
                     LEFT JOIN categories c ON c.no_categorie = ac.no_categorie
                     LEFT JOIN adresses ad ON ad.no_adresse = a.no_adresse
+                    LEFT JOIN utilisateurs u ON u.no_utilisateur = a.no_utilisateur
                     WHERE 1=1
                 """);
 
@@ -551,6 +553,12 @@ public class DAOArticle implements IDAOArticle {
             adresse.setVille(rs.getString("ville"));
             article.setAdresseProprietaire(adresse);
 
+            Utilisateurs proprietaire = new Utilisateurs();
+            proprietaire.setId(rs.getInt("no_utilisateur"));
+            proprietaire.setPseudo(rs.getString("pseudo"));
+            proprietaire.setNom(rs.getString("nom"));
+            proprietaire.setPrenom(rs.getString("prenom"));
+            article.setUtilisateur(proprietaire);
             // 🏷️ Catégories
             String categoriesIdsStr = rs.getString("categories_ids");
             String categoriesNamesStr = rs.getString("categories_string");
