@@ -11,14 +11,11 @@
              alt="Image"
              class="object-cover w-full h-full rounded-xl"/>
     </a>
-
-
     <!-- Description / lien -->
     <div class="text-lg md:text-xl font-semibold text-main min-h-[56px]">
         <a class="hover:text-[#03d6f9]" th:href="@{/enchere/{id}(id=${article.id})}"
            th:text="${article.description}"></a>
     </div>
-    <!-- Prix et timer -->
     <div class="flex flex-col border-t border-dashed border-dash-color pt-3">
         <div class="flex justify-between items-center ">
             <div class="w-1/2 flex flex-col border-r border-dashed border-dash-color p-1">
@@ -34,7 +31,8 @@
                     <span th:if="${article.dateFin.isBefore(T(java.time.LocalDateTime).now())}">Statut de l'enchère :</span>
                 </p>
                 <p class="timer text-base font-semibold hour-color flex justify-end"
-                   th:data-timer="${#temporals.format(article.dateFin, 'yyyy-MM-dd''T''HH:mm:ss')}">
+                   th:data-timer-debut="${#temporals.format(article.dateDebut, 'yyyy-MM-dd''T''HH:mm:ss')}"
+                    th:data-timer-end="${#temporals.format(article.dateFin, 'yyyy-MM-dd''T''HH:mm:ss')}">
                     <span class="skeleton w-[85px] h-[24px] rounded bg-gray-300 animate-pulse"></span>
                 </p>
             </div>

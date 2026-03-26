@@ -15,37 +15,47 @@ function init() {
 
 // Timer dynamique
 function afficherTimer() {
-    document.querySelectorAll('.timer').forEach(el => {
-        const end = new Date(el.dataset.timer);
+    document.querySelectorAll('.timer').forEach(element => {
+        const start = new Date(element.dataset.timerDebut);
+        const end = new Date(element.dataset.timerEnd);
 
         const interval = setInterval(() => {
-            const diff = end - new Date();
+            const now = new Date();
 
-            if (diff <= 0) {
-                el.textContent = "Terminé";
+            let diff;
+
+            if (now < start) {
+                // Avant début → countdown vers dateDebut
+                diff = start - now;
+            } else if (now >= start && now < end) {
+                // Pendant → countdown vers dateFin
+                diff = end - now;
+            } else {
+                // Terminé
+                element.textContent = "Terminé";
                 clearInterval(interval);
                 return;
             }
 
             const totalSeconds = Math.floor(diff / 1000);
-            const d = Math.floor(totalSeconds / 86400); // jours
-            const h = Math.floor((totalSeconds % 86400) / 3600); // heures
-            const m = Math.floor((totalSeconds % 3600) / 60); // minutes
-            const s = totalSeconds % 60; // secondes
+            const d = Math.floor(totalSeconds / 86400);
+            const h = Math.floor((totalSeconds % 86400) / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
 
-            // Supprime le skeleton seulement au moment de la première mise à jour
-            const skeleton = el.querySelector('.skeleton');
+            // Supprime le skeleton une seule fois
+            const skeleton = element.querySelector('.skeleton');
             if (skeleton) skeleton.remove();
 
             let timeStr = "";
             if (d > 0) timeStr += `${d}j `;
             timeStr += `${h}h ${m}m ${s}s`;
 
-            el.textContent = timeStr;
+            element.textContent = timeStr;
+
         }, 1000);
     });
 }
-
 // Vérification des dates
 function verificationInputDate() {
     const dateStart = document.getElementById("dateStart");
