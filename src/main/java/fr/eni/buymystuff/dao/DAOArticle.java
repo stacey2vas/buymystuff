@@ -31,7 +31,8 @@ public class DAOArticle implements IDAOArticle {
 
     private final JdbcTemplate jdbcTemplate;
     private final ArticleMapper articleMapper;
-     public DAOArticle(JdbcTemplate jdbcTemplate, ArticleMapper articleMapper) {
+
+    public DAOArticle(JdbcTemplate jdbcTemplate, ArticleMapper articleMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.articleMapper = articleMapper;
     }
@@ -82,7 +83,7 @@ public class DAOArticle implements IDAOArticle {
                     a.setPrixVente(rs.getInt("prix_vente"));
                     a.setImage(rs.getString("image"));
                     a.setEtatVente(rs.getBoolean("etat_vente"));
-                     // 📍 Adresse
+                    // 📍 Adresse
                     Adresse adresse = new Adresse();
                     adresse.setRue(rs.getString("rue"));
                     adresse.setCodePostal(rs.getString("code_postal"));
@@ -346,17 +347,21 @@ public class DAOArticle implements IDAOArticle {
                         a.date_debut_encheres,
                         a.date_fin_encheres,
                         a.prix_initial,
+                        a.prix_vente,
                         a.image,
                         a.etat_vente,
                         ad.rue,
                         ad.code_postal,
                         ad.ville,
+                        u.no_utilisateur, u.pseudo, u.nom, u.prenom,
                         GROUP_CONCAT(c.libelle SEPARATOR ',') AS categories_string,
                         GROUP_CONCAT(c.no_categorie SEPARATOR ',') AS categories_ids
                     FROM articles_vendus a
                     LEFT JOIN articles_categories ac ON a.no_article = ac.no_article
                     LEFT JOIN categories c ON c.no_categorie = ac.no_categorie
-                    LEFT JOIN adresses ad ON ad.no_adresse = a.no_adresse
+                    LEFT JOIN adresses ad ON ad.no_adresse = a.no_adresse                  
+                    LEFT JOIN utilisateurs u ON u.no_utilisateur = a.no_utilisateur
+                
                     WHERE a.etat_vente = 0
                     GROUP BY a.no_article;
                 """;
@@ -369,6 +374,7 @@ public class DAOArticle implements IDAOArticle {
             article.setDateDebut(rs.getTimestamp("date_debut_encheres").toLocalDateTime());
             article.setDateFin(rs.getTimestamp("date_fin_encheres").toLocalDateTime());
             article.setPrixInitial(rs.getInt("prix_initial"));
+            article.setPrixVente(rs.getInt("prix_vente"));
             article.setImage(rs.getString("image"));
             article.setEtatVente(rs.getBoolean("etat_vente"));
             Adresse adresse = new Adresse();
@@ -377,6 +383,12 @@ public class DAOArticle implements IDAOArticle {
             adresse.setVille(rs.getString("ville"));
             article.setAdresseProprietaire(adresse);
 
+            Utilisateurs proprietaire = new Utilisateurs();
+            proprietaire.setId(rs.getInt("no_utilisateur"));
+            proprietaire.setPseudo(rs.getString("pseudo"));
+            proprietaire.setNom(rs.getString("nom"));
+            proprietaire.setPrenom(rs.getString("prenom"));
+            article.setUtilisateur(proprietaire);
             // Mapping des catégories
             String categoriesIdsStr = rs.getString("categories_ids");
             String categoriesNamesStr = rs.getString("categories_string");
@@ -482,29 +494,29 @@ public class DAOArticle implements IDAOArticle {
 
                 case "participation":
                     sql.append("""
-                AND EXISTS (
-                    SELECT 1 FROM encheres e
-                    WHERE e.no_article = a.no_article
-                    AND e.no_utilisateur = ?
-                )
-            """);
+                                AND EXISTS (
+                                    SELECT 1 FROM encheres e
+                                    WHERE e.no_article = a.no_article
+                                    AND e.no_utilisateur = ?
+                                )
+                            """);
                     params.add(idUser);
                     break;
 
                 case "gagnees":
                     sql.append("""
-                AND EXISTS (
-                    SELECT 1 FROM encheres e
-                    WHERE e.no_article = a.no_article
-                    AND e.no_utilisateur = ?
-                    AND e.montant = (
-                        SELECT MAX(e2.montant)
-                        FROM encheres e2
-                        WHERE e2.no_article = a.no_article
-                    )
-                )
-                AND a.date_fin_encheres < NOW()
-            """);
+                                AND EXISTS (
+                                    SELECT 1 FROM encheres e
+                                    WHERE e.no_article = a.no_article
+                                    AND e.no_utilisateur = ?
+                                    AND e.montant = (
+                                        SELECT MAX(e2.montant)
+                                        FROM encheres e2
+                                        WHERE e2.no_article = a.no_article
+                                    )
+                                )
+                                AND a.date_fin_encheres < NOW()
+                            """);
                     params.add(idUser);
                     break;
 
@@ -573,10 +585,10 @@ public class DAOArticle implements IDAOArticle {
     @Override
     public Utilisateurs selectUserById(Long id) {
         String sql = """
-        SELECT pseudo, nom, prenom, email, telephone
-        FROM utilisateurs
-        WHERE no_utilisateur = ?
-    """;
+                    SELECT pseudo, nom, prenom, email, telephone
+                    FROM utilisateurs
+                    WHERE no_utilisateur = ?
+                """;
 
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
             Utilisateurs utilisateur = new Utilisateurs();
@@ -588,7 +600,8 @@ public class DAOArticle implements IDAOArticle {
             return utilisateur;
         });
     }
-    public void changeEtatVente (){
+
+    public void changeEtatVente() {
         // Désactive la sécurité de mysql workbench pour l'update de plusieurs lignes de données
         jdbcTemplate.execute("SET SQL_SAFE_UPDATES = 0;");
         // Update des encheres en fonction de la date de fin d'enchère et de maintenant

@@ -16,7 +16,7 @@
       <label class="block text-gray-400 mb-2 font-medium">Catégories</label>
       <select id="categorie" name="categorie"
               class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20
-                     focus:ring-2 focus:ring-[#4934d3]">
+                     focus:outline-none  focus:ring-2 focus:ring-[#4934d3]">
         <option value="">Tous</option>
         <option th:each="cat : ${categories}"
                 th:value="${cat.id}"
@@ -28,28 +28,30 @@
     <div>
       <label class="block text-gray-400 mb-2 font-medium">Prix min</label>
       <input type="number" id="prixMin" name="prixMin" placeholder="0 €"
-             class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20"/>
+             class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]"/>
     </div>
 
     <!-- Prix max -->
     <div>
       <label class="block text-gray-400 mb-2 font-medium">Prix max</label>
       <input type="number" id="prixMax" name="prixMax" placeholder="1000 €"
-             class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20"/>
+             class="w-full px-4 py-2.5 rounded-xl bg-[#101046]/80 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#4934d3]"/>
     </div>
 
     <!-- Statut -->
     <div class="sm:col-span-2 lg:col-span-2">
       <label class="block text-gray-400 mb-2 font-medium">Statut</label>
       <div class="flex flex-col sm:flex-row gap-4 md:gap-2">
-        <button type="button" class="h-[38px] toggle-btn w-full px-3 py-2 rounded-xl bg-[#101046]/80 border border-white/20"
+        <button type="button" class="h-[38px] flex items-center justify-center toggle-btn w-full px-3 py-2 rounded-xl bg-[#101046]/80 focus:outline-none focus:ring-2 focus:ring-[#4934d3] hover:bg-[#4934d3] border border-white/20"
                 data-value="encours">En cours</button>
 
-        <button type="button" class="h-[38px] toggle-btn w-full px-3 py-2 rounded-xl bg-[#101046]/80 border border-white/20"
+        <button type="button" class="h-[38px] flex items-center justify-center toggle-btn w-full px-3 py-2 rounded-xl bg-[#101046]/80 focus:outline-none focus:ring-2 focus:ring-[#4934d3] hover:bg-[#4934d3] border border-white/20"
                 data-value="terminee">Terminée</button>
 
-        <button type="button" class="h-[38px] toggle-btn w-full px-3 py-2 rounded-xl bg-[#101046]/80 border border-white/20"
-                data-value="pascommencee">Pas commencée</button>
+        <button type="button" class="h-[38px] flex items-center justify-center toggle-btn w-full px-3 py-2 rounded-xl bg-[#101046]/80 focus:outline-none focus:ring-2 focus:ring-[#4934d3] hover:bg-[#4934d3] border border-white/20"
+                data-value="pascommencee">
+          Pas commencée
+        </button>
       </div>
     </div>
 
@@ -66,11 +68,11 @@
     </div>
 
     <!-- Bouton -->
-    <div class="sm:col-span-2 lg:col-span-7">
+    <div class="sm:col-span-2 lg:col-span-5">
       <button type="submit"
               class="w-full sm:w-auto px-6 py-2.5 rounded-xl font-semibold
-                     bg-[#4934d3] hover:bg-[#3b27a8] text-white transition">
-        Filtrer
+                     bg-[#4934d3] hover:bg-[#3b27a8] text-white transition focus:outline-none  focus:ring-2 focus:ring-[#4934d3]">
+        Filtrer les enchères
       </button>
     </div>
 
