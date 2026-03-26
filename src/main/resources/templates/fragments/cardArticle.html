@@ -41,7 +41,7 @@
 
     <!-- Bouton enchérir -->
     <div class="w-full flex justify-center relative -bottom-5 left-0 transition-transform duration-300">
-        <button sec:authorize="isAuthenticated()" th:if="${user.id == article.utilisateur.id && article.dateDebut.isBefore(T(java.time.LocalDateTime).now())}" class="btnModal bg-btn px-6 py-2 rounded-lg shadow-lg font-semibold transition-all duration-300"
+        <button sec:authorize="isAuthenticated()" th:if="${user.id != article.utilisateur.id && article.dateDebut.isBefore(T(java.time.LocalDateTime).now())}" class="btnModal bg-btn px-6 py-2 rounded-lg shadow-lg font-semibold transition-all duration-300"
                 th:data-id="${article.id}"
                 th:data-title="${article.description}"
                 th:data-price="${article.prixVente}"
