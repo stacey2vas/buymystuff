@@ -3,21 +3,30 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BuyMyStuff</title>
 
-    <!-- Tailwind CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?
+  family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&
+  family=Roboto:wght@400;700&
+  family=Oswald:wght@500;700&
+  display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <th:block layout:fragment="page-css"></th:block>
+
 </head>
 
-<body class="bg-main text-white flex flex-col min-h-screen">
+<body class=" bg-main text-white flex flex-col min-h-screen">
 
 <!-- HEADER -->
 <header class="h-[75px] fixed top-0 left-0 w-full z-50 bg-header  shadow-[0_2px_4px_0_rgba(55,105,150,0.25)]">
