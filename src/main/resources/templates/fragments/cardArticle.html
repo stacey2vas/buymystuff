@@ -61,7 +61,7 @@
              th:if="${article.utilisateur != null and user != null and user.id == article.utilisateur.id and article.dateDebut != null and T(java.time.LocalDateTime).now().isBefore(article.dateDebut)}"
              class="w-full flex justify-center relative -bottom-8">
             <a th:href="@{/modify-article/{id}(id=${article.id})}"
-               class="bg-btn text-white font-semibold px-7 py-3 rounded-md shadow-md">
+               class="bg-[#9276d7] hover:bg-[#7c5ec5] text-white font-semibold px-7 py-3 rounded-md shadow-md">
                 Modifier la vente
             </a>
         </div>
@@ -71,7 +71,7 @@
              th:if="${article.utilisateur != null and user != null and user.id == article.utilisateur.id and article.dateDebut != null and T(java.time.LocalDateTime).now().isAfter(article.dateDebut)}"
              class="w-full flex justify-center relative -bottom-8">
             <a th:href="@{/enchere/{id}(id=${article.id})}"
-               class="bg-btn text-white font-semibold px-7 py-3 rounded-md shadow-md">
+               class="bg-[#02a8c4] hover:bg-[#028da3] text-white font-semibold px-7 py-3 rounded-md shadow-md">
                 Voir votre enchère
             </a>
         </div>
