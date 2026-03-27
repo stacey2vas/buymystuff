@@ -5,6 +5,22 @@
       layout:decorate="~{fragments/base}">
 
 <body>
-<p class="text-xl text-red-500">test !!</p>
+
+<div layout:fragment="content" class="w-10/12 flex flex-col gap-10">
+    <!-- Barre de recherche -->
+    <div th:replace="fragments/search :: div"></div>
+
+    <!-- Grid de cartes -->
+    <div id="articlesContainer"
+         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 md:gap-5">
+
+        <div th:each="article : ${articles}"
+             th:replace="fragments/cardArticle :: cardArticle(article=${article})">
+        </div>
+
+    </div>
+    <div th:replace="fragments/modalEnchere :: div"></div>
+    <script th:src="@{/js/accueil.js}" defer></script>
+</div>
 </body>
 </html>

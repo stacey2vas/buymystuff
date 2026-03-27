@@ -32,21 +32,14 @@ public class APIController {
     }
 
     @PostMapping("/articles")
-    public String getArticles(@AuthenticationPrincipal UserDetails userDetails,
-                              @RequestBody ArticleFilterDTO filter,
-                              Model model) {
+    public String getArticles(@AuthenticationPrincipal UserDetails userDetails, @RequestBody ArticleFilterDTO filter,  Model model) {
         try {
-
-            // ✅ Test complet avant d'utiliser userDetails
-            if (userDetails != null) {
-                ServiceResponse<Integer> response = authService.getIdUserByPseudo(userDetails.getUsername());
+            if (userDetails != null) { // Savoir si le user est connecté
                 Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
+                Long idUser = (long) user.getId();
                 model.addAttribute("user", user);
-                if (response != null && response.data != null) {
-                    long id = response.data.longValue();
-                    List<ArticleFormDTO> articles = articleService.getArticlesByFilter(filter, id).data;
+                    List<ArticleFormDTO> articles = articleService.getArticlesByFilter(filter, idUser).data;
                     model.addAttribute("articles", articles);
-                }
             } else {
                 List<ArticleFormDTO> articles = articleService.getArticlesByFilter(filter, null).data;
                 model.addAttribute("articles", articles);

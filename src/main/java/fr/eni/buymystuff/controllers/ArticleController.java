@@ -51,7 +51,7 @@ public class ArticleController {
             model.addAttribute("errorMessage", imageCheck.getMessage());
             modelFormInformations(model);
 
-            return "/test/ajout-article"; // Réaffiche le formulaire avec les données
+            return "ajout-article"; // Réaffiche le formulaire avec les données
         }
         // Si tout est OK, sauvegarder l'article
         ServiceResponse<?> response = articleService.saveArticle(articleFormDTO, idUserLong);
@@ -61,7 +61,7 @@ public class ArticleController {
             model.addAttribute("errorMessage", response.getMessage());
             modelFormInformations(model);
 
-            return "/ajout-article"; // Réaffiche le formulaire en cas d'erreur
+            return "ajout-article"; // Réaffiche le formulaire en cas d'erreur
         }
     }
 
@@ -74,7 +74,7 @@ public class ArticleController {
         System.out.println("articleFormDTO : " + articleFormDTO.getCategoriesIds());
 
         modelFormInformations(model);
-        return "/ajout-article";
+        return "ajout-article";
     }
     private void modelFormInformations(Model model) {
         List<Categories> categories = servicesCategories.getCategoriesCatalog().data;

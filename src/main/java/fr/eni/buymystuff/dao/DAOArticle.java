@@ -413,18 +413,9 @@ public class DAOArticle implements IDAOArticle {
                                              String statut, String selectValue, Long idUser) {
 
         StringBuilder sql = new StringBuilder("""
-                 SELECT a.no_article,
-                        a.nom_article,
-                        a.description,
-                        a.date_debut_encheres,
-                        a.date_fin_encheres,
-                        a.prix_initial,
-                        a.prix_vente,
-                        a.image,
-                        a.etat_vente,
-                        ad.rue,
-                        ad.code_postal,
-                        ad.ville,
+                 SELECT a.no_article, a.nom_article, a.description, a.date_debut_encheres, a.date_fin_encheres,
+                        a.prix_initial, a.prix_vente, a.image, a.etat_vente,
+                        ad.rue, ad.code_postal, ad.ville,
                         u.no_utilisateur, u.pseudo, u.nom, u.prenom,
                         GROUP_CONCAT(c.libelle SEPARATOR ',') AS categories_string,
                         GROUP_CONCAT(c.no_categorie SEPARATOR ',') AS categories_ids
@@ -437,14 +428,10 @@ public class DAOArticle implements IDAOArticle {
                 """);
 
         List<Object> params = new ArrayList<>();
-
-        // 🔎 Filtre nom
         if (nomArticle != null && !nomArticle.isBlank()) {
             sql.append(" AND LOWER(a.nom_article) LIKE LOWER(?)");
             params.add("%" + nomArticle + "%");
         }
-
-        // 🔎 Filtre catégorie (CORRIGÉ avec EXISTS)
         if (categorie != null && !categorie.isBlank()) {
             sql.append("""
                         AND EXISTS (
@@ -455,20 +442,14 @@ public class DAOArticle implements IDAOArticle {
                     """);
             params.add(Long.parseLong(categorie));
         }
-
-        // 🔎 Filtre prix min
         if (prixMin != null) {
             sql.append(" AND a.prix_initial >= ?");
             params.add(prixMin);
         }
-
-        // 🔎 Filtre prix max
         if (prixMax != null) {
             sql.append(" AND a.prix_initial <= ?");
             params.add(prixMax);
         }
-
-        // 🔎 Filtre statut
         if (statut != null && !statut.isBlank()) {
             switch (statut) {
                 case "terminee":
@@ -508,8 +489,8 @@ public class DAOArticle implements IDAOArticle {
                                     SELECT 1 FROM encheres e
                                     WHERE e.no_article = a.no_article
                                     AND e.no_utilisateur = ?
-                                    AND e.montant = (
-                                        SELECT MAX(e2.montant)
+                                    AND e.montant_enchere = (
+                                        SELECT MAX(e2.montant_enchere)
                                         FROM encheres e2
                                         WHERE e2.no_article = a.no_article
                                     )
@@ -528,9 +509,9 @@ public class DAOArticle implements IDAOArticle {
                     break;
             }
         }
-        // 🔥 IMPORTANT : group by pour éviter doublons
+
         sql.append(" GROUP BY a.no_article ORDER BY a.date_fin_encheres DESC");
-        // 🔥 Execution
+
         List<Articles> articles = jdbcTemplate.query(sql.toString(), (rs, rowNum) -> {
 
             Articles article = new Articles();

@@ -48,7 +48,7 @@ public class EnchereController {
         model.addAttribute("articles", articles);
         model.addAttribute("categories", categories);
         // Retour du template Thymeleaf
-        return "/test/accueil";
+        return "accueil";
     }
     @GetMapping("/enchere/{id}")
     public String showArticle(@PathVariable("id") Long id, @AuthenticationPrincipal UserDetails userDetails, EnchereDTO enchereDTO, Model model) {
@@ -59,7 +59,7 @@ public class EnchereController {
         model.addAttribute("user",user);
         model.addAttribute("encheres",encheres);
         model.addAttribute("enchereForm",new EnchereDTO());
-        return "/test/enchere";
+        return "enchere";
     }
     @PostMapping("/add-enchere/{id}")
     public String addEnchere(@PathVariable("id") Long id,

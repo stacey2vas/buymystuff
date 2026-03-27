@@ -51,51 +51,15 @@ public class AuthTestController
     public String processAuth(@ModelAttribute("utilisateur") Utilisateurs utilisateur, Model model) {
         // On ajoute l'utilisateur et l'adresse reçue dans la bdd
         ServiceResponse<Utilisateurs> response = authService.ajouterUtilisateur(utilisateur);
-        return "test/register";
+        return "register";
     }
-
-    // Route GET de test
-    @GetMapping("/formulaire-test")
-    public String showTestForm() {
-       
-        return "test/formulaire-test";
-    }
-
-    // Route post de test
-    @PostMapping("/process-register-test")
-    public String processFormulaireTest(@ModelAttribute("utilisateur") Utilisateurs utilisateurTestisateur,  @ModelAttribute("adresse") Adresse adresse, Model model) {
-        Adresse adresseTest = new Adresse();
-        Utilisateurs utilisateurTest = new Utilisateurs();
-        // Adresse
-        adresseTest.setRue("82 rue de la paix");
-        adresseTest.setCodePostal("75000");
-        adresseTest.setVille("Paris");
-
-        // utilisateur
-        utilisateurTest.setNom("Terrieur3");
-        utilisateurTest.setPrenom("Alain3");
-        utilisateurTest.setPseudo("toto5"); // Le pseudo est unique donc pas de doublon en BDD
-        utilisateurTest.setEmail("aterrieur@eni.fr");
-        utilisateurTest.setTelephone("0606060606");
-        utilisateurTest.setMotDePasse("toto");
-        utilisateurTest.setAdministrateur(false);
-        utilisateurTest.setCredit(100);
-        utilisateurTest.setActif(true);
-        utilisateurTest.setAdresse(adresseTest);
-
-        // Insertion Adresse + User
-//        authService.ajouterUtilisateur( utilisateurTest ,adresseTest);
-
-        return "test/formulaire-test";
-    }
-
  // Route GET pour afficher le profil
     @GetMapping("/profile")
     public String showProfil(@AuthenticationPrincipal UserDetails userDetails, Model model) {
        Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
         model.addAttribute("user", user);
 
-        return "test/profile";
+        return "profile";
     }
 
     // Route GET pour modifier le profil
@@ -104,7 +68,7 @@ public class AuthTestController
         Utilisateurs user = authService.getUserByPseudo(userDetails.getUsername()).data;
         model.addAttribute("user", user);
 
-        return "test/update-profile";
+        return "update-profile";
     }
 
     @PostMapping ("/process-update")
@@ -113,6 +77,6 @@ public class AuthTestController
          int idUtil = authService.getIdUserByPseudo(userDetails.getUsername()).data;
          user.setId(idUtil);
         ServiceResponse<Utilisateurs> response = authService.save(user);
-        return "test/profile";
+        return "profile";
     }
 }

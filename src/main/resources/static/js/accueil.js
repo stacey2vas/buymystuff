@@ -85,12 +85,9 @@ function verificationInputPrix() {
 
 function submitForm(event) {
     event.preventDefault();
-
-    // validation AVANT tout
     if (!validerFormulaire()) {
         return;
     }
-
     const filter = {
         nomArticle: document.getElementById("nomArticle").value,
         categorie: document.getElementById("categorie").value,
@@ -99,9 +96,6 @@ function submitForm(event) {
         statut: statut,
         selectValue: selectValue
     };
-
-    console.log("filter select: " + filter.selectValue);
-
     fetch("/api/articles", {
         method: "POST",
         headers: {
